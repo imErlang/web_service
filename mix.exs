@@ -19,7 +19,10 @@ defmodule WebService.MixProject do
     [
       {:distillery, "~> 2.1"},
       {:toml, "~> 0.6.2"},
-      {:credo, "~> 0.5", only: [:dev, :test]}
+      {:credo, "~> 0.5", only: [:dev, :test]},
+      {:ecto_sql, "~> 3.5"},
+      {:jason, "~> 1.2"},
+      {:postgrex, "~> 0.15.7"}
     ]
   end
 end

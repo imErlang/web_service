@@ -22,3 +22,11 @@ config :logger, :console,
   metadata: [:user_id]
 
 config :admin, port: 7003
+
+config :admin, :ecto_repos, [User.Repo]
+
+config :admin, User.Repo,
+  database: "ejabberd",
+  username: "postgres",
+  password: "123456",
+  hostname: "localhost"

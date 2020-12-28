@@ -10,7 +10,8 @@ defmodule Admin.Application do
     children = [
       # Starts a worker by calling: Admin.Worker.start_link(arg)
       # {Admin.Worker, arg}
-      {Plug.Cowboy, scheme: :http, plug: Admin.Router, port: get_port()}
+      {Plug.Cowboy, scheme: :http, plug: Admin.Router, port: get_port()},
+      {User.Repo, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

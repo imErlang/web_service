@@ -64,6 +64,7 @@ release :web_service do
     applications: [
       :runtime_tools,
       :toml,
+      :jason,
       admin: :permanent
     ]
   )
@@ -73,7 +74,7 @@ release :web_service do
       {Toml.Provider,
        [
          path: "${RELEASE_ROOT_DIR}/etc/config.toml",
-         transforms: []
+         transforms: [Admin.Config]
        ]}
     ]
   )
