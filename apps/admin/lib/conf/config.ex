@@ -9,15 +9,15 @@ defmodule Admin.Config do
 
         {:ecto_repos,
          Enum.map(repos, fn
-           "user" ->
-             User.Repo
+           "ejabberd" ->
+             Ejabberd.Repo
 
          end)}
 
-      {:user, user} ->
+      {:ejabberd, user} ->
         Logger.info("ectos #{inspect(user)}")
 
-        {User.Repo,
+        {Ejabberd.Repo,
          [
            database: user.database,
            username: user.username,

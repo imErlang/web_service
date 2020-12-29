@@ -30,9 +30,12 @@ defmodule Admin.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true}
       {:plug_cowboy, "~> 2.4"},
+      {:ecto, "~> 3.5"},
       {:ecto_sql, "~> 3.5"},
       {:postgrex, "~> 0.15.7"},
-      {:toml, "~> 0.6.2"}
+      {:toml, "~> 0.6.2"},
+      {:jason, "~> 1.2"},
+      {:credo, "~> 0.5", only: [:dev, :test]}
     ]
   end
 end

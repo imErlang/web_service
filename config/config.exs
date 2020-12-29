@@ -9,6 +9,12 @@
 # move said applications out of the umbrella.
 import Config
 
+config :admin, Ejabberd.Repo,
+  database: "admin_repo",
+  username: "user",
+  password: "pass",
+  hostname: "localhost"
+
 # Sample configuration:
 #
 #     config :logger, :console,
@@ -23,10 +29,12 @@ config :logger, :console,
 
 config :admin, port: 7003
 
-config :admin, :ecto_repos, [User.Repo]
+config :admin, :ecto_repos, [Ejabberd.Repo]
 
-config :admin, User.Repo,
+config :admin, Ejabberd.Repo,
   database: "ejabberd",
   username: "postgres",
   password: "123456",
-  hostname: "localhost"
+  hostname: "localhost",
+  port: 5432,
+  priv: "priv/user"

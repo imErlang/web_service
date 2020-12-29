@@ -17,7 +17,7 @@ defmodule Admin.Router do
 
   plug(:dispatch)
 
-  forward("/im_http_service/newapi/update", to: Admin.Router.User)
+  forward("/startalk/management/", to: Admin.Router.User)
 
   def handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
     send_resp(conn, conn.status, "Something went wrong")

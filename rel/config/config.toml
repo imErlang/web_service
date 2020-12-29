@@ -1,7 +1,7 @@
 [admin]
 port = 7003
-ecto_repos = ["user"]
-user.database = "ejabberd"
-user.username = "postgres"
-user.password = "123456"
-user.hostname = "127.0.0.1"
+ecto_repos = ["ejabberd"]
+ejabberd.database = "ejabberd"
+ejabberd.username = "postgres"
+ejabberd.password = "123456"
+ejabberd.hostname = "127.0.0.1"

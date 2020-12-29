@@ -11,7 +11,7 @@ defmodule Admin.Application do
       # Starts a worker by calling: Admin.Worker.start_link(arg)
       # {Admin.Worker, arg}
       {Plug.Cowboy, scheme: :http, plug: Admin.Router, port: get_port()},
-      {User.Repo, []}
+      {Ejabberd.Repo, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -21,6 +21,6 @@ defmodule Admin.Application do
   end
 
   defp get_port do
-	  Application.get_env(:admin, :port, 4040)
+    Application.get_env(:admin, :port, 4040)
   end
 end

@@ -17,12 +17,7 @@ defmodule WebService.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:distillery, "~> 2.1"},
-      {:toml, "~> 0.6.2"},
-      {:credo, "~> 0.5", only: [:dev, :test]},
-      {:ecto_sql, "~> 3.5"},
-      {:jason, "~> 1.2"},
-      {:postgrex, "~> 0.15.7"}
+      {:distillery, "~> 2.1"}
     ]
   end
 end
