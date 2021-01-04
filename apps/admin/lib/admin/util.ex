@@ -1,5 +1,5 @@
 defmodule Ejabberd.Util do
-  def success(data) do
+  def success(data \\ "") do
     {:ok, ret} =
       Jason.encode(%{
         data: data,

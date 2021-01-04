@@ -3,9 +3,8 @@ defmodule Ejabberd.HostUsers do
 
   require Logger
 
-  import Ecto.Query, only: [from: 2]
-
-  import Ecto.Changeset
+  import Ecto.Query, only: [from: 2, where: 3, update: 3, select: 3]
+  import Ecto.Query.API, only: [fragment: 1, max: 1]
 
   schema "host_users" do
     field(:host_id, :integer)
@@ -40,28 +39,28 @@ defmodule Ejabberd.HostUsers do
     field(:create_time, :utc_datetime)
   end
 
-  def findByUserId(user_id, host_id) do
+  def create_user(user) do
+    user |> Ejabberd.Repo.insert()
+  end
+
+  def find_user(user_id, host_id) do
     query = from(u in Ejabberd.HostUsers, where: u.user_id == ^user_id and u.host_id == ^host_id)
     Ejabberd.Repo.one(query)
   end
 
-  def delete(userid, hostid, version) do
-    user = findByUserId(userid, hostid)
+  def max_version do
+    Ejabberd.HostUsers |> select([u], max(u.version)) |> Ejabberd.Repo.one()
+  end
+
+  def delete(user_id, host_id) do
+    max_version = max_version()
 
     query =
-      from(u in Ejabberd.HostUsers,
-        where: u.user_id == ^userid and u.host_id == ^hostid,
-        update: [set: [hire_flag: 0, version: ^version]]
-      )
+      Ejabberd.HostUsers
+      |> where([u], u.user_id == ^user_id and u.host_id == ^host_id)
+      |> update([], set: [hire_flag: 0, version: ^(max_version + 1)])
 
-    case Ejabberd.Repo.update(query) do
-      {:ok, succ} ->
-        Logger.error("delete user succ #{inspect(succ)}")
-        true
-
-      {:error, changeset} ->
-        Logger.error("delete user error #{inspect(changeset)}")
-        false
-    end
+    {num, _} = Ejabberd.Repo.update_all(query, [])
+    num > 0
   end
 end
