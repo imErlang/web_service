@@ -17,6 +17,7 @@ defmodule Admin.Router do
 
   plug(:dispatch)
 
+  forward("/startalk/management/dep", to: Admin.Router.Dep)
   forward("/startalk/management/", to: Admin.Router.User)
 
   def handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do

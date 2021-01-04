@@ -57,12 +57,6 @@ defmodule Admin.Router.User do
     send_resp(conn, 200, userResult)
   end
 
-  match "/addUser/users" do
-    userResult = Ejabberd.Util.success()
-    put_resp_header(conn, "content-type", "application/json")
-    send_resp(conn, 200, userResult)
-  end
-
   match "/update/user" do
     userResult = Ejabberd.Util.success()
     put_resp_header(conn, "content-type", "application/json")
@@ -70,12 +64,6 @@ defmodule Admin.Router.User do
   end
 
   match "/update/changePwd" do
-    userResult = Ejabberd.Util.success()
-    put_resp_header(conn, "content-type", "application/json")
-    send_resp(conn, 200, userResult)
-  end
-
-  match "/delete/users" do
     userResult = Ejabberd.Util.success()
     put_resp_header(conn, "content-type", "application/json")
     send_resp(conn, 200, userResult)
