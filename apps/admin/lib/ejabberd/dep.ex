@@ -2,58 +2,41 @@ defmodule Ejabberd.Department do
   use Ecto.Schema
 
   import Ecto.Query
-  import Ecto.Changeset
 
   require Logger
 
   schema "startalk_dep_table" do
-    field(:dep_name, :string)
-    field(:dep_level, :integer)
+    field(:dep_name, :string, default: "")
+    field(:dep_level, :integer, default: 1)
     field(:dep_vp, :string, default: "")
-    field(:dep_hr, :string)
-    field(:dep_visible, :string)
-    field(:parent_id, :integer)
-    field(:dep_leader, :string)
+    field(:dep_hr, :string, default: "")
+    field(:dep_visible, :string, default: "")
+    field(:parent_id, :integer, default: 0)
+    field(:dep_leader, :string, default: "")
     field(:delete_flag, :integer, default: 0)
-    field(:dep_desc, :string)
+    field(:dep_desc, :string, default: "")
     field(:create_time, :utc_datetime)
     field(:update_time, :utc_datetime)
   end
 
-  @fields ~w(dep_name dep_level dep_vp dep_hr dep_visible parent_id dep_leader delete_flag dep_desc create_time update_time)a
-
-  def changeset(data, params \\ %{}) do
-    data
-    |> cast(params, @fields)
-    |> unique_constraint(:dep_name)
+  def delete(dep_id) do
+    Ejabberd.Department
+    |> where([d], d.id == ^dep_id)
+    |> Ejabberd.Repo.delete_all()
   end
 
   def get(dep_id) do
     Ejabberd.Department
     |> where([d], d.id == ^dep_id)
-    |> Ejabberd.Repo.one
+    |> Ejabberd.Repo.one()
   end
 
   def get_all() do
     Ejabberd.Department
-    |> Ejabberd.Repo.all
+    |> Ejabberd.Repo.all()
   end
 
-  @spec create(%{}) :: boolean()
   def create(params) do
-    cs = changeset(%Ejabberd.Department{}, params)
-    Logger.info("insert dep #{inspect(cs)}")
-
-    if cs.valid? do
-      case Ejabberd.Repo.insert(cs) do
-        {:ok, _} ->
-          true
-        {:error, _} ->
-          false
-      end
-    else
-      false
-    end
+    params |> Ejabberd.Repo.insert(on_conflict: :nothing)
   end
-
 end

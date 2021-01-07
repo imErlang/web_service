@@ -4,7 +4,6 @@ defmodule Ejabberd.HostUsers do
   require Logger
 
   import Ecto.Query, only: [from: 2, where: 3, update: 3, select: 3]
-  import Ecto.Query.API, only: [fragment: 1, max: 1]
 
   schema "host_users" do
     field(:host_id, :integer)
@@ -49,7 +48,9 @@ defmodule Ejabberd.HostUsers do
   end
 
   def max_version do
-    Ejabberd.HostUsers |> select([u], max(u.version)) |> Ejabberd.Repo.one()
+    Ejabberd.HostUsers
+    |> select([u], max(u.version))
+    |> Ejabberd.Repo.one()
   end
 
   def delete(user_id, host_id) do
