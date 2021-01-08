@@ -27,7 +27,7 @@ config :logger, :console,
   format: "$date $time [$level] $metadata$message\n",
   metadata: [:user_id]
 
-config :admin, port: 7003
+config :admin, port: 7004
 
 config :admin, :ecto_repos, [Ejabberd.Repo]
 

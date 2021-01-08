@@ -75,8 +75,16 @@ defmodule Admin.Router.Dep do
   end
 
   match "delete" do
-    dep_id = Map.get(conn.body_params, "id")
+    dep_id = Map.get(conn.body_params, "depId")
+    case Ejabberd.Department.get(dep_id) do
+      nil ->
+        errRet = Ejabberd.Util.fail("dep not exist", -1)
+        send_resp(conn, 200, errRet)
 
+      dep_info ->
+          Ejabberd.Department.delete(dep_info.id)
+          send_resp(conn, 200, Ejabberd.Util.success(""))
+      end
   end
 
   match "/update" do
