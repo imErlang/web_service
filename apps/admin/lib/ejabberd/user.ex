@@ -47,6 +47,12 @@ defmodule Ejabberd.HostUsers do
     Ejabberd.Repo.one(query)
   end
 
+  def get_update_users(host_id, version) do
+    Ejabberd.HostUsers
+    |> where([u], u.host_id == ^host_id and u.version > ^version)
+    |> Ejabberd.Repo.all()
+  end
+
   def max_version do
     Ejabberd.HostUsers
     |> select([u], max(u.version))

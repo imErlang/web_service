@@ -6,6 +6,8 @@ defmodule Admin.Router do
   use Plug.Router
   use Plug.ErrorHandler
 
+  require Logger
+
   plug(Plug.Logger)
   plug(:match)
 
@@ -17,9 +19,18 @@ defmodule Admin.Router do
 
   plug(:dispatch)
 
+  forward("/host/", to: Admin.Router.HostInfo)
   forward("/startalk/management/dep", to: Admin.Router.Dep)
   forward("/startalk/management/base", to: Admin.Router.Base)
-  forward("/startalk/management/", to: Admin.Router.User)
+  forward("/user", to: Admin.Router.User)
+  forward("/muc", to: Admin.Router.Muc)
+
+  match "/startalk_nav" do
+    Logger.debug("query #{inspect(conn.query_params)}")
+    nav = Admin.Router.NavHandler.getNav("http", "192.168.18.128", "startalk.tech", 8080)
+    succ = Ejabberd.Util.success(nav)
+    send_resp(conn, 200, succ)
+  end
 
   def handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
     send_resp(conn, conn.status, "Something went wrong")

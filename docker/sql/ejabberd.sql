@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.1 (Debian 13.1-1.pgdg100+1)
--- Dumped by pg_dump version 13.1 (Debian 13.1-1.pgdg100+1)
+-- Dumped from database version 11.10 (Debian 11.10-1.pgdg90+1)
+-- Dumped by pg_dump version 11.10
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -29,7 +29,7 @@ ALTER FUNCTION public.qto_char(timestamp with time zone, text) OWNER TO postgres
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
+SET default_with_oids = false;
 
 --
 -- Name: admin_user; Type: TABLE; Schema: public; Owner: postgres
@@ -453,7 +453,7 @@ CREATE TABLE public.destroy_muc_info (
     nick_name text,
     reason text,
     id bigint NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -497,8 +497,8 @@ CREATE TABLE public.find_application_table (
     ios_bundle text,
     android_bundle text,
     application_desc text,
-    create_time timestamp with time zone DEFAULT now(),
-    update_time timestamp with time zone DEFAULT now(),
+    create_time timestamp without time zone DEFAULT now(),
+    update_time timestamp without time zone DEFAULT now(),
     disable_flag smallint DEFAULT 0 NOT NULL,
     member_id integer NOT NULL,
     h5_action text,
@@ -1079,7 +1079,7 @@ CREATE TABLE public.host_users (
     user_origin integer DEFAULT 0,
     hire_type character varying(50) DEFAULT '未知'::character varying,
     admin_flag character varying(20) DEFAULT '0'::character varying,
-    create_time timestamp with time zone DEFAULT (now())::timestamp(3) with time zone,
+    create_time timestamp without time zone DEFAULT (now())::timestamp(3) without time zone,
     ps_deptid text DEFAULT 'QUNAR'::text
 );
 
@@ -1116,7 +1116,7 @@ CREATE TABLE public.invite_spool (
     inviter text NOT NULL,
     body text NOT NULL,
     "timestamp" integer NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
     host text DEFAULT 'ejabhost1'::text NOT NULL,
     ihost text DEFAULT 'ejabhost1'::text NOT NULL
 );
@@ -1130,7 +1130,7 @@ ALTER TABLE public.invite_spool OWNER TO postgres;
 
 CREATE TABLE public.iplimit (
     ip text NOT NULL,
-    created_at timestamp(6) with time zone DEFAULT now() NOT NULL,
+    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
     descriptions text DEFAULT now() NOT NULL,
     name text DEFAULT 'ALL'::text NOT NULL,
     priority text DEFAULT '1'::text NOT NULL,
@@ -1148,7 +1148,7 @@ CREATE TABLE public.irc_custom (
     jid text NOT NULL,
     host text NOT NULL,
     data text NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -1453,7 +1453,7 @@ ALTER SEQUENCE public.meeting_info_id_seq OWNED BY public.meeting_info.id;
 CREATE TABLE public.motd (
     username text NOT NULL,
     xml text,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -1467,7 +1467,7 @@ CREATE TABLE public.msg_history (
     m_from character varying(255),
     m_to character varying(255),
     m_body text,
-    create_time timestamp with time zone DEFAULT (now())::timestamp(3) with time zone,
+    create_time timestamp with time zone DEFAULT (now())::timestamp(3) without time zone,
     id bigint NOT NULL,
     read_flag smallint DEFAULT 0,
     msg_id text,
@@ -1490,7 +1490,7 @@ CREATE TABLE public.msg_history_backup (
     m_from character varying(255),
     m_to character varying(255),
     m_body text,
-    create_time timestamp with time zone DEFAULT (now())::timestamp(3) with time zone,
+    create_time timestamp with time zone DEFAULT (now())::timestamp(3) without time zone,
     id bigint NOT NULL,
     read_flag smallint DEFAULT 0,
     msg_id text,
@@ -1559,7 +1559,7 @@ CREATE TABLE public.muc_registered (
     jid text NOT NULL,
     host text NOT NULL,
     nick text NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -1573,7 +1573,7 @@ CREATE TABLE public.muc_room (
     name text NOT NULL,
     host text NOT NULL,
     opts text NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -1587,7 +1587,7 @@ CREATE TABLE public.muc_room_backup (
     name text NOT NULL,
     host text NOT NULL,
     opts text NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -1603,7 +1603,7 @@ CREATE TABLE public.muc_room_history (
     packet text,
     have_subject boolean,
     size character varying(255),
-    create_time timestamp with time zone DEFAULT (now())::timestamp(3) with time zone,
+    create_time timestamp with time zone DEFAULT (now())::timestamp(3) without time zone,
     id bigint NOT NULL,
     host text DEFAULT 'ejabhost1'::text,
     msg_id text
@@ -1622,7 +1622,7 @@ CREATE TABLE public.muc_room_history_backup (
     packet text,
     have_subject boolean,
     size character varying(255),
-    create_time timestamp with time zone DEFAULT (now())::timestamp(3) with time zone,
+    create_time timestamp with time zone DEFAULT (now())::timestamp(3) without time zone,
     id bigint NOT NULL,
     host text,
     msg_id text
@@ -1755,7 +1755,7 @@ CREATE TABLE public.notice_history (
     msg_id text NOT NULL,
     m_from text NOT NULL,
     m_body text NOT NULL,
-    create_time timestamp with time zone DEFAULT (now())::timestamp(3) with time zone NOT NULL,
+    create_time timestamp with time zone DEFAULT (now())::timestamp(3) without time zone NOT NULL,
     host text DEFAULT 'ejabhost1'::text NOT NULL
 );
 
@@ -1791,7 +1791,7 @@ CREATE TABLE public.persistent_logins (
     username character varying(64) NOT NULL,
     series character varying(64) NOT NULL,
     token character varying(64) NOT NULL,
-    last_used timestamp with time zone NOT NULL
+    last_used timestamp without time zone NOT NULL
 );
 
 
@@ -1817,7 +1817,7 @@ CREATE TABLE public.privacy_list (
     username text NOT NULL,
     name text NOT NULL,
     id integer NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -1872,7 +1872,7 @@ CREATE TABLE public.private_storage (
     username text NOT NULL,
     namespace text NOT NULL,
     data text NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -2480,7 +2480,7 @@ CREATE TABLE public.qtalk_config (
     id integer NOT NULL,
     config_key character varying(30) NOT NULL,
     config_value character varying(500) NOT NULL,
-    create_time timestamp with time zone DEFAULT now()
+    create_time timestamp without time zone DEFAULT now()
 );
 
 
@@ -2963,8 +2963,8 @@ CREATE TABLE public.startalk_dep_table (
     parent_id integer,
     delete_flag integer DEFAULT 0 NOT NULL,
     dep_desc text,
-    create_time timestamp with time zone DEFAULT now() NOT NULL,
-    update_time timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    create_time timestamp without time zone DEFAULT now() NOT NULL,
+    update_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -3624,7 +3624,7 @@ CREATE TABLE public.t_client_log (
     l_user_data jsonb,
     l_version_code character varying(50),
     l_version_name character varying(50),
-    create_time timestamp with time zone DEFAULT now(),
+    create_time timestamp without time zone DEFAULT now(),
     l_client_event character varying(50),
     d_platform character varying(50),
     l_event_id character varying(500),
@@ -4169,7 +4169,7 @@ CREATE TABLE public.user_register_mucs_backup (
     username text NOT NULL,
     muc_name text NOT NULL,
     domain character varying(200) NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
     registed_flag integer DEFAULT 1
 );
 
@@ -4337,7 +4337,7 @@ ALTER TABLE public.warn_msg_history_backup OWNER TO postgres;
 
 CREATE TABLE public.white_list (
     username text NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
     single_flag text DEFAULT '1'::text
 );
 
@@ -6725,3 +6725,4 @@ REVOKE ALL ON TABLE public.warn_msg_history_backup FROM postgres;
 --
 -- PostgreSQL database dump complete
 --
+

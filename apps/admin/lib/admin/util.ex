@@ -1,14 +1,18 @@
 defmodule Ejabberd.Util do
-  def success(data \\ "") do
+  def success(opts, data) do
     {:ok, ret} =
-      Jason.encode(%{
+      Jason.encode(Map.merge(%{
         data: data,
         errcode: 0,
         errmsg: "",
         ret: true
-      })
+      }, opts))
 
     ret
+  end
+
+  def success(data \\ "") do
+    success(%{}, data)
   end
 
   def fail(errmsg, errcode \\ 0, data \\ "") do

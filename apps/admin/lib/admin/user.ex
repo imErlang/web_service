@@ -8,7 +8,63 @@ defmodule Admin.Router.User do
   plug(:match)
   plug(:dispatch)
 
-  forward("/host/", to: Admin.Router.HostInfo)
+  match "/getUpdateUsers" do
+    max_version = Ejabberd.HostUsers.max_version()
+    version = Map.get(conn.body_params, "version")
+    Logger.debug("#{max_version}, version #{version}")
+
+    case max_version <= version do
+      true ->
+        succ = Ejabberd.Util.success("")
+        send_resp(conn, 200, succ)
+
+      false ->
+        host = Map.get(conn.body_params, "host")
+        host_info = Ejabberd.HostInfo.getHostInfo(host)
+        users = Ejabberd.HostUsers.get_update_users(host_info.id, version)
+        Logger.debug("users: #{inspect(users)}")
+
+        {update_users, delete_users} =
+          users
+          |> Enum.reduce(
+            {[], []},
+            fn user, {update, delete} ->
+              case user.hire_flag == 0 do
+                true ->
+                  {update, [transfer_update_user(user) | delete]}
+
+                false ->
+                  {[transfer_update_user(user) | update], delete}
+              end
+            end
+          )
+
+        succ =
+          Ejabberd.Util.success(%{
+            update: update_users,
+            delete: delete_users,
+            version: max_version
+          })
+
+        send_resp(conn, 200, succ)
+    end
+  end
+
+  defp transfer_update_user(user) do
+    pinyin = if user.pinyin == nil, do: "", else: user.pinyin
+    email = if user.email == nil, do: "", else: user.email
+
+    %{
+      visibleFlag: true,
+      U: user.user_id,
+      N: user.user_name,
+      D: user.department,
+      pinyin: pinyin,
+      sex: user.gender,
+      uType: user.user_type,
+      email: email
+    }
+  end
 
   match "/addUser/user" do
     userId = Map.get(conn.body_params, "userId")
