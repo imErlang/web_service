@@ -108,13 +108,13 @@ defmodule Admin.Router.User do
 
     Ejabberd.HostUsers.create_user(user)
 
-    userResult = Ejabberd.Util.success()
+    userResult = Ejabberd.Util.success("")
     put_resp_header(conn, "content-type", "application/json")
     send_resp(conn, 200, userResult)
   end
 
   match "/update/user" do
-    userResult = Ejabberd.Util.success()
+    userResult = Ejabberd.Util.success("")
     put_resp_header(conn, "content-type", "application/json")
     send_resp(conn, 200, userResult)
   end
