@@ -33,7 +33,11 @@ defmodule Ejabberd.HostInfo do
     end
   end
 
-  def getHostInfo(host) do
+  def get_host(id) do
+    Ejabberd.HostInfo |> Ejabberd.Repo.get(id)
+  end
+
+  def get_host_info(host) do
     query = from(h in Ejabberd.HostInfo, where: h.host == ^host)
 
     result = Ejabberd.Repo.one(query)

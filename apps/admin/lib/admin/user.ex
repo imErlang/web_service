@@ -8,6 +8,90 @@ defmodule Admin.Router.User do
   plug(:match)
   plug(:dispatch)
 
+  match "/get_vcard_info" do
+    #   {
+    #     "data":[
+    #         {
+    #             "domain":"startalk.tech",
+    #             "users":[
+    #                 {
+    #                     "type":"",
+    #                     "loginName":"chao.zhang",
+    #                     "email":"",
+    #                     "gender":1,
+    #                     "nickname":"zhangchao",
+    #                     "webname":"zhangchao",
+    #                     "imageurl":"/file/v2/download/214b6c4f070cf08a1ed27dbd73fdee5d.png",
+    #                     "uid":"0",
+    #                     "username":"chao.zhang",
+    #                     "domain":"startalk.tech",
+    #                     "commenturl":"https://xxxx/dianping/user_comment.php",
+    #                     "mood":"",
+    #                     "adminFlag":false,
+    #                     "V":1,
+    #                     "v":1
+    #                 }
+    #             ]
+    #         }
+    #     ],
+    #     "errcode":0,
+    #     "errmsg":"",
+    #     "ret":true
+    # }
+
+    domains = Map.get(conn.body_params, "_json", [])
+    Logger.debug("domains: #{inspect(domains)}")
+
+    results =
+      domains
+      |> Enum.map(fn domain_users ->
+        domain = Map.get(domain_users, "domain", "")
+        host = Ejabberd.HostInfo.get_host_info(domain)
+
+        users =
+          Map.get(domain_users, "users", [])
+          |> Enum.flat_map(fn user ->
+            username = Map.get(user, "user", [])
+            version = Map.get(user, "version", [])
+            vcard_version = Ejabberd.VcardVersion.get_vcard_info(username, domain)
+
+            case vcard_version.version >= version do
+              true ->
+                [transfer_user(Ejabberd.HostUsers.find_user(username, host.id), vcard_version)]
+
+              false ->
+                []
+            end
+          end)
+
+        %{domain: domain, users: users}
+      end)
+
+    Logger.debug("results: #{inspect(results)}")
+    result = Ejabberd.Util.success(results)
+    send_resp(conn, 200, result)
+  end
+
+  defp transfer_user(user, vcard_version) do
+    %{
+      type: "",
+      loginName: user.user_name,
+      email: "",
+      gender: user.gender,
+      nickname: vcard_version.username,
+      webname: vcard_version.username,
+      imageurl: vcard_version.url,
+      uid: "0",
+      username: user.user_name,
+      domain: vcard_version.host,
+      commenturl: "https://xxxx/dianping/user_comment.php",
+      mood: vcard_version.mood,
+      adminFlag: user.admin_flag,
+      V: vcard_version.version,
+      v: vcard_version.version
+    }
+  end
+
   match "/getUpdateUsers" do
     max_version = Ejabberd.HostUsers.max_version()
     version = Map.get(conn.body_params, "version")
@@ -20,7 +104,7 @@ defmodule Admin.Router.User do
 
       false ->
         host = Map.get(conn.body_params, "host")
-        host_info = Ejabberd.HostInfo.getHostInfo(host)
+        host_info = Ejabberd.HostInfo.get_host_info(host)
         users = Ejabberd.HostUsers.get_update_users(host_info.id, version)
         Logger.debug("users: #{inspect(users)}")
 
@@ -70,7 +154,7 @@ defmodule Admin.Router.User do
     userId = Map.get(conn.body_params, "userId")
     host = Map.get(conn.body_params, "host")
     Logger.info("userId #{userId} host #{host} ")
-    hostInfo = Ejabberd.HostInfo.getHostInfo(host)
+    hostInfo = Ejabberd.HostInfo.get_host_info(host)
     params = conn.body_params
     Logger.info("add user params #{inspect(conn.body_params)}")
 
@@ -128,7 +212,7 @@ defmodule Admin.Router.User do
   match "/delete/user" do
     user_id = Map.get(conn.body_params, "userId")
     host = Map.get(conn.body_params, "host")
-    host_info = Ejabberd.HostInfo.getHostInfo(host)
+    host_info = Ejabberd.HostInfo.get_host_info(host)
     Logger.info("user_id: #{user_id}, host_id: #{host_info.id}")
 
     userResult =
@@ -161,7 +245,7 @@ defmodule Admin.Router.User do
 
     userId = Map.get(conn.body_params, "userId")
     host = Map.get(conn.body_params, "host")
-    hostInfo = Ejabberd.HostInfo.getHostInfo(host)
+    hostInfo = Ejabberd.HostInfo.get_host_info(host)
     Logger.info("hostInfo #{inspect(hostInfo)}")
 
     case Ejabberd.HostUsers.find_user(userId, hostInfo.id) do

@@ -18,7 +18,7 @@ defmodule Admin.Router.HostInfo do
   match "/get" do
     host = Map.get(conn.body_params, "host")
 
-    case Ejabberd.HostInfo.getHostInfo(host) do
+    case Ejabberd.HostInfo.get_host_info(host) do
       nil ->
         errRet = Ejabberd.Util.fail("host not exist", -1)
         send_resp(conn, 200, errRet)

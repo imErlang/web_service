@@ -11,7 +11,6 @@ defmodule Admin.Config do
          Enum.map(repos, fn
            "ejabberd" ->
              Ejabberd.Repo
-
          end)}
 
       {:ejabberd, user} ->

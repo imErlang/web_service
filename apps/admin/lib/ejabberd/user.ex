@@ -6,7 +6,7 @@ defmodule Ejabberd.HostUsers do
   import Ecto.Query, only: [from: 2, where: 3, update: 3, select: 3]
 
   schema "host_users" do
-    field(:host_id, :integer)
+    field(:host_id, :integer, default: 1)
     field(:user_id, :string)
     field(:user_name, :string)
     field(:department, :string)

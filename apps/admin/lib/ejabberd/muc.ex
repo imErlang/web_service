@@ -1,5 +1,4 @@
 defmodule Ejabberd.UserRegisterMucs do
-
   use Ecto.Schema
 
   import Ecto.Query

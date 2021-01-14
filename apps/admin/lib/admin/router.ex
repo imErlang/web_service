@@ -25,6 +25,7 @@ defmodule Admin.Router do
   forward("/user", to: Admin.Router.User)
   forward("/muc", to: Admin.Router.Muc)
   forward("/configuration", to: Admin.Router.Configuration)
+  forward("/history", to: Admin.Router.History)
 
   match "/startalk_nav" do
     Logger.debug("query #{inspect(conn.query_params)}")
