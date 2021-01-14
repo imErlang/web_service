@@ -6,17 +6,68 @@ defmodule Admin.Router.Configuration do
   plug(:dispatch)
 
   match "/get" do
-    succ = Ejabberd.Util.success("")
+    username = Map.get(conn.body_params, "username", "")
+    host = Map.get(conn.body_params, "host", "")
+    version = Map.get(conn.body_params, "version", 0)
+    result = get_configs(username, host, version)
+    succ = Ejabberd.Util.success(result)
     send_resp(conn, 200, succ)
+  end
+
+  defp get_configs(username, host, version) do
+    configs =
+      Ejabberd.Configuration.select_increment_config(username, host, version)
+      |> Enum.reduce(%{}, fn config, acc ->
+        Logger.debug("config #{inspect(config)}")
+
+        case Map.get(acc, config.configkey, nil) do
+          nil ->
+            Map.put(acc, config.configkey, transfer_config(config))
+
+          old_config ->
+            Map.put(acc, config.configkey, %{
+              old_config
+              | infos: [transfer_subconfig(config) | old_config.infos]
+            })
+        end
+      end)
+      |> Map.values()
+
+    Logger.debug("get configs #{inspect(configs)}")
+    max_version = Ejabberd.Configuration.select_max_version(username, host)
+    %{version: max_version, clientConfigInfos: configs}
+  end
+
+  defp transfer_config(config) do
+    %{
+      key: config.configkey,
+      infos: [transfer_subconfig(config)]
+    }
+  end
+
+  defp transfer_subconfig(config) do
+    %{
+      subkey: config.subkey,
+      configinfo: config.configinfo,
+      isdel: config.isdel
+    }
   end
 
   match "/set" do
     config = %{
       username: Map.get(conn.body_params, "username", ""),
       host: Map.get(conn.body_params, "host", ""),
-      configkey: Map.get(conn.body_params, "key", ""),
+      key: Map.get(conn.body_params, "key", ""),
       subkey: Map.get(conn.body_params, "subkey", ""),
-      batchProcess: Map.get(conn.body_params, "batchProcess", ""),
+      batchProcess:
+        Map.get(conn.body_params, "batchProcess", [])
+        |> Enum.map(fn c ->
+          %{
+            key: Map.get(c, "key", ""),
+            subkey: Map.get(c, "subkey", ""),
+            value: Map.get(c, "value", "")
+          }
+        end),
       value: Map.get(conn.body_params, "value", ""),
       resource: Map.get(conn.body_params, "resource", ""),
       operate_plat: Map.get(conn.body_params, "operate_plat", ""),
@@ -32,17 +83,20 @@ defmodule Admin.Router.Configuration do
 
     max_version = Ejabberd.Configuration.select_max_version(config.username, config.host)
 
-    case config.batchProcess == nil || config.batchProcess == [] do
+    case config.batchProcess == [] do
       true ->
         set_config(set_max_version(config, max_version))
 
       false ->
         Enum.each(config.batchProcess, fn cf ->
-          set_config(set_max_version(cf, max_version))
+          changes = Map.merge(config, set_max_version(cf, max_version))
+          Logger.debug("set config changes: #{inspect(changes)}")
+          set_config(changes)
         end)
     end
 
-    succ = Ejabberd.Util.success("")
+    result = get_configs(config.username, config.host, config.version)
+    succ = Ejabberd.Util.success(result)
     send_resp(conn, 200, succ)
   end
 
@@ -50,7 +104,41 @@ defmodule Admin.Router.Configuration do
     Map.update(config, :version, max_version + 1, fn _ -> max_version + 1 end)
   end
 
-  defp set_config(config) do
-    Logger.debug("set config #{inspect(config)}")
+  defp set_config(changes) do
+    config =
+      Ejabberd.Configuration.get_config(
+        changes.username,
+        changes.host,
+        changes.key,
+        changes.subkey
+      )
+
+    Logger.debug("set config #{inspect(changes)}, oldconfig: #{inspect(config)}")
+    set_config(changes, config)
+  end
+
+  defp set_config(%{type: 1} = changes, nil) do
+    Ejabberd.Configuration.insert(changes)
+    true
+  end
+
+  defp set_config(%{type: 1} = changes, config) do
+    Ejabberd.Configuration.update(config, %{
+      configinfo: changes.value,
+      version: changes.version,
+      operate_plat: changes.operate_plat
+    })
+
+    true
+  end
+
+  defp set_config(%{type: 0}, nil) do
+    {false, "non-exist"}
+  end
+
+  defp set_config(%{type: 0}, config) do
+    Ejabberd.Configuration.update(config, %{
+      isdel: 1
+    })
   end
 end

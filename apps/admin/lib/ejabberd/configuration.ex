@@ -58,26 +58,17 @@ defmodule Ejabberd.Configuration do
     %Ejabberd.Configuration{
       username: config.username,
       host: config.host,
-      configkey: config.configkey,
+      configkey: config.key,
       subkey: config.subkey,
-      configinfo: config.configinfo,
+      configinfo: config.value,
       version: config.version,
       operate_plat: config.operate_plat
     }
     |> Ejabberd.Repo.insert()
   end
 
-  def update(changes) do
-    case get_config(changes.username, changes.host, changes.configkey, changes.subkey) do
-      nil ->
-        false
-      oldConfig ->
-        Ecto.Changeset.change(oldConfig, %{
-          configinfo: changes.configinfo,
-          version: changes.version,
-          operate_plat: changes.operate_plat
-        })
-        |> Ejabberd.Repo.update()
-    end
+  def update(config, changes) do
+    Ecto.Changeset.change(config, changes)
+    |> Ejabberd.Repo.update()
   end
 end
