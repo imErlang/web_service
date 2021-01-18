@@ -9,36 +9,6 @@ defmodule Admin.Router.User do
   plug(:dispatch)
 
   match "/get_vcard_info" do
-    #   {
-    #     "data":[
-    #         {
-    #             "domain":"startalk.tech",
-    #             "users":[
-    #                 {
-    #                     "type":"",
-    #                     "loginName":"chao.zhang",
-    #                     "email":"",
-    #                     "gender":1,
-    #                     "nickname":"zhangchao",
-    #                     "webname":"zhangchao",
-    #                     "imageurl":"/file/v2/download/214b6c4f070cf08a1ed27dbd73fdee5d.png",
-    #                     "uid":"0",
-    #                     "username":"chao.zhang",
-    #                     "domain":"startalk.tech",
-    #                     "commenturl":"https://xxxx/dianping/user_comment.php",
-    #                     "mood":"",
-    #                     "adminFlag":false,
-    #                     "V":1,
-    #                     "v":1
-    #                 }
-    #             ]
-    #         }
-    #     ],
-    #     "errcode":0,
-    #     "errmsg":"",
-    #     "ret":true
-    # }
-
     domains = Map.get(conn.body_params, "_json", [])
     Logger.debug("domains: #{inspect(domains)}")
 
