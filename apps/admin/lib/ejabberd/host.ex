@@ -22,7 +22,6 @@ defmodule Ejabberd.HostInfo do
     data |> cast(params, @fields)
   end
 
-  @spec create(%{}) :: no_return()
   def create(params) do
     cs = changeset(%Ejabberd.HostInfo{}, params)
 

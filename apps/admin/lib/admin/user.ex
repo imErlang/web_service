@@ -128,7 +128,7 @@ defmodule Admin.Router.User do
     }
   end
 
-  match "/addUser/user" do
+  match "/add" do
     userId = Map.get(conn.body_params, "userId")
     host = Map.get(conn.body_params, "host")
     Logger.info("userId #{userId} host #{host} ")
