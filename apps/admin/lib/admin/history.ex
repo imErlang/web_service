@@ -10,6 +10,10 @@ defmodule Admin.Router.History do
   plug(:dispatch)
 
   match "/get" do
+    get_muc_history(conn)
+  end
+
+  def get_history(conn) do
     succ = Ejabberd.Util.success([])
     send_resp(conn, 200, succ)
   end
@@ -20,6 +24,10 @@ defmodule Admin.Router.History do
   end
 
   match "/muc/get" do
+    get_muc_history(conn)
+  end
+
+  def get_muc_history(conn) do
     succ = Ejabberd.Util.success([])
     send_resp(conn, 200, succ)
   end

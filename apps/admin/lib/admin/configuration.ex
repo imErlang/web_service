@@ -6,6 +6,10 @@ defmodule Admin.Router.Configuration do
   plug(:dispatch)
 
   match "/get" do
+    get_config(conn)
+  end
+
+  def get_config(conn) do
     username = Map.get(conn.body_params, "username", "")
     host = Map.get(conn.body_params, "host", "")
     version = Map.get(conn.body_params, "version", 0)

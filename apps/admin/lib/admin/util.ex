@@ -1,4 +1,8 @@
 defmodule Ejabberd.Util do
+  def get_default_host() do
+    Application.get_env(:admin, :default_host, "startalk.tech")
+  end
+
   def success(opts, data) do
     {:ok, ret} =
       Jason.encode(

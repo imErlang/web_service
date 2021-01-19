@@ -9,12 +9,6 @@
 # move said applications out of the umbrella.
 import Config
 
-config :admin, Ejabberd.Repo,
-  database: "admin_repo",
-  username: "user",
-  password: "pass",
-  hostname: "localhost"
-
 # Sample configuration:
 #
 #     config :logger, :console,
@@ -38,3 +32,6 @@ config :admin, Ejabberd.Repo,
   hostname: "localhost",
   port: 5432,
   priv: "priv/user"
+
+config :admin,
+  default_host: "startalk.tech"

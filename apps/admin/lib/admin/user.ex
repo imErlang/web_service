@@ -9,6 +9,10 @@ defmodule Admin.Router.User do
   plug(:dispatch)
 
   match "/get_vcard_info" do
+    get_vcard_info(conn)
+  end
+
+  def get_vcard_info(conn) do
     domains = Map.get(conn.body_params, "_json", [])
     Logger.debug("domains: #{inspect(domains)}")
 
@@ -63,6 +67,10 @@ defmodule Admin.Router.User do
   end
 
   match "/getUpdateUsers" do
+    get_update_users(conn)
+  end
+
+  def get_update_users(conn) do
     max_version = Ejabberd.HostUsers.max_version()
     version = Map.get(conn.body_params, "version")
     Logger.debug("#{max_version}, version #{version}")
@@ -73,7 +81,7 @@ defmodule Admin.Router.User do
         send_resp(conn, 200, succ)
 
       false ->
-        host = Map.get(conn.body_params, "host")
+        host = Map.get(conn.body_params, "host", Ejabberd.Util.get_default_host())
         host_info = Ejabberd.HostInfo.get_host_info(host)
         users = Ejabberd.HostUsers.get_update_users(host_info.id, version)
         Logger.debug("users: #{inspect(users)}")

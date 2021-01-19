@@ -6,6 +6,10 @@ defmodule Admin.Router.Muc do
   plug(:dispatch)
 
   match "/get_increment_mucs" do
+    get_increment_mucs(conn)
+  end
+
+  def get_increment_mucs(conn) do
     user = Map.get(conn.body_params, "u")
     host = Map.get(conn.body_params, "d")
     version = Map.get(conn.body_params, "t")
