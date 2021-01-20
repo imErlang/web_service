@@ -13,34 +13,41 @@ defmodule Ejabberd.MsgHistory do
     field(:msg_id, :string, default: "")
     field(:from_host, :string, default: "")
     field(:to_host, :string, default: "")
-    field(:real_from, :string, default: "")
-    field(:real_to, :string, default: "")
+    field(:realfrom, :string, default: "")
+    field(:realto, :string, default: "")
     field(:msg_type, :string, default: "")
     field(:create_time, :utc_datetime)
     field(:update_time, :utc_datetime)
   end
 
   def get_history(params) do
+    num = Map.get(params, "num", 50)
     Ejabberd.MsgHistory
     |> filter_history(params, :from)
-  end
-  def compare_fromto(query, params) do
-    query
-    |> where([msg], msg.m_from == ^params.from and msg.m_to == ^params.to)
-  end
-
-  def filter_history(query, %{from: from}, :from) do
-    query
-    |> where([msg], msg.m_from == ^from)
+    |> filter_history(params, :to)
+    |> filter_history(params, :keyword)
+    |> limit(^num)
+    |> Ejabberd.Repo.all()
   end
 
-  def filter_history(query, %{to: to}, :to) do
+  def filter_history(query, %{"user" => from}, :from) do
     query
-    |> where([msg], msg.m_to == ^to)
+    |> or_where([msg], msg.m_from == ^from)
   end
 
-  def filter_history(query, %{keyword: keyword}, :keyword) do
+  def filter_history(query, %{"user" => to}, :to) do
+    query
+    |> or_where([msg], msg.m_to == ^to)
+  end
+
+  def filter_history(query, %{"keyword" => keyword}, :keyword) do
     query
     |> where([msg], like(msg.m_body, ^("%"<> keyword <> "%")))
   end
+
+  def filter_history(query, %{}, _) do
+    Logger.debug("doesnot match ")
+    query
+  end
+
 end

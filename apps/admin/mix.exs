@@ -34,6 +34,8 @@ defmodule Admin.MixProject do
       {:jason, "~> 1.2"},
       {:tesla, "~> 1.4.0"},
       {:hackney, "~> 1.16.0"},
+      {:xml_builder, "~> 2.1"},
+      {:elixir_xml_to_map, "~> 2.0"},
       {:credo, "~> 0.5", only: [:dev, :test]}
     ]
   end

@@ -65,6 +65,8 @@ release :web_service do
       :runtime_tools,
       :toml,
       :jason,
+      :xml_builder,
+      :elixir_xml_to_map,
       admin: :permanent
     ]
   )
