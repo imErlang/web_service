@@ -1,0 +1,3 @@
+defmodule ConfigTest do
+
+end

@@ -25,13 +25,7 @@ config :admin, port: 7004
 
 config :admin, :ecto_repos, [Ejabberd.Repo]
 
-config :admin, Ejabberd.Repo,
-  database: "ejabberd",
-  username: "postgres",
-  password: "123456",
-  hostname: "localhost",
-  port: 5432,
-  priv: "priv/user"
+import_config "#{config_env()}.exs"
 
 config :admin,
   default_host: "startalk.tech",
