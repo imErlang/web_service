@@ -34,4 +34,7 @@ config :admin, Ejabberd.Repo,
   priv: "priv/user"
 
 config :admin,
-  default_host: "startalk.tech"
+  default_host: "startalk.tech",
+  im_url: "http://127.0.0.1:10050"
+
+config :tesla, adapter: Tesla.Adapter.Hackney

@@ -73,8 +73,7 @@ defmodule Admin.Router.User do
   def get_update_users(conn) do
     max_version = Ejabberd.HostUsers.max_version()
     version = Map.get(conn.body_params, "version")
-    Logger.debug("#{max_version}, version #{version}")
-
+    Logger.debug("max_version: #{max_version}, version: #{version}")
     case max_version <= version do
       true ->
         succ = Ejabberd.Util.success("")
@@ -100,12 +99,11 @@ defmodule Admin.Router.User do
               end
             end
           )
-
+        Logger.debug("update_users: #{inspect(update_users)}, delete_users: #{inspect(delete_users)}")
         succ =
           Ejabberd.Util.success(%{
             update: update_users,
-            delete: delete_users,
-            version: max_version
+            delete: delete_users
           })
 
         send_resp(conn, 200, succ)
@@ -132,12 +130,12 @@ defmodule Admin.Router.User do
     userId = Map.get(conn.body_params, "userId")
     host = Map.get(conn.body_params, "host")
     Logger.info("userId #{userId} host #{host} ")
-    hostInfo = Ejabberd.HostInfo.get_host_info(host)
+    host_info = Ejabberd.HostInfo.get_host_info(host)
     params = conn.body_params
     Logger.info("add user params #{inspect(conn.body_params)}")
 
     user = %Ejabberd.HostUsers{
-      host_id: hostInfo.id,
+      host_id: host_info.id,
       user_id: Map.get(params, "userId"),
       user_name: Map.get(params, "userName"),
       department: Map.get(params, "department"),
@@ -151,7 +149,7 @@ defmodule Admin.Router.User do
       pinyin: Map.get(params, "pinyin", ""),
       frozen_flag: Map.get(params, "frozen_flag", 0),
       version: Map.get(params, "version", 0),
-      user_type: Map.get(params, "user_type", ""),
+      user_type: Map.get(params, "user_type", "U"),
       hire_flag: Map.get(params, "hire_flag", 1),
       gender: Map.get(params, "gender", 1),
       password: Map.get(params, "password", ""),
@@ -169,6 +167,9 @@ defmodule Admin.Router.User do
     }
 
     Ejabberd.HostUsers.create_user(user)
+
+    # send notify to http
+    Admin.Ejabberd.notify(host_info)
 
     userResult = Ejabberd.Util.success("")
     put_resp_header(conn, "content-type", "application/json")

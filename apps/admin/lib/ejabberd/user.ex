@@ -38,6 +38,12 @@ defmodule Ejabberd.HostUsers do
     field(:create_time, :utc_datetime)
   end
 
+  def get_users(host_id) do
+    Ejabberd.HostUsers
+    |> where([u], u.hire_flag == 1 and u.frozen_flag == 0 and u.host_id == ^host_id)
+    |> Ejabberd.Repo.all()
+  end
+
   def create_user(user) do
     user |> Ejabberd.Repo.insert()
   end
