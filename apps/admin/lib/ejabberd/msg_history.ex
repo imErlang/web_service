@@ -22,10 +22,12 @@ defmodule Ejabberd.MsgHistory do
 
   def get_history(params) do
     num = Map.get(params, "num", 50)
+    {:ok, time} = Map.get(params, "time", 0) |> DateTime.from_unix(:microsecond)
     Ejabberd.MsgHistory
     |> filter_history(params, :from)
     |> filter_history(params, :to)
     |> filter_history(params, :keyword)
+    |> where([msg], msg.create_time > ^time)
     |> limit(^num)
     |> Ejabberd.Repo.all()
   end
