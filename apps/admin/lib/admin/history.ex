@@ -4,6 +4,7 @@ defmodule Admin.Router.History do
   """
   use Plug.Router
   require Logger
+  require SweetXml
 
   plug(Plug.Logger)
   plug(:match)
@@ -18,8 +19,8 @@ defmodule Admin.Router.History do
     Logger.debug("histories: #{inspect(histories)}")
     histories |> Enum.map(fn history ->
       Logger.debug("history: #{history.m_body}")
-      body = XmlToMap.naive_map(history.m_body)
-      Logger.debug("body: #{inspect(body)}")
+      body = SweetXml.parse(history.m_body)
+      Logger.debug("body: #{inspect(body)} #{inspect(body.)}")
 
     end)
     succ = Ejabberd.Util.success([])

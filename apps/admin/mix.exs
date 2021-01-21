@@ -36,6 +36,8 @@ defmodule Admin.MixProject do
       {:hackney, "~> 1.16.0"},
       {:xml_builder, "~> 2.1"},
       {:elixir_xml_to_map, "~> 2.0"},
+      {:recon_ex, "~> 0.9.1"},
+      {:sweet_xml, "~> 0.6.6"},
       {:credo, "~> 0.5", only: [:dev, :test]}
     ]
   end

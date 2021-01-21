@@ -67,6 +67,7 @@ release :web_service do
       :jason,
       :xml_builder,
       :elixir_xml_to_map,
+      :recon_ex,
       admin: :permanent
     ]
   )
