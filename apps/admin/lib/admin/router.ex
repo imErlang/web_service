@@ -21,6 +21,10 @@ defmodule Admin.Router do
 
   plug(:dispatch)
 
+  match "newapi/getmsgs.qunar" do
+    Admin.Router.History.get_msgs(conn)
+  end
+
   match "/im_http_service/newapi/update/getUpdateUsers.qunar" do
     Admin.Router.User.get_update_users(conn)
   end
