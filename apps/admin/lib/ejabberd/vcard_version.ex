@@ -16,6 +16,11 @@ defmodule Ejabberd.VcardVersion do
     field(:host, :string, default: "")
   end
 
+  def set_vcard_version(vcard_version) do
+    vcard_version
+    |> Ejabberd.Repo.insert(on_conflict: :nothing)
+  end
+
   def get_vcard_info(username, host) do
     Ejabberd.VcardVersion
     |> where([v], v.username == ^username and v.host == ^host)

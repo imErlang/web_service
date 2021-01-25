@@ -21,6 +21,29 @@ defmodule Admin.Router do
 
   plug(:dispatch)
 
+  match "/package/qtapi/nck/rsa/get_public_key.do" do
+    result = %{
+      rsa_pub_key_shortkey: Application.get_env(:admin, :rsa_pub_key_shortkey),
+      rsa_pub_key_fullkey: Application.get_env(:admin, :rsa_pub_key_fullkey),
+      pub_key_fullkey: Application.get_env(:admin, :pub_key_fullkey),
+      pub_key_shortkey: Application.get_env(:admin, :pub_key_shortkey)
+    }
+    put_resp_header(conn, "content-type", "application/json")
+    send_resp(conn, 200, Ejabberd.Util.success(result))
+  end
+
+  match "/file/v2/download/:key" do
+    Admin.Router.File.download(conn, key)
+  end
+
+  match "/file/v2/upload/file" do
+    Admin.Router.File.upload(conn)
+  end
+
+  match "/im_http_service/newapi/domain/get_user_status.qunar" do
+    Admin.Router.User.get_user_status(conn)
+  end
+
   match "newapi/getmsgs.qunar" do
     Admin.Router.History.get_msgs(conn)
   end

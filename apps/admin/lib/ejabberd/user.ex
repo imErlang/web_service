@@ -45,7 +45,7 @@ defmodule Ejabberd.HostUsers do
   end
 
   def create_user(user) do
-    user |> Ejabberd.Repo.insert()
+    user |> Ejabberd.Repo.insert(on_conflict: :nothing)
   end
 
   def find_user(user_id, host_id) do

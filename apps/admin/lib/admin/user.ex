@@ -8,6 +8,27 @@ defmodule Admin.Router.User do
   plug(:match)
   plug(:dispatch)
 
+  match "/status" do
+    get_user_status(conn)
+  end
+
+  def get_user_status(conn) do
+    host = Map.get(conn.body_params, "host", Ejabberd.Util.get_default_host())
+
+    users =
+      Map.get(conn.body_params, "users", [])
+      |> Enum.map(fn user ->
+        [user, _] = String.split(user, "@")
+        user
+      end)
+
+    Logger.debug("host: #{host}, users: #{inspect(users)}")
+    results = Ejabberd.Floginuser.get_login_users(users)
+    Logger.debug("results: #{inspect(results)}")
+    result = Ejabberd.Util.success(results)
+    send_resp(conn, 200, result)
+  end
+
   match "/get_vcard_info" do
     get_vcard_info(conn)
   end
@@ -27,6 +48,7 @@ defmodule Admin.Router.User do
           |> Enum.flat_map(fn user ->
             username = Map.get(user, "user", [])
             version = Map.get(user, "version", [])
+            Logger.debug("username: #{inspect(username)}, version: #{inspect(version)}")
             vcard_version = Ejabberd.VcardVersion.get_vcard_info(username, domain)
 
             case vcard_version.version >= version do
@@ -74,6 +96,7 @@ defmodule Admin.Router.User do
     max_version = Ejabberd.HostUsers.max_version()
     version = Map.get(conn.body_params, "version")
     Logger.debug("max_version: #{max_version}, version: #{version}")
+
     case max_version <= version do
       true ->
         succ = Ejabberd.Util.success("")
@@ -99,7 +122,11 @@ defmodule Admin.Router.User do
               end
             end
           )
-        Logger.debug("update_users: #{inspect(update_users)}, delete_users: #{inspect(delete_users)}")
+
+        Logger.debug(
+          "update_users: #{inspect(update_users)}, delete_users: #{inspect(delete_users)}"
+        )
+
         succ =
           Ejabberd.Util.success(%{
             update: update_users,
@@ -167,6 +194,15 @@ defmodule Admin.Router.User do
     }
 
     Ejabberd.HostUsers.create_user(user)
+
+    max_version = Ejabberd.HostUsers.max_version()
+    vcard_version = %Ejabberd.VcardVersion{
+      username: Map.get(params, "userId"),
+      version: max_version + 1,
+      url: "/file/v2/download/8c9d42532be9316e2202ffef8fcfeba5.png",
+      host: host
+    }
+    Ejabberd.VcardVersion.set_vcard_version(vcard_version)
 
     # send notify to http
     Admin.Ejabberd.notify(host_info)
