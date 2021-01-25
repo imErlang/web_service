@@ -28,6 +28,7 @@ defmodule Admin.Router do
       pub_key_fullkey: Application.get_env(:admin, :pub_key_fullkey),
       pub_key_shortkey: Application.get_env(:admin, :pub_key_shortkey)
     }
+
     put_resp_header(conn, "content-type", "application/json")
     send_resp(conn, 200, Ejabberd.Util.success(result))
   end
@@ -36,8 +37,20 @@ defmodule Admin.Router do
     Admin.Router.File.download(conn, key)
   end
 
+  match "/file/v2/download/perm/:key" do
+    Admin.Router.File.download(conn, key)
+  end
+
+  match "file/v2/inspection/:type" do
+    Admin.Router.File.inspect(conn, type)
+  end
+
   match "/file/v2/upload/file" do
     Admin.Router.File.upload(conn)
+  end
+
+  match "/qfproxy/file/v2/emo/d/e/:package/:shortcut/:type" do
+    Admin.Router.File.download_emo(conn, package, shortcut, type)
   end
 
   match "/im_http_service/newapi/domain/get_user_status.qunar" do

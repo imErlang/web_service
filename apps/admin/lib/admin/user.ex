@@ -196,12 +196,14 @@ defmodule Admin.Router.User do
     Ejabberd.HostUsers.create_user(user)
 
     max_version = Ejabberd.HostUsers.max_version()
+
     vcard_version = %Ejabberd.VcardVersion{
       username: Map.get(params, "userId"),
       version: max_version + 1,
       url: "/file/v2/download/8c9d42532be9316e2202ffef8fcfeba5.png",
       host: host
     }
+
     Ejabberd.VcardVersion.set_vcard_version(vcard_version)
 
     # send notify to http
