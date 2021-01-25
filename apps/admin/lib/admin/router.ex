@@ -21,7 +21,7 @@ defmodule Admin.Router do
 
   plug(:dispatch)
 
-  match "/package/qtapi/nck/rsa/get_public_key.do" do
+  match "/im_http_service/newapi/nck/rsa/get_public_key.do" do
     result = %{
       rsa_pub_key_shortkey: Application.get_env(:admin, :rsa_pub_key_shortkey),
       rsa_pub_key_fullkey: Application.get_env(:admin, :rsa_pub_key_fullkey),
