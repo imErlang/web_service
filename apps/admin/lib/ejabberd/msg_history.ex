@@ -91,6 +91,49 @@ defmodule Ejabberd.MsgHistory do
     result
   end
 
+  # MsgHistory.historyUser = async function (userId, keyWord, limit, offset) {
+  #   let search_model = 'ilike';
+  #   if (keyWord.startsWith('_')) {
+  #     search_model = '~';
+  #     keyWord = keyWord.substring(1);
+  #   } else {
+  #     keyWord = `%${keyWord}%`;
+  #   }
+  #   const user_s_name = userId.split('@')[0];
+  #   const domain = userId.split('@')[1];
+  #   app.logger.debug('search_model:', search_model, keyWord, limit, offset);
+  #   const searchHistory = `SELECT a.count, b.create_time as date, b.m_from, b.from_host as fromhost, b.realfrom, b.m_to, b.to_host as tohost,
+  #   b.realto, b.m_body as msg, a.conversation, b.msg_id, a.id FROM ( SELECT count(1) as count, MAX(id) as id, m_from||'@'||from_host
+  #   || '_' || m_to||'@'||to_host as conversation FROM msg_history WHERE xpath('/message/body/text()',m_body::xml)::text ilike E'${keyWord}'
+  #   AND ( (m_from = E'${user_s_name}' and from_host = E'${domain}') or (m_to = E'${user_s_name}' and to_host = E'${domain}'))
+  #   GROUP BY m_from||'@'||from_host || '_' || m_to||'@'||to_host ORDER BY id desc OFFSET ${offset} LIMIT  ${limit}) a LEFT JOIN msg_history b ON a.id = b.id`;
+  #   app.logger.debug('searchHistory:', searchHistory);
+  #   const result = await app.model.query(searchHistory, { type: 'SELECT' });
+  #   app.logger.debug('get history user:', result);
+  #   return result;
+  # };
+
+  def get_history_user(user_id, key, limit, offset) do
+    [user_s_name, domain] = String.split(user_id, "@")
+
+    search_history =
+      "SELECT a.count, b.create_time as date, b.m_from, b.from_host as fromhost, b.realfrom, b.m_to, b.to_host as tohost,
+    b.realto, b.m_body as msg, a.conversation, b.msg_id, a.id FROM ( SELECT count(1) as count, MAX(id) as id, m_from||'@'||from_host
+    || '_' || m_to||'@'||to_host as conversation FROM msg_history WHERE xpath('/message/body/text()',m_body::xml)::text ilike E'%#{
+        key
+      }%'
+    AND ( (m_from = E'#{user_s_name}' and from_host = E'#{domain}') or (m_to = E'#{user_s_name}' and to_host = E'#{
+        domain
+      }'))
+    GROUP BY m_from||'@'||from_host || '_' || m_to||'@'||to_host ORDER BY id desc OFFSET #{offset} LIMIT #{
+        limit
+      }) a LEFT JOIN msg_history b ON a.id = b.id"
+
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, search_history, [])
+    Logger.debug("search user history result: #{inspect(result.rows)}")
+    result.rows
+  end
+
   def get_history(params) do
     num = Map.get(params, "num", 50)
     from = Map.get(params, "from", "")

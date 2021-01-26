@@ -53,4 +53,21 @@ defmodule Ejabberd.MucRoomHistory do
     Logger.debug("result: #{inspect(result.rows)}")
     result.rows
   end
+
+  def get_muc_history(user_id, key, limit, offset) do
+    [user_s_name, domain] = String.split(user_id, "@")
+
+    search_muc_history =
+      "SELECT count, c.muc_name, b.msg_id, b.create_time as date, b.packet, c.show_name as label, c.muc_pic as icon , a.id FROM (SELECT count(1) as count, MAX(id) as id, muc_room_name FROM muc_room_history WHERE xpath('/message/body/text()',packet::xml)::text ilike '%#{
+        key
+      }%' AND muc_room_name = ANY(SELECT muc_name FROM user_register_mucs where username = '#{
+        user_s_name
+      }' and registed_flag = 1  AND host = '#{domain}' and domain = 'conference.' || '#{domain}' ) GROUP BY muc_room_name ORDER BY id desc OFFSET #{
+        offset
+      } LIMIT #{limit} ) as a LEFT JOIN muc_room_history b ON a.id = b.id LEFT JOIN muc_vcard_info c on a.muc_room_name = split_part(c.muc_name,'@',1)"
+
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, search_muc_history, [])
+    Logger.debug("search muc history result: #{inspect(result.rows)}")
+    result.rows
+  end
 end

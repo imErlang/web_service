@@ -32,8 +32,10 @@ config :admin,
   im_url: "http://127.0.0.1:10050",
   emo_dir: "upload/emoPackage/",
   base_dir: "upload/",
-  download_url: "https://im.startalk.tech:8443/",
+  download_url: "http://127.0.0.1:7004/qfproxy/",
   download_path: "file/v2/download/",
+  single_portrait: "/file/v2/download/8c9d42532be9316e2202ffef8fcfeba5.png",
+  muc_portrait: "/file/v2/download/eb574c5a1d33c72ba14fc1616cde3a42.png",
   rsa_pub_key_shortkey:
     "MIIBCgKCAQEA2M6/CuCMgZmehFC/DA5cmYW1KS3U0qt+AnRco7Ijg0ohYyO1Mh/I88djJuvbHuja/wXZ3Fw9laQsykq1akVR0P3N8ax8FAX0Wb+oLszwIJDVzk748DspDvBUSmJ4w9fPUyyk8ENCntNqjp3qiOK2V2Jm7GitHtnwbe53c/ti3m/tjzYcixMCUoDjbRmYeu/I7jva8AHYPRzAg4Q7Bf4nKX3/2rYi23zWkSEdgPFPq31i8IsrEJPTai7usBU7ZU6nokF+LeeiY/d/cSOZe6FeTncf/8e4EXlgtbXuRqhV31hlXhGo/OLJRjkPyeklCHiWW8sEIsr+macFLU+K0u4StwIDAQAB",
   rsa_pub_key_fullkey:

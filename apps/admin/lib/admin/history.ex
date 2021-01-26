@@ -10,6 +10,132 @@ defmodule Admin.Router.History do
   plug(:match)
   plug(:dispatch)
 
+  def get_muc_history(user_id, key, limit, offset) do
+    histories =
+      Ejabberd.MucRoomHistory.get_muc_history(user_id, key, limit, offset)
+      |> Enum.map(fn [count, _muc_name, msg_id, date, msg, label, icon, _id] ->
+        body = SweetXml.parse(msg)
+
+        attrs = attrs_to_json(body)
+        Logger.debug("attrs: #{inspect(attrs)} ")
+
+        from =
+          cond do
+            attrs.realfrom !== nil && attrs.realfrom !== "" ->
+              attrs.realfrom
+
+            attrs.sendjid !== nil && attrs.sendjid !== "" ->
+              attrs.sendjid
+
+            true ->
+              [attrs_from | _] = attrs.from |> String.split("/")
+              attrs_from
+          end
+
+        attrs_realto = Map.get(attrs, :realto, "")
+        to =
+          cond do
+             attrs_realto !== nil && attrs_realto !== "" ->
+              attrs_realto
+
+            true ->
+              [attrs_to | _] = attrs.to |> String.split("/")
+              attrs_to
+          end
+
+        time = if attrs.msec_times !== nil, do: attrs.msec_times, else: ""
+        msg_body = get_content(body, :name, :body)
+        Logger.debug("msg_body: #{inspect(msg_body)}")
+
+        body_content =
+          get_content(msg_body, :type, :text)
+          |> SweetXml.xmlText(:value)
+          |> to_string()
+        msg_attrs = attrs_to_json(msg_body)
+        %{
+          count: count,
+          date:
+            "#{date.year}-#{date.month}-#{date.day} #{date.hour}:#{date.minute}:#{date.second}",
+          icon: icon,
+          label: label,
+          todoType: 16,
+          body: body_content,
+          extendinfo: "",
+          msgid: msg_id,
+          mtype: msg_attrs.msgType,
+          time: time,
+          from: from,
+          realfrom: from,
+          to: to,
+          realto: to
+        }
+      end)
+
+    Logger.debug("histories: #{inspect(histories)}")
+    histories
+  end
+
+  def get_user_history(user_id, key, limit, offset) do
+    [_user_s_name, domain] = String.split(user_id, "@")
+    host_info = Ejabberd.HostInfo.get_host_info(domain)
+
+    histories =
+      Ejabberd.MsgHistory.get_history_user(user_id, key, limit, offset)
+      |> Enum.map(fn [
+                       count,
+                       date,
+                       m_from,
+                       fromhost,
+                       realfrom,
+                       m_to,
+                       tohost,
+                       realto,
+                       msg,
+                       _conversation,
+                       msg_id,
+                       _id
+                     ] ->
+        from = if realfrom !== "", do: realfrom, else: "#{m_from}@#{fromhost}"
+        to = if realto !== "", do: realto, else: "#{m_to}@#{tohost}"
+        other = if user_id == from, do: m_to, else: m_from
+        other_user = Ejabberd.HostUsers.find_user(other, host_info.id)
+        body = SweetXml.parse(msg)
+
+        attrs = attrs_to_json(body)
+        Logger.debug("attrs: #{inspect(attrs)} ")
+        time = if attrs.msec_times !== nil, do: attrs.msec_times, else: ""
+        msg_body = get_content(body, :name, :body)
+        Logger.debug("msg_body: #{inspect(msg_body)}")
+        msg_attrs = attrs_to_json(msg_body)
+
+        body_content =
+          get_content(msg_body, :type, :text)
+          |> SweetXml.xmlText(:value)
+          |> to_string()
+
+        %{
+          count: count,
+          date:
+            "#{date.year}-#{date.month}-#{date.day} #{date.hour}:#{date.minute}:#{date.second}",
+          icon: "",
+          from: from,
+          to: to,
+          realfrom: from,
+          realto: to,
+          label: other_user.user_name,
+          todoType: 8,
+          body: body_content,
+          extendinfo: "",
+          msgid: msg_id,
+          mtype: msg_attrs.msgType,
+          time: time
+        }
+      end)
+
+    Logger.debug("histories: #{inspect(histories)}")
+    histories
+  end
+
   match "/rbl" do
     user = Map.get(conn.body_params, "user", "f")
     domain = Map.get(conn.body_params, "domain", "f")

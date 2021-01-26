@@ -76,4 +76,63 @@ defmodule Ejabberd.HostUsers do
     {num, _} = Ejabberd.Repo.update_all(query, [])
     num > 0
   end
+
+  def search_user(user_id, "_" <> username, limit, offset) do
+    search_user_local(user_id, String.slice(username, 1..-1), "~", limit, offset)
+  end
+
+  def search_user(user_id, username, limit, offset) do
+    search_user_local(user_id, "%#{username}%", "ilike", limit, offset)
+  end
+
+  def search_user_local(user_id, username, search_model, limit, offset) do
+    [user_s_name, domain] = String.split(user_id, "@")
+
+    search_sql =
+      "SELECT aa.user_id, aa.department, bb.url as icon, CASE WHEN aa.nick != '' THEN aa.nick ELSE aa.user_name END, bb.mood , aa.pinyin
+    FROM
+    (
+        SELECT a.user_id, b.department, b.user_name, b.pinyin, a.nick
+        FROM (
+            SELECT uu.user_id || '@' || hh.host as user_id,'' as nick, uu.host_id as hostid
+            FROM host_users uu
+            LEFT JOIN host_info hh
+            ON uu.host_id = hh.id
+            WHERE uu.hire_flag = 1 AND LOWER(uu.user_type) != 's'  AND
+            ( uu.user_id ILIKE '#{username}' OR uu.user_name #{search_model} '#{username}' OR uu.pinyin ILIKE '#{
+        username
+      }' )
+            AND uu.host_id = ANY(select id from host_info where host = '#{domain}' )
+            UNION
+            SELECT cc.subkey AS user_id, cc.configinfo as nick, hh.id as hostid
+            FROM client_config_sync cc
+            LEFT JOIN host_info hh
+            ON cc.host = hh.host
+            WHERE cc.username = '#{user_s_name}' AND cc.configkey = 'kMarkupNames' AND cc.configinfo #{
+        search_model
+      } '#{username}'  AND cc.host =  '#{domain}'
+        ) a
+        LEFT JOIN host_users b
+        ON split_part(a.user_id, '@', 1)  = b.user_id AND a.hostid = b.host_id
+    ) aa
+    LEFT JOIN vcard_version bb
+    ON aa.user_id = bb.username || '@' || bb.host
+    LEFT JOIN
+    (
+    SELECT CASE WHEN m_from || '@' || from_host = '#{user_id}' THEN m_to || '@' || to_host ELSE m_from || '@' || from_host END AS contact, max(create_time) mx
+        FROM msg_history
+        WHERE (m_from = '#{user_s_name}' and from_host =  '#{domain}' ) or (m_to = '#{user_s_name}' and to_host = '#{
+        domain
+      }'  )
+        GROUP BY contact
+    ) cc
+    ON aa.user_id = cc.contact
+    ORDER BY cc.mx DESC nulls last
+    LIMIT #{limit}
+    OFFSET #{offset}"
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, search_sql, [])
+    Logger.debug("search user result: #{inspect(result.rows)}")
+    result.rows
+  end
+
 end

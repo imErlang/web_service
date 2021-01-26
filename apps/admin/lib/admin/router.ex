@@ -21,6 +21,16 @@ defmodule Admin.Router do
 
   plug(:dispatch)
 
+  match "/search" do
+    body = Admin.Router.Search.search(conn)
+    send_resp(conn, 200, body)
+  end
+
+  match "/sharemsg" do
+    body = Admin.Router.Share.share_msg(conn)
+    send_resp(conn, 200, body)
+  end
+
   match "/im_http_service/newapi/nck/rsa/get_public_key.do" do
     result = %{
       rsa_pub_key_shortkey: Application.get_env(:admin, :rsa_pub_key_shortkey),
@@ -57,7 +67,7 @@ defmodule Admin.Router do
     Admin.Router.User.get_user_status(conn)
   end
 
-  match "newapi/getmsgs.qunar" do
+  match "/im_http_service/newapi/getmsgs.qunar" do
     Admin.Router.History.get_msgs(conn)
   end
 
