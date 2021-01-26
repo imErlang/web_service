@@ -43,19 +43,19 @@ defmodule Admin.Router do
     send_resp(conn, 200, Ejabberd.Util.success(result))
   end
 
-  match "/file/v2/download/:key" do
+  match "/qfproxy/file/v2/download/:key" do
     Admin.Router.File.download(conn, key)
   end
 
-  match "/file/v2/download/perm/:key" do
+  match "/qfproxy/file/v2/download/perm/:key" do
     Admin.Router.File.download(conn, key)
   end
 
-  match "file/v2/inspection/:type" do
+  match "/qfproxy/file/v2/inspection/:type" do
     Admin.Router.File.inspect(conn, type)
   end
 
-  match "/file/v2/upload/file" do
+  match "/qfproxy/file/v2/upload/file" do
     Admin.Router.File.upload(conn)
   end
 
