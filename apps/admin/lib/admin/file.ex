@@ -20,7 +20,7 @@ defmodule Admin.Router.File do
     key = Map.get(conn.query_params, "key", "")
     key_ext = Path.extname(key)
 
-    result =
+    [result] =
       conn.body_params
       |> Enum.map(fn {filename, upload} ->
         Logger.debug("filename: #{inspect(filename)}, upload: #{inspect(upload)}")
@@ -48,7 +48,7 @@ defmodule Admin.Router.File do
 
     Logger.debug("result: #{inspect(result)}")
     put_resp_header(conn, "content-type", "application/json")
-    send_resp(conn, 200, Ejabberd.Util.success())
+    send_resp(conn, 200, Ejabberd.Util.success(make_url(result, result)))
   end
 
   def download(conn, key) do
