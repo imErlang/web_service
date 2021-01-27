@@ -86,7 +86,8 @@ defmodule Admin.Router do
   end
 
   match "/im_http_service/newapi/domain/get_user_status.qunar" do
-    Admin.Router.User.get_user_status(conn)
+    body = Handler.User.get_user_status(conn)
+    send_resp(conn, 200, body)
   end
 
   match "/im_http_service/newapi/getmsgs.qunar" do
@@ -95,7 +96,8 @@ defmodule Admin.Router do
   end
 
   match "/im_http_service/newapi/update/getUpdateUsers.qunar" do
-    Admin.Router.User.get_update_users(conn)
+    body = Handler.User.get_update_users(conn)
+    send_resp(conn, 200, body)
   end
 
   match "/im_http_service/newapi/muc/get_increment_mucs.qunar" do
@@ -145,7 +147,8 @@ defmodule Admin.Router do
   end
 
   match "/im_http_service/newapi/domain/get_vcard_info.qunar" do
-    Admin.Router.User.get_vcard_info(conn)
+    body = Handler.User.get_vcard_info(conn)
+    send_resp(conn, 200, body)
   end
 
   forward("/host/", to: Admin.Router.HostInfo)
@@ -157,8 +160,8 @@ defmodule Admin.Router do
   match "/startalk_nav" do
     Logger.debug("query #{inspect(conn.query_params)}")
     nav = Handler.Nav.getNav("http", "192.168.18.128", "startalk.tech", 8080)
-    succ = Ejabberd.Util.success(nav)
-    send_resp(conn, 200, succ)
+    {:ok, body} = Jason.encode(nav)
+    send_resp(conn, 200, body)
   end
 
   def handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do

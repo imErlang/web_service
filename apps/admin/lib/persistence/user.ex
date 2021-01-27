@@ -65,6 +65,17 @@ defmodule Ejabberd.HostUsers do
     |> Ejabberd.Repo.one()
   end
 
+  def update_version(user_id, host_id) do
+    update_sql = "WITH max_version AS ( SELECT MAX(version) AS max_version FROM host_users where host_id = $2)
+    UPDATE host_users
+    SET version = max_version.max_version + 1
+    FROM max_version
+    WHERE host_users.user_id = $1 and host_users.host_id = $2"
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, update_sql, [user_id, host_id])
+    Logger.debug("update user version: #{inspect(result)}")
+    result
+  end
+
   def delete(user_id, host_id) do
     max_version = max_version()
 
@@ -85,6 +96,7 @@ defmodule Ejabberd.HostUsers do
     search_user_local(user_id, "%#{username}%", "ilike", limit, offset)
   end
 
+  @spec search_user_local(binary, any, any, any, any) :: nil | [binary | [any]]
   def search_user_local(user_id, username, search_model, limit, offset) do
     [user_s_name, domain] = String.split(user_id, "@")
 

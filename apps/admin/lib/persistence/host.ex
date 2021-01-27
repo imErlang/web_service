@@ -12,7 +12,7 @@ defmodule Ejabberd.HostInfo do
     field(:host_type, :integer)
     field(:host_qrcode, :string, default: "")
     field(:need_approve, :integer)
-    field(:host_admin, :string)
+    field(:host_admin, :string, default: "")
     field(:create_time, :utc_datetime)
   end
 
