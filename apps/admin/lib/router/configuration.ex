@@ -18,7 +18,7 @@ defmodule Admin.Router.Configuration do
     send_resp(conn, 200, succ)
   end
 
-  defp get_configs(username, host, version) do
+  def get_configs(username, host, version) do
     configs =
       Ejabberd.Configuration.select_increment_config(username, host, version)
       |> Enum.reduce(%{}, fn config, acc ->
@@ -58,6 +58,11 @@ defmodule Admin.Router.Configuration do
   end
 
   match "/set" do
+    body = set_configuration(conn)
+    send_resp(conn, 200, body)
+  end
+
+  def set_configuration(conn) do
     config = %{
       username: Map.get(conn.body_params, "username", ""),
       host: Map.get(conn.body_params, "host", ""),
@@ -86,6 +91,7 @@ defmodule Admin.Router.Configuration do
     )
 
     max_version = Ejabberd.Configuration.select_max_version(config.username, config.host)
+    Logger.debug("get max version: #{max_version}")
 
     case config.batchProcess == [] do
       true ->
@@ -100,11 +106,11 @@ defmodule Admin.Router.Configuration do
     end
 
     result = get_configs(config.username, config.host, config.version)
-    succ = Ejabberd.Util.success(result)
-    send_resp(conn, 200, succ)
+    Logger.debug("set client config result: #{inspect(result)}")
+    Ejabberd.Util.success(result)
   end
 
-  defp set_max_version(config, max_version) do
+  def set_max_version(config, max_version) do
     Map.update(config, :version, max_version + 1, fn _ -> max_version + 1 end)
   end
 
@@ -130,19 +136,23 @@ defmodule Admin.Router.Configuration do
     Ejabberd.Configuration.update(config, %{
       configinfo: changes.value,
       version: changes.version,
-      operate_plat: changes.operate_plat
+      operate_plat: changes.operate_plat,
+      isdel: 0
     })
 
     true
   end
 
-  defp set_config(%{type: 0}, nil) do
+  defp set_config(%{type: 2}, nil) do
     {false, "non-exist"}
   end
 
-  defp set_config(%{type: 0}, config) do
+  defp set_config(%{type: 2} = changes, config) do
+    Logger.debug("delete client config: #{inspect(config)}")
+
     Ejabberd.Configuration.update(config, %{
-      isdel: 1
+      isdel: 1,
+      version: changes.version
     })
   end
 end

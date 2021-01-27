@@ -1,27 +1,15 @@
-defmodule Admin.Router.HostInfo do
+defmodule Handler.HostInfo do
   @moduledoc """
-  host router
+  host handle
   """
-  use Plug.Router
   require Logger
 
-  plug(Plug.Logger)
-  plug(:match)
-  plug(:dispatch)
-
-  match "/add" do
-    Ejabberd.HostInfo.create(conn.body_params)
-    succ = Ejabberd.Util.success("")
-    send_resp(conn, 200, succ)
-  end
-
-  match "/get" do
+  def get_host_info(conn) do
     host = Map.get(conn.body_params, "host")
 
     case Ejabberd.HostInfo.get_host_info(host) do
       nil ->
-        errRet = Ejabberd.Util.fail("host not exist", -1)
-        send_resp(conn, 200, errRet)
+        Ejabberd.Util.fail("host not exist", -1)
 
       hostInfo ->
         detail = %{
@@ -33,8 +21,7 @@ defmodule Admin.Router.HostInfo do
           create_time: hostInfo.create_time
         }
 
-        succ = Ejabberd.Util.success(detail)
-        send_resp(conn, 200, succ)
+        Ejabberd.Util.success(detail)
     end
   end
 end

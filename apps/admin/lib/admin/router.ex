@@ -37,7 +37,13 @@ defmodule Admin.Router do
   end
 
   match "/im_http_service/newapi/getmucmsgs.qunar" do
-    conn
+    body = Admin.Router.History.get_muc_msgs(conn)
+    send_resp(conn, 200, body)
+  end
+
+  match "/im_http_service/newapi/configuration/setclientconfig.qunar" do
+    body = Admin.Router.Configuration.set_configuration(conn)
+    send_resp(conn, 200, body)
   end
 
   match "/im_http_service/newapi/nck/rsa/get_public_key.do" do

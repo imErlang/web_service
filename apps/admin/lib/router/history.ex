@@ -276,7 +276,7 @@ defmodule Admin.Router.History do
     }
   end
 
-  match "/mucmsgs" do
+  def get_muc_msgs(conn) do
     time = Map.get(conn.body_params, "time", "time") |> trunc() |> get_time()
     Logger.debug("time: #{inspect(time)}")
 
@@ -298,17 +298,15 @@ defmodule Admin.Router.History do
         translate_muc_history(muc_history)
       end)
 
-    result =
-      case turn == "desc" do
-        true ->
-          Enum.reverse(result)
+    case turn == "desc" do
+      true ->
+        Enum.reverse(result)
 
-        false ->
-          result
-      end
+      false ->
+        result
+    end
 
-    succ = Ejabberd.Util.success(result)
-    send_resp(conn, 200, succ)
+    Ejabberd.Util.success(result)
   end
 
   match "/msgs" do
