@@ -1,4 +1,4 @@
-defmodule Admin.Router.Share do
+defmodule Handler.Share do
   @moduledoc """
   host router
   """

@@ -1,4 +1,4 @@
-defmodule Admin.Router.Search do
+defmodule Handler.Search do
   @moduledoc """
   host router
   """
@@ -81,7 +81,7 @@ defmodule Admin.Router.Search do
     {chat_result_type, chat_histories} =
       case single_flag do
         true ->
-          user_histories = Admin.Router.History.get_user_history(qtalk_id, key, len + 1, start)
+          user_histories = Handler.History.get_user_history(qtalk_id, key, len + 1, start)
 
           case length(user_histories) > 0 do
             true ->
@@ -98,7 +98,7 @@ defmodule Admin.Router.Search do
     {chat_result_type, chat_histories} =
       case muc_flag do
         true ->
-          muc_histories = Admin.Router.History.get_muc_history(qtalk_id, key, len + 1, start)
+          muc_histories = Handler.History.get_muc_history(qtalk_id, key, len + 1, start)
 
           case length(muc_histories) > 0 do
             true ->
@@ -132,7 +132,7 @@ defmodule Admin.Router.Search do
     results =
       case file_flag do
         true ->
-          files = Admin.Router.History.get_file_history(qtalk_id, key, len + 1, start)
+          files = Handler.History.get_file_history(qtalk_id, key, len + 1, start)
 
           case length(files) > 0 do
             true ->

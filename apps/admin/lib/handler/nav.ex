@@ -1,4 +1,4 @@
-defmodule Admin.Router.NavHandler do
+defmodule Handler.Nav do
   def getNav(scheme, ip, domain, port) do
     %{
       Login: %{loginType: "password"},

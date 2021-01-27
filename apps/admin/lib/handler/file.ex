@@ -1,18 +1,8 @@
-defmodule Admin.Router.File do
+defmodule Handler.File do
   @moduledoc """
   file router
   """
-  use Plug.Router
   require Logger
-
-  plug(Plug.Logger)
-  plug(:match)
-  plug(:dispatch)
-
-  match "/file/v2/upload/file" do
-    put_resp_header(conn, "content-type", "application/json")
-    send_resp(conn, 200, Ejabberd.Util.success())
-  end
 
   def upload(conn) do
     Logger.debug("body: #{inspect(conn.body_params)}, query: #{inspect(conn.query_params)}")
@@ -47,8 +37,7 @@ defmodule Admin.Router.File do
       end)
 
     Logger.debug("result: #{inspect(result)}")
-    put_resp_header(conn, "content-type", "application/json")
-    send_resp(conn, 200, Ejabberd.Util.success(make_url(result, result)))
+    Ejabberd.Util.success(make_url(result, result))
   end
 
   def download(conn, key) do
@@ -77,18 +66,14 @@ defmodule Admin.Router.File do
     Logger.debug("filename: #{filename}")
     path = Application.get_env(:admin, :base_dir, "")
 
-    user_result =
-      case File.exists?(Path.join([path, filename])) do
-        true ->
-          Ejabberd.Util.success(%{errmsg: "文件已存在"}, make_url(key, name))
+    case File.exists?(Path.join([path, filename])) do
+      true ->
+        Ejabberd.Util.success(%{errmsg: "文件已存在"}, make_url(key, name))
 
-        false ->
-          # put_resp_header(conn, "X-QFProxy-Code", 202)
-          Ejabberd.Util.success(%{errmsg: "文件不存在"}, nil)
-      end
-
-    put_resp_header(conn, "content-type", "application/json")
-    send_resp(conn, 200, user_result)
+      false ->
+        # put_resp_header(conn, "X-QFProxy-Code", 202)
+        Ejabberd.Util.success(%{errmsg: "文件不存在"}, nil)
+    end
   end
 
   defp make_url(key, name) do
