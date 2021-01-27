@@ -9,6 +9,45 @@ defmodule Admin.Router.Muc do
     get_increment_mucs(conn)
   end
 
+  def get_muc_vcard(conn) do
+    requests = Map.get(conn.body_params, "_json", [])
+    Logger.debug("get muc vcard request: #{inspect(requests)}")
+
+    result =
+      requests
+      |> Enum.map(fn request ->
+        mucnames =
+          Map.get(request, "mucs", [])
+          |> Enum.map(fn muc_request ->
+            Map.get(muc_request, "muc_name", "")
+          end)
+
+        Logger.debug("mucnames: #{inspect(mucnames)}")
+
+        mucs =
+          Ejabberd.MucVcardInfo.get_mucs(mucnames)
+          |> Enum.map(fn muc ->
+            %{
+              MN: muc.muc_name,
+              SN: muc.show_name,
+              MD: muc.muc_desc,
+              MT: muc.muc_title,
+              MP: muc.muc_pic,
+              VS: muc.version,
+              UT: muc.update_time
+            }
+          end)
+
+        %{
+          domain: Map.get(request, "domain", ""),
+          mucs: mucs
+        }
+      end)
+
+    Logger.debug("get muc vcard result: #{inspect(result)}")
+    Ejabberd.Util.success(result)
+  end
+
   def get_increment_mucs(conn) do
     user = Map.get(conn.body_params, "u")
     host = Map.get(conn.body_params, "d")

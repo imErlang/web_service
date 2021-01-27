@@ -129,6 +129,31 @@ defmodule Admin.Router.Search do
           results
       end
 
+    results =
+      case file_flag do
+        true ->
+          files = Admin.Router.History.get_file_history(qtalk_id, key, len + 1, start)
+
+          case length(files) > 0 do
+            true ->
+              file_result = %{
+                groupLabel: "文件",
+                groupId: @file_group,
+                info: files,
+                resultType: 32,
+                hasMore: len < length(files)
+              }
+
+              [file_result | results]
+
+            false ->
+              results
+          end
+
+        false ->
+          results
+      end
+
     Logger.debug("results: #{inspect(results)}")
 
     Ejabberd.Util.success(results)

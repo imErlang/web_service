@@ -130,9 +130,9 @@ defmodule Ejabberd.HostUsers do
     ORDER BY cc.mx DESC nulls last
     LIMIT #{limit}
     OFFSET #{offset}"
+
     {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, search_sql, [])
     Logger.debug("search user result: #{inspect(result.rows)}")
     result.rows
   end
-
 end

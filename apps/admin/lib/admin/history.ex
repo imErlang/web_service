@@ -10,6 +10,67 @@ defmodule Admin.Router.History do
   plug(:match)
   plug(:dispatch)
 
+  def get_file_history(user_id, key, limit, offset) do
+    Ejabberd.MsgHistory.get_file_history(user_id, key, limit, offset)
+    |> Enum.map(fn [file, _from, _to, date, msgid, label, icon, msg] ->
+      body = SweetXml.parse(msg)
+
+      attrs = attrs_to_json(body)
+      Logger.debug("attrs: #{inspect(attrs)} ")
+      msg_body = get_content(body, :name, :body)
+      msg_attrs = attrs_to_json(msg_body)
+      Logger.debug("msg_body: #{inspect(msg_body)}, msg_atts: #{inspect(msg_attrs)}")
+      time = if attrs.msec_times !== nil, do: attrs.msec_times, else: ""
+
+      attrs_realfrom = Map.get(attrs, :realfrom, "")
+      attrs_sendjid = Map.get(attrs, :sendjid, "")
+
+      from =
+        cond do
+          attrs_realfrom !== nil && attrs_realfrom !== "" ->
+            attrs_realfrom
+
+          attrs_sendjid !== nil && attrs_sendjid !== "" ->
+            attrs_sendjid
+
+          true ->
+            [attrs_from | _] = attrs.from |> String.split("/")
+            attrs_from
+        end
+
+      attrs_realto = Map.get(attrs, :realto, "")
+
+      to =
+        cond do
+          attrs_realto !== nil && attrs_realto !== "" ->
+            attrs_realto
+
+          true ->
+            [attrs_to | _] = attrs.to |> String.split("/")
+            attrs_to
+        end
+
+      {:ok, history_body} = Jason.encode(file)
+
+      %{
+        body: history_body,
+        date: "#{date.year}-#{date.month}-#{date.day} #{date.hour}:#{date.minute}:#{date.second}",
+        fileinfo: file,
+        icon: icon,
+        label: label,
+        todoType: 32,
+        extendinfo: "",
+        msgid: msgid,
+        mtype: msg_attrs.msgType,
+        time: time,
+        from: from,
+        realfrom: from,
+        to: to,
+        realto: to
+      }
+    end)
+  end
+
   def get_muc_history(user_id, key, limit, offset) do
     histories =
       Ejabberd.MucRoomHistory.get_muc_history(user_id, key, limit, offset)
@@ -33,9 +94,10 @@ defmodule Admin.Router.History do
           end
 
         attrs_realto = Map.get(attrs, :realto, "")
+
         to =
           cond do
-             attrs_realto !== nil && attrs_realto !== "" ->
+            attrs_realto !== nil && attrs_realto !== "" ->
               attrs_realto
 
             true ->
@@ -51,7 +113,9 @@ defmodule Admin.Router.History do
           get_content(msg_body, :type, :text)
           |> SweetXml.xmlText(:value)
           |> to_string()
+
         msg_attrs = attrs_to_json(msg_body)
+
         %{
           count: count,
           date:

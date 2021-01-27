@@ -31,6 +31,15 @@ defmodule Admin.Router do
     send_resp(conn, 200, body)
   end
 
+  match "/im_http_service/newapi/muc/get_muc_vcard.qunar" do
+    body = Admin.Router.Muc.get_muc_vcard(conn)
+    send_resp(conn, 200, body)
+  end
+
+  match "/im_http_service/newapi/getmucmsgs.qunar" do
+    conn
+  end
+
   match "/im_http_service/newapi/nck/rsa/get_public_key.do" do
     result = %{
       rsa_pub_key_shortkey: Application.get_env(:admin, :rsa_pub_key_shortkey),

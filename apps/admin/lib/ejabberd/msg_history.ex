@@ -91,28 +91,6 @@ defmodule Ejabberd.MsgHistory do
     result
   end
 
-  # MsgHistory.historyUser = async function (userId, keyWord, limit, offset) {
-  #   let search_model = 'ilike';
-  #   if (keyWord.startsWith('_')) {
-  #     search_model = '~';
-  #     keyWord = keyWord.substring(1);
-  #   } else {
-  #     keyWord = `%${keyWord}%`;
-  #   }
-  #   const user_s_name = userId.split('@')[0];
-  #   const domain = userId.split('@')[1];
-  #   app.logger.debug('search_model:', search_model, keyWord, limit, offset);
-  #   const searchHistory = `SELECT a.count, b.create_time as date, b.m_from, b.from_host as fromhost, b.realfrom, b.m_to, b.to_host as tohost,
-  #   b.realto, b.m_body as msg, a.conversation, b.msg_id, a.id FROM ( SELECT count(1) as count, MAX(id) as id, m_from||'@'||from_host
-  #   || '_' || m_to||'@'||to_host as conversation FROM msg_history WHERE xpath('/message/body/text()',m_body::xml)::text ilike E'${keyWord}'
-  #   AND ( (m_from = E'${user_s_name}' and from_host = E'${domain}') or (m_to = E'${user_s_name}' and to_host = E'${domain}'))
-  #   GROUP BY m_from||'@'||from_host || '_' || m_to||'@'||to_host ORDER BY id desc OFFSET ${offset} LIMIT  ${limit}) a LEFT JOIN msg_history b ON a.id = b.id`;
-  #   app.logger.debug('searchHistory:', searchHistory);
-  #   const result = await app.model.query(searchHistory, { type: 'SELECT' });
-  #   app.logger.debug('get history user:', result);
-  #   return result;
-  # };
-
   def get_history_user(user_id, key, limit, offset) do
     [user_s_name, domain] = String.split(user_id, "@")
 
@@ -150,13 +128,46 @@ defmodule Ejabberd.MsgHistory do
     |> Ejabberd.Repo.all()
   end
 
-  # const result = await app.model.query(
-  #     'SELECT m_from, from_host, m_to, to_host, m_body, create_time, '
-  #     + 'extract(epoch from date_trunc(\'US\', create_time)), read_flag FROM ' + msgByTime.table
-  #     + ' WHERE ((m_from=:fuser and from_host = :fhost and m_to=:tuser and to_host = :thost) '
-  #     + 'or (m_to=:fuser and to_host = :fhost and m_from=:tuser and from_host = :thost )) '
-  #     + 'and create_time ' + msgByTime.direction + ' to_timestamp(:time) '
-  #     + 'ORDER by create_time ' + msgByTime.turn + ' limit :num ',
+  def get_file_history(user_id, key, limit, offset) do
+    [user_s_name, domain] = String.split(user_id, "@")
+
+    file_sql = "
+    SELECT file, from_, pfv.muc_name as to_, date, msgid, pfv.show_name as label, pfv.muc_pic as icon, msg
+    FROM (
+        SELECT json(unnest(xpath('//body[@msgType=\"5\"]/text()', packet::xml))::text) AS file, '' AS from_, muc_room_name AS to_, create_time AS date, msg_id AS msgid,packet as msg
+        FROM muc_room_history
+        WHERE muc_room_name IN (
+            SELECT muc_name
+            FROM user_register_mucs
+            WHERE username = E'#{user_s_name}'
+               AND registed_flag = 1
+               AND host = E'#{domain}'
+        )
+    ) pfc left join muc_vcard_info pfv
+    on pfc.to_= split_part(pfv.muc_name,'@',1)
+    WHERE file ->> 'FileName' ilike E'%#{key}%'
+    UNION ALL
+    SELECT file, from_, to_, date, msgid, pfb.user_name as label, pfv.url as icon, msg
+    FROM (
+        SELECT json(unnest(xpath('/message/body[@msgType=\"5\"]/text()', m_body::xml))::text) AS file, m_from || '@' || from_host as from_
+            , m_to || '@' || to_host as to_, create_time AS date
+            , msg_id AS msgid, m_body as msg
+        FROM msg_history
+        WHERE (m_from = E'#{user_s_name}' AND from_host = E'#{domain}' )
+            OR (m_to = E'#{user_s_name}' AND to_host = E'#{domain}' )
+    ) pfx left join vcard_version pfv
+    on split_part(pfx.from_,'@',1) = pfv.username
+    left join host_users pfb
+    on pfv.username = pfb.user_id and pfv.host = ANY(SELECT host from host_info WHERE id = pfb.host_id)
+    WHERE file ->> 'FileName' ilike E'%#{key}%'
+    ORDER BY date desc
+    OFFSET #{offset}
+    LIMIT #{limit} "
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, file_sql, [])
+    Logger.debug("search file history result: #{inspect(result.rows)}")
+    result.rows
+  end
+
   def get_msgs(params) do
     from = Map.get(params, "from", "")
     to = Map.get(params, "to", "")

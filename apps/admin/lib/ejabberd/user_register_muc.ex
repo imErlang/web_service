@@ -23,11 +23,17 @@ defmodule Ejabberd.UserRegisterMucs do
 
   def search_group(user_id, key, limit, offset) do
     [user_s_name, domain] = String.split(user_id, "@")
-    search_group_sql = "
+
+    search_group_sql =
+      "
     WITH tmp (key, user_id) AS (
       SELECT E'#{key}%', user_id
      FROM host_users
-     WHERE  hire_flag = 1 AND user_id != E'#{user_s_name}' AND ( user_id ilike E'%#{key}%' OR user_name ilike E'%#{key}%' OR pinyin ilike E'%${key}%' ) AND host_id = ANY(SELECT id FROM host_info WHERE host = E'#{domain}' )
+     WHERE  hire_flag = 1 AND user_id != E'#{user_s_name}' AND ( user_id ilike E'%#{key}%' OR user_name ilike E'%#{
+        key
+      }%' OR pinyin ilike E'%${key}%' ) AND host_id = ANY(SELECT id FROM host_info WHERE host = E'#{
+        domain
+      }' )
     ),
     tmp2 (muc_name, domain, created_at) AS (
       SELECT split_part(muc_name || '@' || domain,'@',1) ,split_part(muc_name || '@' || domain,'@',2), max(created_at) as created_at
@@ -51,7 +57,9 @@ defmodule Ejabberd.UserRegisterMucs do
           FROM (
              SELECT a.muc_name|| '@' || a.domain as muc_name, string_agg(a.username||'@'||a.host, '|') as hit, max(a.created_at) as time
                       FROM user_register_mucs a JOIN tmp2 b ON a.muc_name = b.muc_name
-                      WHERE username IN (select user_id from tmp where key =  E'%#{key}%' ) and a.registed_flag != 0 AND a.domain = 'conference.' || E'#{domain}'
+                      WHERE username IN (select user_id from tmp where key =  E'%#{key}%' ) and a.registed_flag != 0 AND a.domain = 'conference.' || E'#{
+        domain
+      }'
                       group by a.muc_name || '@' || a.domain
           ) foo
           GROUP BY muc_name
@@ -69,10 +77,10 @@ defmodule Ejabberd.UserRegisterMucs do
     ORDER BY time DESC
     offset #{offset} limit #{limit}
     "
+
     Logger.debug("search_group_sql: #{search_group_sql}")
     {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, search_group_sql, [])
     Logger.debug("search group result: #{inspect(result.rows)}")
     result.rows
   end
-
 end
