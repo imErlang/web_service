@@ -3,30 +3,37 @@ defmodule Handler.Nav do
     %{
       Login: %{loginType: "password"},
       baseaddess: %{
-        simpleapiurl: "#{scheme}://#{ip}:#{port}",
-        fileurl: "#{scheme}://#{ip}:#{port}",
         domain: domain,
-        javaurl: "#{scheme}://#{ip}:#{port}/package",
+        videourl: "#{scheme}://#{ip}:#{port}/room/",
+        fileurl: "#{scheme}://#{ip}:#{port}",
+        appWeb: "#{scheme}://#{ip}:#{port}/appWeb",
+        shareurl: "#{scheme}://#{ip}:#{port}/py/sharemsg",
+        resetPwdUrl: "#{scheme}://#{ip}:#{port}/static/reterievepassword.html",
+        httpurl: "#{scheme}://#{ip}:#{port}/newapi",
         protobufPcPort: 5202,
-        xmpp: ip,
-        xmppport: 5222,
-        protobufPort: 5202,
+        socketurl: "ws://#{ip}:#{port}/websocket/",
         pubkey: "rsa_public_key",
         xmppmport: 5222,
-        httpurl: "#{scheme}://#{ip}:#{port}/newapi",
-        apiurl: "#{scheme}://#{ip}:#{port}/api",
-        shareurl: "#{scheme}://#{ip}:#{port}/py/sharemsg",
+        xmppport: 5222,
         domainhost: ip,
-        resetPwdUrl: "#{scheme}://#{ip}:#{port}/static/reterievepassword.html"
+        simpleapiurl: "#{scheme}://#{ip}:#{port}",
+        payurl: "#{scheme}://#{ip}:#{port}/api",
+        apiurl: "#{scheme}://#{ip}:#{port}/api",
+        javaurl: "#{scheme}://#{ip}:#{port}/package",
+        xmpp: ip,
+        protobufPort: 5202
       },
       imConfig: %{
         RsaEncodeType: 1,
-        showOrganizational: true,
         mail: domain,
+        isToC: false,
+        showOrganizational: true,
+        uploadLog: "#{scheme}://#{ip}:#{port}/startalk/management/startalk/log/upload",
         foundConfigUrl: "#{scheme}://#{ip}:#{port}//startalk/management/find/get/navigation"
       },
       ability: %{
         searchurl: "#{scheme}://#{ip}:#{port}/py/search",
+        new_searchurl: "#{scheme}://#{ip}:#{port}/py/search",
         showmsgstat: true
       },
       RNAndroidAbility: %{

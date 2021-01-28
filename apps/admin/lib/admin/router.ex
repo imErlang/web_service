@@ -156,11 +156,14 @@ defmodule Admin.Router do
   forward("/muc", to: Admin.Router.Muc)
   forward("/configuration", to: Admin.Router.Configuration)
   forward("/history", to: Admin.Router.History)
+  forward("/dep", to: Admin.Router.Dep)
 
   match "/startalk_nav" do
     Logger.debug("query #{inspect(conn.query_params)}")
-    nav = Handler.Nav.getNav("http", "192.168.18.128", "startalk.tech", 8080)
-    {:ok, body} = Jason.encode(nav)
+    server_ip = Application.get_env(:admin, :server_ip, "127.0.0.1")
+    port = Application.get_env(:admin, :server_port, 8080)
+    nav = Handler.Nav.getNav("http", server_ip, "startalk.tech", port)
+    {:ok, body} = Jason.encode(nav, escape: :html_safe)
     send_resp(conn, 200, body)
   end
 
