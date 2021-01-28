@@ -158,9 +158,11 @@ defmodule Handler.Share do
               link_url = Map.get(json_body, "linkurl")
               title = Map.get(json_body, "title")
 
-              "<a href=#{link_url}><div class=\"g-flexbox\"><div class=\"extleft\"><img src=\"#{img}\" alt=\"../{{default.png}}\"/></div><div class=\"flex\"><p class=\"line\">#{
-                title
-              }</p><p class=\"line2\">#{desc}</p></div></div></a>"
+              "<a href=#{link_url}><div class=\"g-flexbox\"><div class=\"extleft\"><img src=\"#{
+                img
+              }\" alt=\"../{{default.png}}\"/></div><div class=\"flex\"><p class=\"line\">#{title}</p><p class=\"line2\">#{
+                desc
+              }</p></div></div></a>"
 
             true ->
               body

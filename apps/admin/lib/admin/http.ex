@@ -23,6 +23,16 @@ defmodule Admin.Ejabberd do
     end)
   end
 
+  def notify_muc_vcard(muc_name) do
+    case client() |> Tesla.get("/qtalk/send_notice_vcard?muc_name=#{muc_name}", []) do
+      {:ok, _} ->
+        Logger.debug("send notify vcard update to #{muc_name}")
+
+      {:error, _} ->
+        Logger.debug("send notify vcard update error #{muc_name}")
+    end
+  end
+
   # build dynamic client based on runtime arguments
   def client() do
     middleware = [

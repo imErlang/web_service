@@ -5,13 +5,15 @@ defmodule Ejabberd.UserRegisterMucs do
 
   require Logger
 
+  @timestamps_opts [type: :utc_datetime_usec]
+
   @primary_key false
   schema "user_register_mucs" do
     field(:username, :string, default: "")
     field(:muc_name, :string, default: "")
     field(:domain, :string, default: "")
     field(:host, :string, default: "")
-    field(:created_at, :utc_datetime)
+    field(:created_at, :utc_datetime_usec)
     field(:registed_flag, :integer, default: 1)
   end
 
