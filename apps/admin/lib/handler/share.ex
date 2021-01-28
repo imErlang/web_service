@@ -83,7 +83,11 @@ defmodule Handler.Share do
                   new_body =
                     case item_type do
                       "image" ->
-                        String.replace(new_body, item_body, "<img src=#{gen_url(item_value)} />")
+                        String.replace(
+                          new_body,
+                          item_body,
+                          "<img src=\"#{gen_url(item_value)}\" />"
+                        )
 
                       "url" ->
                         String.replace(
@@ -101,7 +105,7 @@ defmodule Handler.Share do
                           "em_type: #{em_type}, em_value: #{em_value}, emo_url: #{emo_url}"
                         )
 
-                        String.replace(new_body, item_body, "<img src=#{emo_url} />")
+                        String.replace(new_body, item_body, "<img src=\"#{emo_url}\" />")
                     end
 
                   Logger.debug("replace url new_body: #{new_body}")
@@ -154,7 +158,7 @@ defmodule Handler.Share do
               link_url = Map.get(json_body, "linkurl")
               title = Map.get(json_body, "title")
 
-              "<a href=#{link_url}><div class=\"g-flexbox\"><div class=\"extleft\"><img src=#{img} alt=\"../{{default.png}}\"/></div><div class=\"flex\"><p class=\"line\">#{
+              "<a href=#{link_url}><div class=\"g-flexbox\"><div class=\"extleft\"><img src=\"#{img}\" alt=\"../{{default.png}}\"/></div><div class=\"flex\"><p class=\"line\">#{
                 title
               }</p><p class=\"line2\">#{desc}</p></div></div></a>"
 

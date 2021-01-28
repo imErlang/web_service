@@ -288,7 +288,9 @@
 
 <body>
     <div id="m_con">
-        <%= content %>
+        <div>
+            <%= content %>
+        </div>
     </div>
 </body>
 

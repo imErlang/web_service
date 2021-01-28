@@ -66,11 +66,13 @@ defmodule Ejabberd.HostUsers do
   end
 
   def update_version(user_id, host_id) do
-    update_sql = "WITH max_version AS ( SELECT MAX(version) AS max_version FROM host_users where host_id = $2)
+    update_sql =
+      "WITH max_version AS ( SELECT MAX(version) AS max_version FROM host_users where host_id = $2)
     UPDATE host_users
     SET version = max_version.max_version + 1
     FROM max_version
     WHERE host_users.user_id = $1 and host_users.host_id = $2"
+
     {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, update_sql, [user_id, host_id])
     Logger.debug("update user version: #{inspect(result)}")
     result

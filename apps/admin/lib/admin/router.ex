@@ -17,8 +17,6 @@ defmodule Admin.Router do
     json_decoder: Jason
   )
 
-  plug(JsonPlug)
-
   plug(:dispatch)
 
   match "/search" do

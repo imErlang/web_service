@@ -139,6 +139,7 @@ defmodule Handler.User do
     params = conn.body_params
     Logger.info("add user params #{inspect(conn.body_params)}")
     user_id = Map.get(params, "userId")
+
     user = %Ejabberd.HostUsers{
       host_id: host_info.id,
       user_id: user_id,
