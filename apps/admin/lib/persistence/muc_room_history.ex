@@ -54,6 +54,13 @@ defmodule Persistence.MucRoomHistory do
     result.rows
   end
 
+  def select_muc_time(user, host, time) do
+    sql = "SELECT muc_name,domain,date FROM muc_room_users WHERE username =\'#{user}\' and host = \'#{host}\' and update_time >to_timestamp(#{time});"
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, sql, [])
+    Logger.debug("select muc time result: #{inspect(result.rows)}")
+    result.rows
+  end
+
   def select_local_domain_muc_history(user, host, time, num) do
     muc_history_sql =
       "SELECT muc_room_name, nick, packet, create_time, extract(epoch from date_trunc(\'US\', create_time)), host FROM muc_room_history

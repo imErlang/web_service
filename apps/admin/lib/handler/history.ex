@@ -5,6 +5,7 @@ defmodule Handler.History do
 
   require Logger
   require SweetXml
+  import Plug.Conn
 
   def get_file_history(user_id, key, limit, offset) do
     Persistence.MsgHistory.get_file_history(user_id, key, limit, offset)
@@ -76,11 +77,41 @@ defmodule Handler.History do
 
     result =
       Persistence.MucRoomHistory.select_local_domain_muc_history(user, host, time, num)
-      |> Enum.map(fn [muc, nick, packet, _create_time, date, domain] ->
-        translate_history(muc, nick, packet, date, "conference@#{domain}")
+      |> Enum.map(fn [muc, nick, packet, _create_time, date, _domain] ->
+        translate_muc_history(muc, nick, packet, date, "conference@#{host}")
       end)
+
     Logger.debug("get offline muc msg history #{inspect(result)}")
     Ejabberd.Util.success([result])
+  end
+
+  def get_muc_readmark(conn) do
+    user = Map.get(conn.body_params, "user", "")
+    host = Map.get(conn.body_params, "host", "")
+    time = Map.get(conn.body_params, "time", 0)
+
+    time =
+      case is_binary(time) do
+        true ->
+          String.to_integer(time)
+
+        false ->
+          time
+      end
+
+    Logger.debug("user: #{user}, host: #{host}, time: #{time}")
+
+    result =
+      Persistence.MucRoomHistory.select_muc_time(user, host, time)
+      |> Enum.map(fn [muc_name, domain, date] ->
+        %{
+          muc_name: muc_name,
+          domain: domain,
+          date: date
+        }
+      end)
+
+    Ejabberd.Util.success(result)
   end
 
   def get_muc_history(user_id, key, limit, offset) do
@@ -153,10 +184,29 @@ defmodule Handler.History do
 
   def get_read_flag(conn) do
     time = Map.get(conn.body_params, "time", 0) |> get_time()
-    id = Map.get(conn.body_params, "id", "")
-    user = "chao.zhang"
-    Persistence.MsgHistory.get_read_flag(user, time, id)
-    Ejabberd.Util.success([])
+    id = Map.get(conn.body_params, "id", 0)
+    [cookie] = get_req_header(conn, "cookie")
+    cookies = URI.decode_query(cookie)
+    ckey = Map.get(cookies, "q_ckey", nil)
+
+    case ckey == nil do
+      true ->
+        Ejabberd.Util.success([])
+
+      false ->
+        {:ok, ckey_value} = Base.decode64(ckey)
+        requests = URI.decode_query(ckey_value)
+        Logger.debug("cookies: #{inspect(requests)}")
+        user = Map.get(requests, "u", "")
+
+        result =
+          Persistence.MsgHistory.get_read_flag(user, time, id)
+          |> Enum.map(fn [_id, msg_id, read_flag, _update_time] ->
+            %{readflag: read_flag, msgid: msg_id}
+          end)
+
+        Ejabberd.Util.success(result)
+    end
   end
 
   # defp get_user_from_ckey() do
@@ -268,7 +318,7 @@ defmodule Handler.History do
     end
   end
 
-  defp translate_history(muc, nick, packet, time, domain) do
+  defp translate_muc_history(muc, nick, packet, time, domain) do
     body = SweetXml.parse(packet)
 
     attrs = attrs_to_json(body)
@@ -342,7 +392,7 @@ defmodule Handler.History do
         num: num
       })
       |> Enum.map(fn [muc, nick, packet, _create_time, time, domain] ->
-        translate_history(muc, nick, packet, time, domain)
+        translate_muc_history(muc, nick, packet, time, domain)
       end)
 
     case turn == "desc" do
@@ -416,16 +466,40 @@ defmodule Handler.History do
   end
 
   def get_history(conn) do
-    histories = Persistence.MsgHistory.get_history(conn.body_params)
+    Logger.debug("get history requests: #{inspect(conn.body_params)}")
+    user = Map.get(conn.params, "user", "")
+    host = Map.get(conn.params, "domain", "")
+    read_flag = Map.get(conn.params, "f", "f")
+    num = Map.get(conn.params, "num", 500)
+    time = Map.get(conn.params, "time", 0) |> get_time()
+    histories = Persistence.MsgHistory.get_history(user, host, num, time)
     Logger.debug("histories: #{inspect(histories)}")
-
-    read_flag = Map.get(conn.body_params, "read_flag", "f")
 
     result =
       histories
-      |> Enum.map(fn history -> translate_history(history, read_flag) end)
+      |> Enum.map(fn [m_from, from_host, m_to, to_host, m_body, _create_time, date, r] ->
+        history = %{
+          m_body: m_body,
+          m_from: m_from,
+          from_host: from_host,
+          m_to: m_to,
+          to_host: to_host,
+          read_flag: r,
+          create_time: trunc(date)
+        }
 
-    Ejabberd.Util.success(result)
+        translate_history(history, read_flag)
+      end)
+
+    Logger.debug("get history :#{inspect(result)}")
+
+    Ejabberd.Util.success(
+      %{
+        from: user,
+        bodys: result
+      },
+      []
+    )
   end
 
   defp translate_history(history, read_flag) do

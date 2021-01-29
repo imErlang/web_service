@@ -118,13 +118,12 @@ defmodule Admin.Router do
   end
 
   match "/im_http_service/newapi/getreadflag.qunar" do
-    body = Ejabberd.Util.success([])
+    body = Handler.History.get_read_flag(conn)
     send_resp_json(conn, body)
   end
 
-  # TODO
   match "/im_http_service/newapi/get_muc_readmark1.qunar" do
-    body = Ejabberd.Util.success([])
+    body = Handler.History.get_muc_readmark(conn)
     send_resp_json(conn, body)
   end
 
@@ -134,14 +133,18 @@ defmodule Admin.Router do
     send_resp_json(conn, body)
   end
 
-  # TODO
   match "/im_http_service/newapi/medal/medalList.qunar" do
     body = Ejabberd.Util.success([])
     send_resp_json(conn, body)
   end
 
-  # TODO
   match "/im_http_service/newapi/medal/userMedalList.qunar" do
+    body = Ejabberd.Util.success([])
+    send_resp_json(conn, body)
+  end
+
+  # TODO
+  match "/im_http_service/newapi/statics/pc_statics.qunar" do
     body = Ejabberd.Util.success([])
     send_resp_json(conn, body)
   end

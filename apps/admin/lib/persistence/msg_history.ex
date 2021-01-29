@@ -112,20 +112,16 @@ defmodule Persistence.MsgHistory do
     result.rows
   end
 
-  def get_history(params) do
-    num = Map.get(params, "num", 50)
-    from = Map.get(params, "from", "")
-    to = Map.get(params, "to", "")
-    keyword = Map.get(params, "keyword", "")
-    {:ok, time} = Map.get(params, "time", 0) |> DateTime.from_unix(:microsecond)
+  def get_history(user, host, num, time) do
+    sql =
+      "SELECT m_from, from_host, m_to, to_host, m_body, create_time, extract(epoch from date_trunc('US', create_time))*1000, read_flag FROM msg_history
+        WHERE ((m_from=\'#{user}\'  and from_host = \'#{host}\') or (m_to=\'#{user}\' and to_host = \'#{
+        host
+      }\'))  and create_time > to_timestamp(#{time}) ORDER by create_time asc  limit #{num}"
 
-    Persistence.MsgHistory
-    |> filter_history(%{from: from}, :from)
-    |> filter_history(%{to: to}, :to)
-    |> filter_history(%{keyword: keyword}, :keyword)
-    |> where([msg], msg.create_time > ^time)
-    |> limit(^num)
-    |> Ejabberd.Repo.all()
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, sql, [])
+    Logger.debug("get history result: #{inspect(result.rows)}")
+    result.rows
   end
 
   def get_file_history(user_id, key, limit, offset) do
@@ -172,9 +168,9 @@ defmodule Persistence.MsgHistory do
     sql =
       "
         SELECT id, msg_id,read_flag, extract(epoch from date_trunc(\'US\', update_time)) as update_time
-        FROM msg_history WHERE (m_from = #{user} or m_to=#{user}) and update_time > to_timestamp(#{
+        FROM msg_history WHERE (m_from = \'#{user}\' or m_to=\'#{user}\') and update_time > to_timestamp(#{
         time
-      }) id > #{id}
+      }) and id > #{id}
         order by create_time desc limit 10000"
 
     {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, sql, [])
