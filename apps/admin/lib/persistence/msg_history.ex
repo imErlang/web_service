@@ -1,4 +1,4 @@
-defmodule Ejabberd.MsgHistory do
+defmodule Persistence.MsgHistory do
   use Ecto.Schema
 
   import Ecto.Query
@@ -119,7 +119,7 @@ defmodule Ejabberd.MsgHistory do
     keyword = Map.get(params, "keyword", "")
     {:ok, time} = Map.get(params, "time", 0) |> DateTime.from_unix(:microsecond)
 
-    Ejabberd.MsgHistory
+    Persistence.MsgHistory
     |> filter_history(%{from: from}, :from)
     |> filter_history(%{to: to}, :to)
     |> filter_history(%{keyword: keyword}, :keyword)
@@ -168,6 +168,20 @@ defmodule Ejabberd.MsgHistory do
     result.rows
   end
 
+  def get_read_flag(user, time, id) do
+    sql =
+      "
+        SELECT id, msg_id,read_flag, extract(epoch from date_trunc(\'US\', update_time)) as update_time
+        FROM msg_history WHERE (m_from = #{user} or m_to=#{user}) and update_time > to_timestamp(#{
+        time
+      }) id > #{id}
+        order by create_time desc limit 10000"
+
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, sql, [])
+    Logger.debug("get read flag result: #{inspect(result.rows)}")
+    result.rows
+  end
+
   def get_msgs(params) do
     from = Map.get(params, "from", "")
     to = Map.get(params, "to", "")
@@ -175,7 +189,7 @@ defmodule Ejabberd.MsgHistory do
     to_host = Map.get(params, "thost", "")
     num = Map.get(params, "num", 50)
 
-    Ejabberd.MsgHistory
+    Persistence.MsgHistory
     |> filter_history(%{from: from, to: to, from_host: from_host, to_host: to_host}, :from_to)
     |> filter_history(%{from: to, to: from, from_host: to_host, to_host: from_host}, :from_to)
     |> filter_history(%{create_time: params.time, direction: params.direction}, :create_time)

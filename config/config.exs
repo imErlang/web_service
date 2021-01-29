@@ -28,8 +28,6 @@ config :admin, :ecto_repos, [Ejabberd.Repo]
 import_config "#{config_env()}.exs"
 
 config :admin,
-  server_ip: "127.0.0.1",
-  server_port: 8080,
   default_host: "startalk.tech",
   im_url: "http://127.0.0.1:10050",
   emo_dir: "upload/emoPackage/",

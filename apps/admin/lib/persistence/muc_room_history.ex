@@ -1,4 +1,4 @@
-defmodule Ejabberd.MucRoomHistory do
+defmodule Persistence.MucRoomHistory do
   use Ecto.Schema
 
   require Logger
@@ -51,6 +51,20 @@ defmodule Ejabberd.MucRoomHistory do
       ])
 
     Logger.debug("result: #{inspect(result.rows)}")
+    result.rows
+  end
+
+  def select_local_domain_muc_history(user, host, time, num) do
+    muc_history_sql =
+      "SELECT muc_room_name, nick, packet, create_time, extract(epoch from date_trunc(\'US\', create_time)), host FROM muc_room_history
+          WHERE muc_room_name in  (select distinct(muc_name) from muc_room_users where username = \'#{
+        user
+      }\' and
+          host = \'#{host}\') and create_time > to_timestamp(#{time})
+        ORDER by create_time asc limit #{num}"
+
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, muc_history_sql, [])
+    Logger.debug("select muc history result: #{inspect(result.rows)}")
     result.rows
   end
 

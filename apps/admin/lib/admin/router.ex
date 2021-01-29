@@ -112,13 +112,11 @@ defmodule Admin.Router do
     send_resp_json(conn, body)
   end
 
-  # TODO
   match "/im_http_service/newapi/getmuchistory.qunar" do
-    body = Ejabberd.Util.success([])
+    body = Handler.History.get_offline_muc_history(conn)
     send_resp_json(conn, body)
   end
 
-  # TODO
   match "/im_http_service/newapi/getreadflag.qunar" do
     body = Ejabberd.Util.success([])
     send_resp_json(conn, body)

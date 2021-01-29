@@ -33,6 +33,7 @@ defmodule Handler.Muc do
 
           {:ok, new_vcard} = Persistence.MucVcardInfo.update_vcard_info(old_vcard_config, changes)
           Admin.Ejabberd.notify_muc_vcard(muc_name)
+
           %{
             muc_name: new_vcard.muc_name,
             version: new_vcard.version,
@@ -48,7 +49,10 @@ defmodule Handler.Muc do
 
   def get_muc_vcard(conn) do
     requests = Map.get(conn.body_params, "_json", [])
-    Logger.debug("get muc vcard params: #{inspect(conn.body_params)} requests: #{inspect(requests)}")
+
+    Logger.debug(
+      "get muc vcard params: #{inspect(conn.body_params)} requests: #{inspect(requests)}"
+    )
 
     result =
       requests
@@ -113,7 +117,7 @@ defmodule Handler.Muc do
           version
       end
 
-      Logger.debug("get increment mucs new version #{version}, mucs: #{inspect(mucs)}")
+    Logger.debug("get increment mucs new version #{version}, mucs: #{inspect(mucs)}")
 
     Ejabberd.Util.success(%{version: version}, mucs)
   end
