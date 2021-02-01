@@ -107,6 +107,11 @@ defmodule Admin.Router do
     send_resp_json(conn, body)
   end
 
+  match "/im_http_service/newapi/muc/get_user_increment_muc_vcard.qunar" do
+    body = Handler.Muc.get_user_increment_muc_vcard(conn)
+    send_resp_json(conn, body)
+  end
+
   match "/im_http_service/newapi/gethistory.qunar" do
     body = Handler.History.get_history(conn)
     send_resp_json(conn, body)

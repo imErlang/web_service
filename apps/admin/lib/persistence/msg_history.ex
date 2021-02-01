@@ -114,10 +114,10 @@ defmodule Persistence.MsgHistory do
 
   def get_history(user, host, num, time) do
     sql =
-      "SELECT m_from, from_host, m_to, to_host, m_body, create_time, extract(epoch from date_trunc('US', create_time))*1000, read_flag FROM msg_history
+      "SELECT m_from, from_host, m_to, to_host, m_body, create_time, extract(epoch from date_trunc('US', create_time)), read_flag FROM msg_history
         WHERE ((m_from=\'#{user}\'  and from_host = \'#{host}\') or (m_to=\'#{user}\' and to_host = \'#{
         host
-      }\'))  and create_time > to_timestamp(#{time}) ORDER by create_time asc  limit #{num}"
+      }\'))  and create_time > to_timestamp(#{time}::double precision/1000) ORDER by create_time asc  limit #{num}"
 
     {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, sql, [])
     Logger.debug("get history result: #{inspect(result.rows)}")
@@ -168,9 +168,7 @@ defmodule Persistence.MsgHistory do
     sql =
       "
         SELECT id, msg_id,read_flag, extract(epoch from date_trunc(\'US\', update_time)) as update_time
-        FROM msg_history WHERE (m_from = \'#{user}\' or m_to=\'#{user}\') and update_time > to_timestamp(#{
-        time
-      }) and id > #{id}
+        FROM msg_history WHERE (m_from = \'#{user}\' or m_to=\'#{user}\') and update_time > to_timestamp(#{time}::double precision/1000) and id > #{id}
         order by create_time desc limit 10000"
 
     {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, sql, [])

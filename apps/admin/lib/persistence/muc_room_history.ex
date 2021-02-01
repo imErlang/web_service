@@ -35,7 +35,7 @@ defmodule Persistence.MucRoomHistory do
 
   @select_msg_by_time """
   SELECT muc_room_name, nick, packet, create_time, extract(epoch from date_trunc('US', create_time)),host
-  FROM muc_room_history WHERE (muc_room_name=$1  and create_time >= to_timestamp($2))
+  FROM muc_room_history WHERE (muc_room_name=$1  and create_time >= to_timestamp($2::double precision/1000))
   ORDER by create_time desc limit $3;
   """
   def select_msg_by_time(params) do
@@ -67,7 +67,7 @@ defmodule Persistence.MucRoomHistory do
           WHERE muc_room_name in  (select distinct(muc_name) from muc_room_users where username = \'#{
         user
       }\' and
-          host = \'#{host}\') and create_time > to_timestamp(#{time})
+          host = \'#{host}\') and create_time > to_timestamp(#{time}::double precision/1000)
         ORDER by create_time asc limit #{num}"
 
     {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, muc_history_sql, [])

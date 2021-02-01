@@ -1,4 +1,4 @@
-defmodule Ejabberd.UserRegisterMucs do
+defmodule Persistence.UserRegisterMucs do
   use Ecto.Schema
 
   import Ecto.Query
@@ -18,8 +18,14 @@ defmodule Ejabberd.UserRegisterMucs do
   end
 
   def get_increment_mucs(username, host, time) do
-    Ejabberd.UserRegisterMucs
+    Persistence.UserRegisterMucs
     |> where([m], m.created_at > ^time and m.username == ^username and m.host == ^host)
+    |> Ejabberd.Repo.all()
+  end
+
+  def select_muc_names_by_username(username, host) do
+    Persistence.UserRegisterMucs
+    |> where([m], m.username == ^username and m.host == ^host)
     |> Ejabberd.Repo.all()
   end
 

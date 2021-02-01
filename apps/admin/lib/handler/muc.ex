@@ -48,6 +48,10 @@ defmodule Handler.Muc do
   end
 
   def get_muc_vcard(conn) do
+    Logger.debug(
+      "conn params: #{inspect(conn.body_params)}, queries: #{inspect(conn.query_params)}"
+    )
+
     requests = Map.get(conn.body_params, "_json", [])
 
     Logger.debug(
@@ -89,6 +93,37 @@ defmodule Handler.Muc do
     Ejabberd.Util.success(result)
   end
 
+  def get_user_increment_muc_vcard(conn) do
+    Logger.debug("body: #{inspect(conn.body_params)}, queries: #{inspect(conn.query_params)}")
+    user = Map.get(conn.body_params, "userid")
+    time = Map.get(conn.body_params, "lastupdtime", 0)
+
+    result =
+      Persistence.MucVcardInfo.select_increment_muc_vcard(user, time)
+      |> Enum.map(fn [
+                       muc_name,
+                       show_name,
+                       muc_desc,
+                       muc_title,
+                       muc_pic,
+                       _show_name_pinyin,
+                       update_time,
+                       version
+                     ] ->
+        %{
+          MN: muc_name,
+          SN: show_name,
+          MD: muc_desc,
+          MT: muc_title,
+          MP: muc_pic,
+          VS: version,
+          UT: update_time |> DateTime.to_unix(:millisecond) |> Integer.to_string()
+        }
+      end)
+
+    Ejabberd.Util.success(result)
+  end
+
   def get_increment_mucs(conn) do
     user = Map.get(conn.body_params, "u")
     host = Map.get(conn.body_params, "d")
@@ -96,11 +131,11 @@ defmodule Handler.Muc do
     time = version |> DateTime.from_unix!(:millisecond)
 
     mucs =
-      Ejabberd.UserRegisterMucs.get_increment_mucs(user, host, time)
+      Persistence.UserRegisterMucs.get_increment_mucs(user, host, time)
       |> Enum.map(fn muc ->
         %{
           D: muc.domain,
-          T: muc.created_at |> DateTime.to_unix(:millisecond),
+          T: muc.created_at |> DateTime.to_unix(:millisecond) |> Integer.to_string(),
           F: muc.registed_flag,
           M: muc.muc_name
         }

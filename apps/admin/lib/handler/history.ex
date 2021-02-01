@@ -406,16 +406,16 @@ defmodule Handler.History do
     Ejabberd.Util.success(result)
   end
 
-  defp get_time(time) do
+  def get_time(time) do
     cond do
       time > 1_000_000_000_000 ->
-        trunc(time / 1000)
+        time
 
       time == 0 ->
-        DateTime.utc_now() |> DateTime.to_unix()
+        DateTime.utc_now() |> DateTime.to_unix(:millisecond)
 
       true ->
-        time
+        time*1000
     end
   end
 
@@ -440,7 +440,7 @@ defmodule Handler.History do
     Logger.debug("read_flag: #{inspect(read_flag)}")
 
     {:ok, time} =
-      Map.get(conn.body_params, "time", "time") |> trunc() |> get_time() |> DateTime.from_unix()
+      Map.get(conn.body_params, "time", 0) |> trunc() |> get_time() |> DateTime.from_unix()
 
     Logger.debug("time: #{inspect(time)}")
 
@@ -467,11 +467,12 @@ defmodule Handler.History do
 
   def get_history(conn) do
     Logger.debug("get history requests: #{inspect(conn.body_params)}")
-    user = Map.get(conn.params, "user", "")
-    host = Map.get(conn.params, "domain", "")
-    read_flag = Map.get(conn.params, "f", "f")
-    num = Map.get(conn.params, "num", 500)
-    time = Map.get(conn.params, "time", 0) |> get_time()
+    user = Map.get(conn.body_params, "user", "")
+    host = Map.get(conn.body_params, "domain", "")
+    read_flag = Map.get(conn.body_params, "f", "f")
+    num = Map.get(conn.body_params, "num", 500)
+    time = Map.get(conn.body_params, "time", 0) |> get_time()
+    Logger.debug("get history time: #{inspect(time)}")
     histories = Persistence.MsgHistory.get_history(user, host, num, time)
     Logger.debug("histories: #{inspect(histories)}")
 
@@ -485,7 +486,7 @@ defmodule Handler.History do
           m_to: m_to,
           to_host: to_host,
           read_flag: r,
-          create_time: trunc(date)
+          create_time: date
         }
 
         translate_history(history, read_flag)
@@ -493,13 +494,7 @@ defmodule Handler.History do
 
     Logger.debug("get history :#{inspect(result)}")
 
-    Ejabberd.Util.success(
-      %{
-        from: user,
-        bodys: result
-      },
-      []
-    )
+    Ejabberd.Util.success(result)
   end
 
   defp translate_history(history, read_flag) do

@@ -35,4 +35,16 @@ defmodule Persistence.MucVcardInfo do
     |> change(changes)
     |> Ejabberd.Repo.update()
   end
+
+  def select_increment_muc_vcard(username, update_time) do
+    sql =
+      "select muc_name, show_name, muc_desc, muc_title, muc_pic, show_name_pinyin, update_time, version from muc_vcard_info where muc_name in (select muc_name || '@' || domain from user_register_mucs where username = '#{
+        username
+      }' AND registed_flag=1) and update_time > to_timestamp(#{update_time}::double precision/1000)"
+
+    Logger.debug("select increment muc vcard: #{sql}")
+    {:ok, result} = Ecto.Adapters.SQL.query(Ejabberd.Repo, sql, [])
+    Logger.debug("select increment result: #{inspect(result.rows)}")
+    result.rows
+  end
 end
