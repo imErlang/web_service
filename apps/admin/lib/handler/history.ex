@@ -415,7 +415,7 @@ defmodule Handler.History do
         DateTime.utc_now() |> DateTime.to_unix(:millisecond)
 
       true ->
-        time*1000
+        time * 1000
     end
   end
 

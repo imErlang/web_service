@@ -8,7 +8,6 @@ config :admin, Ejabberd.Repo,
   port: 5432,
   priv: "priv/user"
 
-
 config :admin,
   server_ip: "192.168.18.128",
   server_port: 8080
