@@ -46,3 +46,12 @@ config :admin,
     "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCy2VXDAlCZlj7gPHvC/vwvbpTN/GyW0tmNCqh0UPitdTTGZk3UcLqu9lWMGPViL/5lhboiSogsDxJLHdwo91DDBjTX1HbuyuOhvsvayV7Yc8t+ajFW/8RwlvhGSzVplthoU+md9kGeZ8t73VWWZUEB0iyWx7Y/RjUwTdnOlNXDzQIDAQAB"
 
 config :tesla, adapter: Tesla.Adapter.Hackney
+
+
+config :ejabberd,
+  file: "apps/ejabberd/config/ejabberd.yml",
+  log_path: 'log/ejabberd.log'
+
+# Customize Mnesia directory:
+config :mnesia,
+  dir: 'mnesiadb/'

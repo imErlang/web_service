@@ -17,7 +17,8 @@ defmodule WebService.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:distillery, "~> 2.1"}
+      {:distillery, "~> 2.1"},
+      {:cowboy, "~> 2.7", override: true}
     ]
   end
 end
