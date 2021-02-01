@@ -3,7 +3,6 @@
 -module(http_qmonitor).
 
 -export([init/3]).
--export([handle/2]).
 -export([terminate/3]).
 
 -export([get_monitor_info/0]).
@@ -16,17 +15,14 @@
 -define(MB, (1024 * 1024)).
 
 init(_Transport, Req, []) ->
-	{ok, Req, undefined}.
-
-handle(Req, State) ->
-    {Method, Req1} = cowboy_req:method(Req),
+    Method = cowboy_req:method(Req),
     case Method of 
         <<"GET">> ->
-            {ok, Req2} = get_echo(Method,Req1),
-            {ok, Req2, State};
+            {ok, Req2} = get_echo(Method,Req),
+            {ok, Req2, []};
         _ ->
-            {ok,Req2} = echo(undefined, Req1),
-            {ok, Req2, State}
+            {ok,Req2} = echo(undefined, Req),
+            {ok, Req2, []}
     end.
 
 get_echo(<<"GET">>,Req) ->

@@ -1,18 +1,14 @@
 -module(http_dispatch).
 
--export([init/3]).
--export([handle/2]).
+-export([init/2]).
 -export([terminate/3]).
 -include("ejabberd.hrl").
 -include("logger.hrl").
 
-init(_Transport, Req, []) ->
-    {ok, Req, undefined}.
-
-handle(Req, State) ->
-    {Path, _} = cowboy_req:path_info(Req),
-    {ok, Req1} = handle_process(Path, Req),
-    {ok, Req1, State}.
+init(Req, []) ->
+    Path = cowboy_req:path_info(Req),
+    Req1= handle_process(Path, Req),
+    {ok, Req1, []}.
 
 terminate(_Reason, _Req, _State) ->
     ok.
