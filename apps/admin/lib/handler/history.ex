@@ -82,7 +82,7 @@ defmodule Handler.History do
       end)
 
     Logger.debug("get offline muc msg history #{inspect(result)}")
-    Ejabberd.Util.success([result])
+    Ejabberd.Util.success(result)
   end
 
   def get_muc_readmark(conn) do

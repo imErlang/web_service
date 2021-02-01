@@ -165,7 +165,7 @@ defmodule Handler.Search do
 
   def get_groups(user_id, key, limit, offset) do
     groups =
-      Ejabberd.UserRegisterMucs.search_group(user_id, key, limit, offset)
+      Persistence.UserRegisterMucs.search_group(user_id, key, limit, offset)
       |> Enum.map(fn
         [mucname, _domain, show_name, muc_title, muc_pic, tags] ->
           todo_type = tags |> Enum.reduce(4, fn tag, acc -> if tag == [""], do: 6, else: acc end)
