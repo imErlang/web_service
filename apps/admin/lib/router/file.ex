@@ -31,5 +31,4 @@ defmodule Admin.Router.File do
   match "/v2/emo/d/e/:package/:shortcut/:type" do
     Handler.File.download_emo(conn, package, shortcut, type)
   end
-
 end

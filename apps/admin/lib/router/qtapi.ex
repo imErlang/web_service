@@ -25,7 +25,6 @@ defmodule Admin.Router.Qtapi do
     send_resp_json(conn, body)
   end
 
-
   match "/get_muc_readmark1.qunar" do
     body = Handler.History.get_muc_readmark(conn)
     send_resp_json(conn, body)
