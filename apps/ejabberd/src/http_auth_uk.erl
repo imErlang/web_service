@@ -8,9 +8,8 @@ handle(Req) ->
     auth_uk(Req).
 
 auth_uk(Req)->
-    {User, Req1} = cowboy_req:qs_val(<<"u">>, Req),
-    {Key, Req2} = cowboy_req:qs_val(<<"k">>, Req1),
-    do_verify_user_key(User, Key, Req2).
+    #{u := User, k := Key} = cowboy_req:match_qs([u, k], Req),
+    do_verify_user_key(User, Key, Req).
 
 do_verify_user_key(undefined, _, Req) ->
     http_utils:cowboy_req_reply_json(http_utils:gen_fail_result(1, <<"auth fail">>), Req);

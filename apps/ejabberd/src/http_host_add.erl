@@ -5,7 +5,7 @@
 -include("logger.hrl").
 
 handle(Req) ->
-    {Method, _} = cowboy_req:method(Req),
+    Method = cowboy_req:method(Req),
     case Method of
         <<"POST">> ->
             do_handle(Req);
@@ -14,7 +14,7 @@ handle(Req) ->
     end.
 
 do_handle(Req)->
-    {ok, Body, Req1} = cowboy_req:body(Req),
+    {ok, Body, Req1} = cowboy_req:read_body(Req),
     case rfc4627:decode(Body) of
     {ok,{obj,Args},[]}  ->
         Res = add_host(Args),

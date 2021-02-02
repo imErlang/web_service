@@ -8,14 +8,14 @@
                    {name_host = {<<"">>, <<"">>} :: {binary(), binary()} | '$1' |{'_', binary()} | '_', pid = self() :: pid() | '$2' | '_' | '$1'}).
 
 handle(Req) ->
-    {Method, Req1} = cowboy_req:method(Req),
+    Method = cowboy_req:method(Req),
     case Method of 
-        <<"POST">> -> do_handle(Req1);
-        _ -> http_utils:cowboy_req_reply_json(http_utils:gen_fail_result(1, <<Method/binary, " is not disable">>), Req1)
+        <<"POST">> -> do_handle(Req);
+        _ -> http_utils:cowboy_req_reply_json(http_utils:gen_fail_result(1, <<Method/binary, " is not disable">>), Req)
     end.
 
 do_handle(Req)->
-    {ok, Body, Req1} = cowboy_req:body(Req),
+    {ok, Body, Req1} = cowboy_req:read_body(Req),
     case rfc4627:decode(Body) of
         {ok, {obj, Args},[]} ->
             Host = proplists:get_value("host",Args),

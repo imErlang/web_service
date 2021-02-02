@@ -288,3 +288,7 @@ maType说明参考[matype说明](matype.md)
     "data":""
 }
 ```
+
+# deprecated
+
+## send_xml

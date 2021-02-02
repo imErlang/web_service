@@ -17,13 +17,13 @@ init(_Transport, Req, []) ->
 	{ok, Req, undefined}.
 
 handle(Req, State) ->
-    {Method, Req1} = cowboy_req:method(Req),
+    Method = cowboy_req:method(Req),
     case Method of 
         <<"GET">> ->
-            {ok, Req2} = get_echo(Method,Req1),
+            {ok, Req2} = get_echo(Method,Req),
             {ok, Req2, State};
         _ ->
-            {ok,Req2} = echo(undefined, Req1),
+            {ok,Req2} = echo(undefined, Req),
             {ok, Req2, State}
     end.
     	

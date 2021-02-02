@@ -12,7 +12,7 @@ init(_Transport, Req, []) ->
 	{ok, Req, undefined}.
 
 handle(Req, State) ->
-	{Method, _} = cowboy_req:method(Req),
+	Method = cowboy_req:method(Req),
 	case Method of 
 	<<"GET">> ->
 	{ok, Req1} = get_echo(Method,Req),
