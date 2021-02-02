@@ -9,5 +9,5 @@ config :admin, Ejabberd.Repo,
   priv: "priv/user"
 
 config :admin,
-  server_ip: "192.168.18.128",
-  server_port: 8080
+  server_ip: "127.0.0.1",
+  server_port: 7004
