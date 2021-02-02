@@ -1,16 +1,25 @@
 # 接口说明
 
-- [0.概述](#0.概述)
-- [1.发送消息](#1.发送消息)
-- [2.发送事件通知](#2.发送事件通知)
-- [3.建群接口](#3.建群接口)
-- [4.添加群用户](#4.添加群用户)
-- [5.删除群成员](#5.删除群成员)
-- [6.销毁群](#6.销毁群)
-- [7.获取个人信息](#7.获取个人信息)
-- [8.发送消息](#8.发送消息)
-- [9.获取群成员](#9.获取群成员)
-- [10.验证uk](#10.验证uk)
+- [接口说明](#接口说明)
+  - [0.概述](#0概述)
+  - [1.发送消息](#1发送消息)
+  - [2.发送事件通知](#2发送事件通知)
+  - [3.建群接口](#3建群接口)
+  - [4.添加群用户](#4添加群用户)
+  - [5.删除群成员](#5删除群成员)
+  - [6.销毁群](#6销毁群)
+  - [7.获取个人信息](#7获取个人信息)
+  - [8.发送消息](#8发送消息)
+  - [9.获取群成员](#9获取群成员)
+  - [10.验证uk](#10验证uk)
+  - [11.清理离职人员所在的群](#11清理离职人员所在的群)
+  - [12. 更新群组相关详情](#12-更新群组相关详情)
+  - [13. 更新群组属性数据](#13-更新群组属性数据)
+  - [14. 获取群组属性](#14-获取群组属性)
+  - [15. 删除群组成员](#15-删除群组成员)
+  - [16. 增加host](#16-增加host)
+- [deprecated](#deprecated)
+  - [send_xml](#send_xml)
 
 ## 0.概述
 
@@ -278,6 +287,117 @@ maType说明参考[matype说明](matype.md)
 {
     "users":["test", "test1"],
     "host":"qtalk.test.org"
+}
+
+返回值：
+{
+    "ret":true,
+    "errcode":0,
+    "errmsg":"",
+    "data":""
+}
+```
+
+## 12. 更新群组相关详情
+
+```
+接口：qtalk/send_notice_vcard
+请求方式：GET
+参数：?muc_name=5f0b6bfa2e3a4d78aefe047ab06dc589
+
+返回值：
+{
+    "ret":true,
+    "errcode":0,
+    "errmsg":"",
+    "data":""
+}
+```
+
+## 13. 更新群组属性数据
+
+```
+接口：qtalk/management/change_muc_opts
+请求方式：POST
+参数：
+{
+    "muc": "5f0b6bfa2e3a4d78aefe047ab06dc589",
+    "domain": "conference.startalk.tech",
+    "public": "true",
+    "persistent": "true",
+    "max_users": "10",
+    "affiliations": "chao.zhang1" // 修改群组owner
+}
+
+返回值：
+{
+    "ret": true,
+    "errcode": "0",
+    "errmsg": "Muc set opt ok,muc not start"
+}
+```
+
+## 14. 获取群组属性
+
+```
+接口：qtalk/management/get_muc_opts
+请求方式：POST
+参数：
+
+{
+    "muc": "8470e92d33304a27a847ddcbc3b9ae2b",
+    "domain": "conference.startalk.tech"
+}
+
+返回值：
+{
+    "ret": true,
+    "errcode": "0",
+    "errmsg": "",
+    "data": {
+        "mucid": "8470e92d33304a27a847ddcbc3b9ae2b@conference.startalk.tech",
+        "maxusers": 600,
+        "showname": "新建群组",
+        "owner": [
+            {
+                "user": "chao.zhang1",
+                "host": "startalk.tech"
+            }
+        ]
+    }
+}
+```
+
+## 15. 删除群组成员
+
+```
+接口：qtalk/management/del_muc_user
+请求方式：POST
+参数：
+{
+    "muc": "8470e92d33304a27a847ddcbc3b9ae2b",
+    "user": "chao.zhang",
+    "host": "startalk.tech",
+    "domain": "conference.startalk.tech"
+}
+
+返回值：
+{
+    "ret":true,
+    "errcode":0,
+    "errmsg":"",
+    "data":""
+}
+```
+
+## 16. 增加host
+
+```
+接口：qtalk/add_host
+请求方式：POST
+参数：
+{
+    "host": "startalk1.tech"
 }
 
 返回值：
