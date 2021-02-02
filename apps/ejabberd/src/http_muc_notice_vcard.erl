@@ -15,9 +15,9 @@ handle(Req) ->
     end.
 
 do_handle(Req) ->
-    {MucName, Req1} = cowboy_req:qs_val(<<"muc_name">>, Req),
+    #{muc_name := MucName} = cowboy_req:match_qs([muc_name], Req),
     Res = send_update_vcard_presence(MucName),
-    http_utils:cowboy_req_reply_json(Res, Req1).
+    http_utils:cowboy_req_reply_json(Res, Req).
 
 send_update_vcard_presence(Name) ->
     Servers = ejabberd_config:get_myhosts(),
