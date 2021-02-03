@@ -1,0 +1,354 @@
+syntax = "proto3";
+
+message messagekeyvalue {
+  string key = 1;
+  string value = 2;
+}
+
+enum presencekeytype {
+  PresenceKeyDefault = 0;
+  PresenceKeyPriority = 1;
+  PresenceKeyVerifyFriend = 2;
+  PresenceKeyManualAuthenticationConfirm = 3;
+  PresenceKeyResult = 6;
+  PresenceKeyNotify = 7;
+  PresenceKeyError = 8;
+}
+
+enum categorytype {
+  CategoryDefault = 0;
+  CategoryOrganizational = 1;
+  CategorySessionList = 2;
+  CategoryNavigation = 3;
+  CategoryOPSNotification = 4;
+  CategoryAskLog = 10;
+  CategoryGlobalNotification = 98;
+  CategorySpecifyNotification = 99;
+  CategoryTickUser = 100;
+}
+
+enum streamendcode {
+  StreamEndCodeDefault = 0;
+  StreamEndCodeReloginBase = 100;
+  StreamEndCodeReloginFromNav = 101;
+  StreamEndCodeNoReloginBase = 200;
+}
+
+enum iqmessagekeytype {
+  IQKeyDefault = 0;
+  IQKeyBind = 1;
+  IQKeyMucCreate = 2;
+  IQKeyMucCreateV2 = 3;
+  IQKeyMucInviteV2 = 4;
+  IQKeyGetMucUser = 5;
+  IQKeySetMucUser = 6;
+  IQKeyDelMucUser = 7;
+  IQKeyAddUserSubscribe = 8;
+  IQKeyDelUserSubscribe = 9;
+  IQKeyGetUserSubScribe = 10;
+  IQKeyGetVerifyFriendOpt = 11;
+  IQKeySetVerifyFriendOpt = 12;
+  IQKeySetUserSubScribeV2 = 13;
+  IQKeyGetUserSubScribeV2 = 14;
+  IQKeyGetUserFriend = 16;
+  IQKeyDelUserFriend = 18;
+  IQKeyGetUserKey = 20;
+  IQKeyGetUserMask = 22;
+  IQKeySetUserMask = 24;
+  IQKeyCancelUSerMask = 26;
+  IQKeySetAdmin = 28;
+  IQKeySetMember = 30;
+  IQKeyCancelMember = 32;
+  IQKeyGetUserMucs = 36;
+  IQKeyDestroyMuc = 40;
+  IQKeyPing = 50;
+  IQKeyAddPush = 52;
+  IQKeyCancelPush = 60;
+  IQKeyResult = 80;
+  IQKeyError = 90;
+  IQKeyGetVUser = 92;
+  IQKeyGetVUserRole = 94;
+  IQKeyStartSession = 96;
+  IQKeyEndSession = 98;
+  IQKeySessionEvent = 99;
+}
+enum stringheadertype {
+  StringHeaderTypeDefault = 0;
+  StringHeaderTypeChatId = 1;
+  StringHeaderTypeChannelId = 2;
+  StringHeaderTypeExtendInfo = 3;
+  StringHeaderTypeBackupInfo = 4;
+  StringHeaderTypeReadType = 5;
+  StringHeaderTypeJid = 7;
+  StringHeaderTypeRealJid = 8;
+  StringHeaderTypeInviteJid = 9;
+  StringHeaderTypeDeleleJid = 10;
+  StringHeaderTypeNick = 12;
+  StringHeaderTypeTitle = 16;
+  StringHeaderTypePic = 18;
+  StringHeaderTypeVersion = 20;
+  StringHeaderTypeMethod = 22;
+  StringHeaderTypeBody = 24;
+  StringHeaderTypeAffiliation = 28;
+  StringHeaderTypeType = 30;
+  StringHeaderTypeResult = 32;
+  StringHeaderTypeReason = 34;
+  StringHeaderTypeRole = 36;
+  StringHeaderTypeDomain = 38;
+  StringHeaderTypeStatus = 40;
+  StringHeaderTypeCode = 42;
+  StringHeaderTypeCdata = 50;
+  StringHeaderTypeTimeValue = 52;
+  StringHeaderTypeKeyValue = 54;
+  StringHeaderTypeName = 56;
+  StringHeaderTypeHost = 58;
+  StringHeaderTypeQuestion = 60;
+  StringHeaderTypeAnswer = 62;
+  StringHeaderTypeFriends = 64;
+  StringHeaderTypeValue = 66;
+  StringHeaderTypeMaskedUuser = 68;
+  StringHeaderTypeKey = 70;
+  StringHeaderTypeCarbon = 72;
+  StringHeaderTypeMode = 76;
+}
+
+enum messagetype {
+  MessageTypeDefault = 0;
+  MessageTypePNote = -11;
+  MessageTypeRevoke = -1;
+  MessageTypeText = 1;
+  MessageTypeVoice = 2;
+  MessageTypePhoto = 3;
+  MessageTypeSogouIcon = 4;
+  MessageTypeFile = 5;
+  MessageTypeTopic = 6;
+  MessageTypeRichText = 7;
+  MessageTypeActionRichText = 8;
+  MessageTypeReply = 9;
+  MessageTypeShock = 10;
+  MessageTypeNote = 11;
+  MessageTypeGroupAt = 12;
+  MessageTypeMarkdown = 13;
+  MessageTypeGroupNotify = 15;
+  MessageTypeLocalShare = 16;
+  MessageTypeWebRTCAudio = 20;
+  MessageTypeWebRTCVidio = 21;
+  MessageTypeImageNew = 30;
+  MessageTypeSmallVideo = 32;
+  MessageTypeSourceCode = 64;
+  MessageTypeTime = 101;
+  MessageTypeBurnAfterRead = 128;
+  MessageTypeCardShare = 256;
+  MessageTypeMeetingRemind = 257;
+  MessageTypeEncrypt = 404;
+  MessageTypeActivity = 511;
+  MessageTypeRedPack = 512;
+  MessageTypeAA = 513;
+  MessageTypeCommonTrdInfo = 666;
+  MessageTypeCommonProductInfo = 888;
+  MessageTypeTransChatToCustomer = 1001;
+  MessageTypeTransChatToCustomerService = 1002;
+  MessageTypeTransChatToCustomer_Feedback = 1003;
+  MessageTypeTransChatToCustomerService_Feedback = 1004;
+  MessageTypeRedPackInfo = 1024;
+  MessageTypeAAInfo = 1025;
+  MessageTypeConsult = 2001;
+  MessageTypeConsultResult = 2002;
+  MessageTypeGrabMenuVcard = 2003;
+  MessageTypeGrabMenuResult = 2004;
+  MessageTypeQCZhongbao = 2005;
+  MessageTypeMicroTourGuide = 3001;
+  MessageTypeProduct = 4096;
+  WebRTC_MsgType_VideoMeeting = 5001;
+  MessageTypeShareLocation = 8192;
+  WebRTC_MsgType_Live = 65501;
+  WebRTC_MsgType_Video = 65535;
+  MessageTypeRobotQuestionList = 65536;
+  MessageTypeRobotTurnToUser = 65537;
+  WebRTC_MsgType_Audio = 131072;
+  MessageTypeNotice = 134217728;
+  MessageTypeSystem = 268435456;
+  MediaTypeSystemLY = 268435457;
+}
+
+enum clienttype {
+  ClientTypeDefault = 0;
+  ClientTypeMac = 1;
+  ClientTypeiOS = 2;
+  ClientTypePC = 3;
+  ClientTypeAndroid = 4;
+  ClientTypeLinux = 5;
+  ClientTypeWeb = 6;
+}
+enum signaltype {
+  SignalTypeDefault = 0;
+  SignalTypePresence = 1;
+  SignalTypeIQ = 2;
+  SignalTypeIQResponse = 3;
+  SignalTypeSucceededResponse = 4;
+  SignalTypeFailureResponse = 5;
+  SignalTypeChat = 6;
+  SignalTypeGroupChat = 7;
+  SignalTypeNormal = 8;
+  SignalTypeError = 9;
+  SignalTypeTyping = 10;
+  SignalTypeNote = 11;
+  SignalTypeTransfor = 12;
+  SignalTypeReadmark = 13;
+  SignalTypeRevoke = 14;
+  SignalTypeSubscription = 15;
+  SignalTypeMState = 16;
+  SignalTypeHeadline = 17;
+  SignalTypeShareLocation = 20;
+  SignalTypeHeartBeat = 30;
+  SignalTypeAuth = 45;
+  SignalTypeStreamBegin = 50;
+  SignalTypeStreamEnd = 51;
+  SignalTypeWelcome = 100;
+  SignalTypeUserConnect = 101;
+  SignalTypeChallenge = 102;
+  SignalStartTLS = 106;
+  SignalProceedTLS = 108;
+  SignalTypeWebRtc = 110;
+  SignalTypeCarbon = 128;
+  SignalTypeConsult = 132;
+  SignalTypeEncryption = 136;
+  SignalTypeCollection = 140;
+}
+
+message stringheader {
+  repeated string params = 1;
+  string key = 2;
+  string value = 3;
+  string definedkey = 4;
+}
+
+message packagelength { int32 length = 1; }
+
+message protoheader {
+  int32 version = 1;
+  int32 options = 2;
+  repeated int32 optionlist = 3;
+  int32 length = 4;
+  string content = 5;
+  bytes message = 6;
+}
+
+message messagebody {
+  repeated stringheader headers = 1;
+  string value = 2;
+  repeated messagebody bodys = 3;
+}
+
+message authmessage {
+  string mechanism = 1;
+  string method = 2;
+  string msgid = 3;
+  string authkey = 4;
+  messagebody otherbody = 5;
+}
+
+message welcomemessage {
+  string domain = 1;
+  string version = 2;
+  string user = 3;
+  string sockmod = 4;
+}
+
+message streambegin {
+  string domain = 1;
+  string version = 2;
+  repeated messagebody bodys = 3;
+}
+
+message starttls {}
+
+message proceedtls {}
+
+message streamend {
+  string reason = 1;
+  int32 code = 2;
+}
+
+message userconnect {
+  string domain = 1;
+  string version = 2;
+}
+
+message capability {
+  string version = 1;
+  string bodys = 2;
+}
+
+message responsesucceeded {
+  int32 code = 1;
+  string msgid = 2;
+  string info = 3;
+  messagebody body = 4;
+}
+
+message responsefailure {
+  int32 code = 1;
+  string msgid = 2;
+  string error = 3;
+  messagebody body = 4;
+}
+
+message protomessage {
+  int32 options = 1;
+  int32 signaltype = 2;
+  string from = 3;
+  string to = 4;
+  bytes message = 5;
+  string realfrom = 6;
+  string realto = 7;
+  string originfrom = 8;
+  string originto = 9;
+  string origintype = 10;
+  string sendjid = 11;
+}
+
+message iqmessage {
+  string namespace = 1;
+  string key = 2;
+  string value = 3;
+  string messageid = 4;
+  stringheader header = 5;
+  messagebody body = 6;
+  int64 receivedtime = 7;
+  int64 transfertime = 8;
+  repeated stringheader headers = 9;
+  repeated messagebody bodys = 10;
+  iqmessagekeytype definedkey = 11;
+}
+
+message presencemessage {
+  string namespace = 1;
+  string key = 2;
+  string value = 3;
+  string messageid = 4;
+  string header = 5;
+  messagebody body = 6;
+  int64 receivedtime = 7;
+  int64 transfertime = 8;
+  repeated stringheader headers = 9;
+  repeated messagebody bodys = 10;
+  presencekeytype definedkey = 11;
+  int32 categorytype = 12;
+}
+
+message xmppmessage {
+  int32 messagetype = 1;
+  int32 clienttype = 2;
+  int64 clientversion = 3;
+  string namespace = 4;
+  string key = 5;
+  string value = 6;
+  string messageid = 7;
+  stringheader header = 8;
+  messagebody body = 9;
+  int64 receivedtime = 10;
+  int64 transfertime = 11;
+  repeated stringheader headers = 12;
+  repeated messagebody bodys = 13;
+}

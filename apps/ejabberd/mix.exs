@@ -47,7 +47,8 @@ defmodule Ejabberd.Mixfile do
         :eredis,
         :p1_mysql,
         :p1_pgsql,
-        :recon_ex
+        :recon_ex,
+        :protobuf
       ]
     ]
   end
@@ -86,7 +87,8 @@ defmodule Ejabberd.Mixfile do
       {:recon_ex, "~> 0.9.1"},
       {:rfc4627_jsonrpc, github: "tonyg/erlang-rfc4627"},
       {:distillery, "~> 2.1"},
-      {:credo, "~> 0.5", only: [:dev, :test]}
+      {:credo, "~> 0.5", only: [:dev, :test]},
+      {:protobuf, "~> 0.7.1"}
     ]
   end
 
