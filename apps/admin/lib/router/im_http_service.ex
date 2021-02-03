@@ -45,17 +45,6 @@ defmodule Admin.Router.HttpService do
     send_resp_json(conn, body)
   end
 
-  match "/nck/rsa/get_public_key.do" do
-    result = %{
-      rsa_pub_key_shortkey: Application.get_env(:admin, :rsa_pub_key_shortkey),
-      rsa_pub_key_fullkey: Application.get_env(:admin, :rsa_pub_key_fullkey),
-      pub_key_fullkey: Application.get_env(:admin, :pub_key_fullkey),
-      pub_key_shortkey: Application.get_env(:admin, :pub_key_shortkey)
-    }
-
-    send_resp_json(conn, Ejabberd.Util.success(result))
-  end
-
   match "/domain/get_user_status.qunar" do
     body = Handler.User.get_user_status(conn)
     send_resp_json(conn, body)

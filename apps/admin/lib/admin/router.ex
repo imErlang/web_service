@@ -20,12 +20,12 @@ defmodule Admin.Router do
 
   plug(:dispatch)
 
-  match "/search" do
+  match "/py/search" do
     body = Handler.Search.search(conn)
     send_resp_json(conn, body)
   end
 
-  match "/sharemsg" do
+  match "/py/sharemsg" do
     body = Handler.Share.share_msg(conn)
     send_resp_json(conn, body)
   end
