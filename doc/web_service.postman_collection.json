@@ -1,0 +1,3515 @@
+{
+	"info": {
+		"_postman_id": "21d2c895-8f58-4e69-a33e-8972fd86264e",
+		"name": "web_service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "deps",
+			"item": [
+				{
+					"name": "addDep",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"depName\": \"/zhangchao\",\n    \"depLevel\": 1,\n    \"depLeader\": \"admin\",\n    \"depHr\": \"admin\",\n    \"parentId\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/dep/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"dep",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMaxDepLevel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/dep/getMaxDepLevel",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"dep",
+								"getMaxDepLevel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getLevelDeps",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"depLevel\": 1,\n    \"curDepId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/dep/getLevelDeps",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"dep",
+								"getLevelDeps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateDep",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": 4,\n    \"depLeader\": \"test10\",\n    \"depHr\": \"test01\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/dep/update",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"dep",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDepDetail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"depId\": 42\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/dep/get",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"dep",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteDep",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"depId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/dep/delete",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"dep",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchDep",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"param\": \"c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/dep/search",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"dep",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStructe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/dep/getStructure",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"dep",
+								"getStructure"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "getuserDetail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"chao.zhang1\",\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/getuserDetail",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"getuserDetail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_vcard_info",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"domain\": \"startalk.tech\",\n        \"users\": [\n            {\n                \"user\": \"chao.zhang\",\n                \"version\": 0\n            }\n        ]\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/user/get_vcard_info",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"get_vcard_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_user_status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"users\": [\n        \"chao.zhang@startalk.tech\"\n    ],\n    \"host\": \"startalk.tech\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/user/status",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userName\": \"{{user}}\",\n    \"gender\": 1,\n    \"department\": \"/zhangchao\",\n    \"roleClass\": 2,\n    \"role\": 2,\n    \"leader\": \"admin\",\n    \"hrbp\": \"admin\",\n    \"tel\": \"{{$randomPhoneNumber}}\",\n    \"userId\": \"{{user}}\",\n    \"password\": \"12345678\",\n    \"conPassword\": \"12345678\",\n    \"email\": \"{{$randomEmail}}\",\n    \"host\": \"startalk.tech\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/user/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"version\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/im_http_service/newapi/update/getUpdateUsers.qunar",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"im_http_service",
+								"newapi",
+								"update",
+								"getUpdateUsers.qunar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRoleByClass",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"groupID\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dev.fsll.tech:8443/startalk/management/organ/getRoleByClass",
+							"protocol": "https",
+							"host": [
+								"dev",
+								"fsll",
+								"tech"
+							],
+							"port": "8443",
+							"path": [
+								"startalk",
+								"management",
+								"organ",
+								"getRoleByClass"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \"admin\",\n\t\"password\": \"P@ssword@@123\"\n}"
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/update/changePwd",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"update",
+								"changePwd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "downloadTemplate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nsukey\": \"0YedJiZGlhZmlBqGzFoi%2B3sLd5UduDAP6NZiNuftsh7SqmZCFBuuskUnw58rApF1FWJd%2F8TgH4QyaLfYQtVksy7ZUzQk2%2FwBo0t7OZuIzL%2BjbmHZYo8WFnvvXT%2FSxb2xWl7Gbon38NNUfCON8qB0F2LqeYqnLVpMQuPsJzrwEvPpUqVNX%2FiFk6JlokZxhHVV9VA3s8FOTnDnAEdArENLmg%3D%3D#/structure/user\",\n    \"queryCondition\": \"chao.zhang3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dev.fsll.tech:8443/startalk/management/search",
+							"protocol": "https",
+							"host": [
+								"dev",
+								"fsll",
+								"tech"
+							],
+							"port": "8443",
+							"path": [
+								"startalk",
+								"management",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"chao.zhang5\",\n    \"host\": \"startalk.tech\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/delete/user",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"delete",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"param\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dev.fsll.tech:8443/startalk/management/search/user",
+							"protocol": "https",
+							"host": [
+								"dev",
+								"fsll",
+								"tech"
+							],
+							"port": "8443",
+							"path": [
+								"startalk",
+								"management",
+								"search",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resetPasswd",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"psw\": \"P@ssword@@123\",\n\t\"repsw\": \"P@ssword@@123\",\n\t\"opsw\": \"123456\",\n\t\"userId\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/api/v1/user/reset_passwd",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"reset_passwd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserList",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"search\": \"chao\",\n\t\"page\": 1,\n\t\"limit\": 10\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{web_admin}}:{{web_admin_port}}/startalk/management/user/list",
+							"protocol": "http",
+							"host": [
+								"{{web_admin}}"
+							],
+							"port": "{{web_admin_port}}",
+							"path": [
+								"startalk",
+								"management",
+								"user",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUpdateUsers.qunar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"version\": 0,\n    \"host\": \"startalk.tech\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/user/getUpdateUsers?v=200010&p=Mac&u=chao.zhang&k=290711610366415787080&d=startalk.tech",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"user",
+								"getUpdateUsers"
+							],
+							"query": [
+								{
+									"key": "v",
+									"value": "200010"
+								},
+								{
+									"key": "p",
+									"value": "Mac"
+								},
+								{
+									"key": "u",
+									"value": "chao.zhang"
+								},
+								{
+									"key": "k",
+									"value": "290711610366415787080"
+								},
+								{
+									"key": "d",
+									"value": "startalk.tech"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "password",
+			"item": [
+				{
+					"name": "resetPassword",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "msg",
+			"item": [
+				{
+					"name": "gethistory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"chao.zhang1\",\n    \"domain\": \"startalk.tech\",\n    \"host\": \"startalk.tech\",\n    \"time\": 1611916498598,\n    \"num\": 500,\n    \"f\": \"t\",\n    \"keyword\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/im_http_service/newapi/gethistory.qunar",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"im_http_service",
+								"newapi",
+								"gethistory.qunar"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getMsgs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"from\": \"\",\n\t\"to\": \"\",\n\t\"keyWord\": \"你好\",\n\t\"offset\": 0,\n\t\"limit\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/msgs/history",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"msgs",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "53"
+								},
+								{
+									"key": "keep-alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "content-length",
+									"value": "366"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 10 Jul 2020 05:50:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"count\": 1,\n        \"history\": [\n            {\n                \"createTime\": \"2020-07-05 15:12:41\",\n                \"updateTime\": \"2020-07-05 15:12:41\",\n                \"mFrom\": \"test01\",\n                \"mTo\": \"test04\",\n                \"mBody\": \"你好测试\",\n                \"id\": \"1\",\n                \"readFlag\": 3,\n                \"msgId\": \"f8820fbc-5a59-4493-b2fd-a19c4dbe76aa\",\n                \"fromHost\": \"dev.startalk.tech\",\n                \"toHost\": \"dev.startalk.tech\",\n                \"realfrom\": \"\",\n                \"realto\": \"\",\n                \"msgType\": \"chat\"\n            }\n        ]\n    },\n    \"errcode\": 0,\n    \"errmsg\": \"\",\n    \"ret\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "getMsgs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"test01\",\n    \"to\": \"test04\",\n    \"direction\": \"0\",\n    \"time\": 1598840905805,\n    \"domain\": \"startalk.tech\",\n    \"num\": 2,\n    \"fhost\": \"startalk.tech\",\n    \"thost\": \"startalk.tech\",\n    \"f\": \"t\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/history/msgs",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"history",
+								"msgs"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getMsgs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"from\": \"\",\n\t\"to\": \"\",\n\t\"keyWord\": \"你好\",\n\t\"offset\": 0,\n\t\"limit\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/msgs/history",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"msgs",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "53"
+								},
+								{
+									"key": "keep-alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "content-length",
+									"value": "366"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 10 Jul 2020 05:50:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"count\": 1,\n        \"history\": [\n            {\n                \"createTime\": \"2020-07-05 15:12:41\",\n                \"updateTime\": \"2020-07-05 15:12:41\",\n                \"mFrom\": \"test01\",\n                \"mTo\": \"test04\",\n                \"mBody\": \"你好测试\",\n                \"id\": \"1\",\n                \"readFlag\": 3,\n                \"msgId\": \"f8820fbc-5a59-4493-b2fd-a19c4dbe76aa\",\n                \"fromHost\": \"dev.startalk.tech\",\n                \"toHost\": \"dev.startalk.tech\",\n                \"realfrom\": \"\",\n                \"realto\": \"\",\n                \"msgType\": \"chat\"\n            }\n        ]\n    },\n    \"errcode\": 0,\n    \"errmsg\": \"\",\n    \"ret\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "get_muc_msgs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"muc\": \"eacfa594c3374240a8370990febb980a\",\n    \"direction\": \"0\",\n    \"time\": 1591841107.844,\n    \"domain\": \"startalk.tech\",\n    \"num\": 20\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/im_http_service/newapi/getmucmsgs.qunar",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"im_http_service",
+								"newapi",
+								"getmucmsgs.qunar"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getMsgs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"from\": \"\",\n\t\"to\": \"\",\n\t\"keyWord\": \"你好\",\n\t\"offset\": 0,\n\t\"limit\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/msgs/history",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"msgs",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "53"
+								},
+								{
+									"key": "keep-alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "content-length",
+									"value": "366"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 10 Jul 2020 05:50:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"count\": 1,\n        \"history\": [\n            {\n                \"createTime\": \"2020-07-05 15:12:41\",\n                \"updateTime\": \"2020-07-05 15:12:41\",\n                \"mFrom\": \"test01\",\n                \"mTo\": \"test04\",\n                \"mBody\": \"你好测试\",\n                \"id\": \"1\",\n                \"readFlag\": 3,\n                \"msgId\": \"f8820fbc-5a59-4493-b2fd-a19c4dbe76aa\",\n                \"fromHost\": \"dev.startalk.tech\",\n                \"toHost\": \"dev.startalk.tech\",\n                \"realfrom\": \"\",\n                \"realto\": \"\",\n                \"msgType\": \"chat\"\n            }\n        ]\n    },\n    \"errcode\": 0,\n    \"errmsg\": \"\",\n    \"ret\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "getrbl",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"domain\": \"startalk.tech\",\n    \"user\": \"100094z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/history/rbl",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"history",
+								"rbl"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getMsgs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"from\": \"\",\n\t\"to\": \"\",\n\t\"keyWord\": \"你好\",\n\t\"offset\": 0,\n\t\"limit\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/msgs/history",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"msgs",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "53"
+								},
+								{
+									"key": "keep-alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "content-length",
+									"value": "366"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 10 Jul 2020 05:50:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"count\": 1,\n        \"history\": [\n            {\n                \"createTime\": \"2020-07-05 15:12:41\",\n                \"updateTime\": \"2020-07-05 15:12:41\",\n                \"mFrom\": \"test01\",\n                \"mTo\": \"test04\",\n                \"mBody\": \"你好测试\",\n                \"id\": \"1\",\n                \"readFlag\": 3,\n                \"msgId\": \"f8820fbc-5a59-4493-b2fd-a19c4dbe76aa\",\n                \"fromHost\": \"dev.startalk.tech\",\n                \"toHost\": \"dev.startalk.tech\",\n                \"realfrom\": \"\",\n                \"realto\": \"\",\n                \"msgType\": \"chat\"\n            }\n        ]\n    },\n    \"errcode\": 0,\n    \"errmsg\": \"\",\n    \"ret\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "getreadflag",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"time\": 1610193615000,\n    \"domain\": \"startalk.tech\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/history/getreadflag",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"history",
+								"getreadflag"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getMsgs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"from\": \"\",\n\t\"to\": \"\",\n\t\"keyWord\": \"你好\",\n\t\"offset\": 0,\n\t\"limit\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/msgs/history",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"msgs",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "53"
+								},
+								{
+									"key": "keep-alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "content-length",
+									"value": "366"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 10 Jul 2020 05:50:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"count\": 1,\n        \"history\": [\n            {\n                \"createTime\": \"2020-07-05 15:12:41\",\n                \"updateTime\": \"2020-07-05 15:12:41\",\n                \"mFrom\": \"test01\",\n                \"mTo\": \"test04\",\n                \"mBody\": \"你好测试\",\n                \"id\": \"1\",\n                \"readFlag\": 3,\n                \"msgId\": \"f8820fbc-5a59-4493-b2fd-a19c4dbe76aa\",\n                \"fromHost\": \"dev.startalk.tech\",\n                \"toHost\": \"dev.startalk.tech\",\n                \"realfrom\": \"\",\n                \"realto\": \"\",\n                \"msgType\": \"chat\"\n            }\n        ]\n    },\n    \"errcode\": 0,\n    \"errmsg\": \"\",\n    \"ret\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "getmuchistory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user\":\"chao.zhang1\",\n  \"domain\":\"startalk.tech\",\n  \"host\":\"startalk.tech\",\n  \"time\":1612150628845,\n  \"num\":500,\n  \"f\":\"t\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/im_http_service/newapi/getmuchistory.qunar",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"im_http_service",
+								"newapi",
+								"getmuchistory.qunar"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getMsgs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"from\": \"\",\n\t\"to\": \"\",\n\t\"keyWord\": \"你好\",\n\t\"offset\": 0,\n\t\"limit\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/msgs/history",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"msgs",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "53"
+								},
+								{
+									"key": "keep-alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "content-length",
+									"value": "366"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 10 Jul 2020 05:50:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"count\": 1,\n        \"history\": [\n            {\n                \"createTime\": \"2020-07-05 15:12:41\",\n                \"updateTime\": \"2020-07-05 15:12:41\",\n                \"mFrom\": \"test01\",\n                \"mTo\": \"test04\",\n                \"mBody\": \"你好测试\",\n                \"id\": \"1\",\n                \"readFlag\": 3,\n                \"msgId\": \"f8820fbc-5a59-4493-b2fd-a19c4dbe76aa\",\n                \"fromHost\": \"dev.startalk.tech\",\n                \"toHost\": \"dev.startalk.tech\",\n                \"realfrom\": \"\",\n                \"realto\": \"\",\n                \"msgType\": \"chat\"\n            }\n        ]\n    },\n    \"errcode\": 0,\n    \"errmsg\": \"\",\n    \"ret\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "getmucreadmark",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"chao.zhang\",\n    \"host\": \"startalk.tech\",\n    \"time\": \"0\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/history/muc/readmark",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"history",
+								"muc",
+								"readmark"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getMsgs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"from\": \"\",\n\t\"to\": \"\",\n\t\"keyWord\": \"你好\",\n\t\"offset\": 0,\n\t\"limit\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/msgs/history",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"msgs",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "53"
+								},
+								{
+									"key": "keep-alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "content-length",
+									"value": "366"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 10 Jul 2020 05:50:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"count\": 1,\n        \"history\": [\n            {\n                \"createTime\": \"2020-07-05 15:12:41\",\n                \"updateTime\": \"2020-07-05 15:12:41\",\n                \"mFrom\": \"test01\",\n                \"mTo\": \"test04\",\n                \"mBody\": \"你好测试\",\n                \"id\": \"1\",\n                \"readFlag\": 3,\n                \"msgId\": \"f8820fbc-5a59-4493-b2fd-a19c4dbe76aa\",\n                \"fromHost\": \"dev.startalk.tech\",\n                \"toHost\": \"dev.startalk.tech\",\n                \"realfrom\": \"\",\n                \"realto\": \"\",\n                \"msgType\": \"chat\"\n            }\n        ]\n    },\n    \"errcode\": 0,\n    \"errmsg\": \"\",\n    \"ret\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "getSystemHistory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": \"chao.zhang\",\n    \"domain\": \"startalk.tech\",\n    \"host\": \"startalk.tech\",\n    \"time\": 1610193615000,\n    \"num\": 500,\n    \"f\": \"t\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/history/system/get",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"history",
+								"system",
+								"get"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getMsgs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"from\": \"\",\n\t\"to\": \"\",\n\t\"keyWord\": \"你好\",\n\t\"offset\": 0,\n\t\"limit\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{port}}/msgs/history",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"msgs",
+										"history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "53"
+								},
+								{
+									"key": "keep-alive",
+									"value": "timeout=5"
+								},
+								{
+									"key": "content-length",
+									"value": "366"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 10 Jul 2020 05:50:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"count\": 1,\n        \"history\": [\n            {\n                \"createTime\": \"2020-07-05 15:12:41\",\n                \"updateTime\": \"2020-07-05 15:12:41\",\n                \"mFrom\": \"test01\",\n                \"mTo\": \"test04\",\n                \"mBody\": \"你好测试\",\n                \"id\": \"1\",\n                \"readFlag\": 3,\n                \"msgId\": \"f8820fbc-5a59-4493-b2fd-a19c4dbe76aa\",\n                \"fromHost\": \"dev.startalk.tech\",\n                \"toHost\": \"dev.startalk.tech\",\n                \"realfrom\": \"\",\n                \"realto\": \"\",\n                \"msgType\": \"chat\"\n            }\n        ]\n    },\n    \"errcode\": 0,\n    \"errmsg\": \"\",\n    \"ret\": true\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "host",
+			"item": [
+				{
+					"name": "addHost",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"startalk.tech\",\r\n    \"host\": \"startalk.tech\",\r\n    \"host_qrcode\": \"\",\r\n    \"host_type\": 0,\r\n    \"need_approve\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/host/add",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"host",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getHost",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"host\": \"startalk.tech\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/host/get",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"host",
+								"get"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "base",
+			"item": [
+				{
+					"name": "getServerTime",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk/management/base/time",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk",
+								"management",
+								"base",
+								"time"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPublicKey",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/package/qtapi/nck/rsa/get_public_key.do",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"package",
+								"qtapi",
+								"nck",
+								"rsa",
+								"get_public_key.do"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "startalk",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/startalk_nav?p=pc&nauth=true",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"startalk_nav"
+							],
+							"query": [
+								{
+									"key": "p",
+									"value": "pc"
+								},
+								{
+									"key": "nauth",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "configuration",
+			"item": [
+				{
+					"name": "get",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"100094z\",\n    \"host\": \"startalk.tech\",\n    \"version\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/configuration/get",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"configuration",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "set",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"100094z\",\n    \"host\": \"startalk.tech\",\n    \"key\": \"kStarContact\",\n    \"subkey\": \"100097z@startalk.tech\",\n    \"value\": \"1\",\n    \"resource\": \"mobile1\",\n    \"operate_plat\": \"mobile\",\n    \"version\": 0,\n    \"type\": 1,\n    \"batchProcess\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/configuration/set",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"configuration",
+								"set"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "file",
+			"item": [
+				{
+					"name": "upload",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=Boundary+FB6E001B5FF48A43",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "psql.md",
+									"type": "file",
+									"src": "/Users/zhangchao/work/talk/web_admin/doc/psql.md"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/file/v2/upload/file?name=psql.md&p=PC64&u=100095z@startalk.tech&k=290711604316194332576&v=200010&key=3e2b5196f0dd8f524636f9622cbb1a33&size=3976",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"file",
+								"v2",
+								"upload",
+								"file"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "psql.md"
+								},
+								{
+									"key": "p",
+									"value": "PC64"
+								},
+								{
+									"key": "u",
+									"value": "100095z@startalk.tech"
+								},
+								{
+									"key": "k",
+									"value": "290711604316194332576"
+								},
+								{
+									"key": "v",
+									"value": "200010"
+								},
+								{
+									"key": "key",
+									"value": "3e2b5196f0dd8f524636f9622cbb1a33"
+								},
+								{
+									"key": "size",
+									"value": "3976"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "download",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{qfproxy}}/file/v2/download/3e2b5196f0dd8f524636f9622cbb1a33.png?name=3e2b5196f0dd8f524636f9622cbb1a33.png",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{qfproxy}}",
+							"path": [
+								"file",
+								"v2",
+								"download",
+								"3e2b5196f0dd8f524636f9622cbb1a33.png"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "3e2b5196f0dd8f524636f9622cbb1a33.png"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "downloadfile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/file/v2/download/test?name=test.txt",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"file",
+								"v2",
+								"download",
+								"test"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "test.txt"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "downloadPerm",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{web_im_http_server}}/file/v2/download/perm/004881EBE3826CF16CFD124968F2A5BB.txt?name=004881EBE3826CF16CFD124968F2A5BB.txt",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{web_im_http_server}}",
+							"path": [
+								"file",
+								"v2",
+								"download",
+								"perm",
+								"004881EBE3826CF16CFD124968F2A5BB.txt"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "004881EBE3826CF16CFD124968F2A5BB.txt"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=Boundary+FB6E001B5FF48A43",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "3e2b5196f0dd8f524636f9622cbb1a33.png",
+									"type": "file",
+									"src": "/Users/stacy/work/talk/web_im_http_service/data/3e2b5196f0dd8f524636f9622cbb1a33.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/file/v2/upload/img?name=3e2b5196f0dd8f524636f9622cbb1a33.png&p=PC64&u=100095z@startalk.tech&k=290711604316194332576&v=200010&key=3e2b5196f0dd8f524636f9622cbb1a33&size=3976",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"file",
+								"v2",
+								"upload",
+								"img"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "3e2b5196f0dd8f524636f9622cbb1a33.png"
+								},
+								{
+									"key": "p",
+									"value": "PC64"
+								},
+								{
+									"key": "u",
+									"value": "100095z@startalk.tech"
+								},
+								{
+									"key": "k",
+									"value": "290711604316194332576"
+								},
+								{
+									"key": "v",
+									"value": "200010"
+								},
+								{
+									"key": "key",
+									"value": "3e2b5196f0dd8f524636f9622cbb1a33"
+								},
+								{
+									"key": "size",
+									"value": "3976"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "uploadfile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "test.txt",
+									"type": "file",
+									"src": "/Users/stacy/work/talk/web_im_http_service/data/test.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/file/v2/upload/file?name=test.txt&p=PC64&u=100095z@startalk.tech&k=290711604316194332576&v=200010&key=test",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"file",
+								"v2",
+								"upload",
+								"file"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "test.txt"
+								},
+								{
+									"key": "p",
+									"value": "PC64"
+								},
+								{
+									"key": "u",
+									"value": "100095z@startalk.tech"
+								},
+								{
+									"key": "k",
+									"value": "290711604316194332576"
+								},
+								{
+									"key": "v",
+									"value": "200010"
+								},
+								{
+									"key": "key",
+									"value": "test"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inspection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{qfproxy}}/file/v2/inspection/img?key=179965160c9eb907df59620e30b01777&size=15742&name=179965160c9eb907df59620e30b01777.png&platform=PC64&u=100095z@startalk.tech&k=290711604316194332576&version=200010",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{qfproxy}}",
+							"path": [
+								"file",
+								"v2",
+								"inspection",
+								"img"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "179965160c9eb907df59620e30b01777"
+								},
+								{
+									"key": "size",
+									"value": "15742"
+								},
+								{
+									"key": "name",
+									"value": "179965160c9eb907df59620e30b01777.png"
+								},
+								{
+									"key": "platform",
+									"value": "PC64"
+								},
+								{
+									"key": "u",
+									"value": "100095z@startalk.tech"
+								},
+								{
+									"key": "k",
+									"value": "290711604316194332576"
+								},
+								{
+									"key": "version",
+									"value": "200010"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "emoji",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/qfproxy/file/v2/emo/d/e/EmojiOne/dyx/org",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"qfproxy",
+								"file",
+								"v2",
+								"emo",
+								"d",
+								"e",
+								"EmojiOne",
+								"dyx",
+								"org"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "emojiTest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/file/v2/emo/d/e/EmojiOne/dyx/org",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"file",
+								"v2",
+								"emo",
+								"d",
+								"e",
+								"EmojiOne",
+								"dyx",
+								"org"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inspectionfile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/file/v2/inspection/file?key=3e2b5196f0dd8f524636f9622cbb1a33.md&size=15742&name=3e2b5196f0dd8f524636f9622cbb1a33.md&platform=PC64&u=100095z@startalk.tech&k=290711604316194332576&version=200010",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"file",
+								"v2",
+								"inspection",
+								"file"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "3e2b5196f0dd8f524636f9622cbb1a33.md"
+								},
+								{
+									"key": "size",
+									"value": "15742"
+								},
+								{
+									"key": "name",
+									"value": "3e2b5196f0dd8f524636f9622cbb1a33.md"
+								},
+								{
+									"key": "platform",
+									"value": "PC64"
+								},
+								{
+									"key": "u",
+									"value": "100095z@startalk.tech"
+								},
+								{
+									"key": "k",
+									"value": "290711604316194332576"
+								},
+								{
+									"key": "version",
+									"value": "200010"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "search",
+			"item": [
+				{
+					"name": "shareMsgTest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/py/sharemsg?jdata=aHR0cDovL2ltLnN0YXJ0YWxrLnRlY2g6ODA4MC9maWxlL3YyL2Rvd25sb2FkLzc3NTVkZTAzMGFhMWJkNTE2ODY5NjlkNGM1ZGZmOGM2P25hbWU9Y3Vycl9zaGFyZV9tc2cuanNvbiZ1PTEwMDA5NXomaz0yOTA3MTE2MDYxNzI5NzE1NDk3Mjc%3D&username=100095z&rk=290711606172971549727&user_id=mumu%40startalk.tech&company=openresty&domain=startalk.tech",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"py",
+								"sharemsg"
+							],
+							"query": [
+								{
+									"key": "jdata",
+									"value": "aHR0cDovL2ltLnN0YXJ0YWxrLnRlY2g6ODA4MC9maWxlL3YyL2Rvd25sb2FkLzc3NTVkZTAzMGFhMWJkNTE2ODY5NjlkNGM1ZGZmOGM2P25hbWU9Y3Vycl9zaGFyZV9tc2cuanNvbiZ1PTEwMDA5NXomaz0yOTA3MTE2MDYxNzI5NzE1NDk3Mjc%3D"
+								},
+								{
+									"key": "username",
+									"value": "100095z"
+								},
+								{
+									"key": "rk",
+									"value": "290711606172971549727"
+								},
+								{
+									"key": "user_id",
+									"value": "mumu%40startalk.tech"
+								},
+								{
+									"key": "company",
+									"value": "openresty"
+								},
+								{
+									"key": "domain",
+									"value": "startalk.tech"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "shareMsg",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{port}}/sharemsg?jdata=aHR0cDovLzEyNy4wLjAuMTo3MDA0L2ZpbGUvdjIvZG93bmxvYWQvODljNGY5NDNhMzQ2MDhmMWE5MjIwMzRjN2MzNTkyZjk/bmFtZT1jdXJyX3NoYXJlX21zZy5qc29uJnU9MTAwMDk0eiZrPTI5MDcxMTYwNjE3NDY3MTE5ODIxMg==&username=100094z&rk=290711606174671198212&user_id=test02%40startalk.tech&company=openresty&domain=startalk.tech",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"sharemsg"
+							],
+							"query": [
+								{
+									"key": "jdata",
+									"value": "aHR0cDovLzEyNy4wLjAuMTo3MDA0L2ZpbGUvdjIvZG93bmxvYWQvODljNGY5NDNhMzQ2MDhmMWE5MjIwMzRjN2MzNTkyZjk/bmFtZT1jdXJyX3NoYXJlX21zZy5qc29uJnU9MTAwMDk0eiZrPTI5MDcxMTYwNjE3NDY3MTE5ODIxMg=="
+								},
+								{
+									"key": "username",
+									"value": "100094z"
+								},
+								{
+									"key": "rk",
+									"value": "290711606174671198212"
+								},
+								{
+									"key": "user_id",
+									"value": "test02%40startalk.tech"
+								},
+								{
+									"key": "company",
+									"value": "openresty"
+								},
+								{
+									"key": "domain",
+									"value": "startalk.tech"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "voice",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/sharemsg?jdata=aHR0cDovL2ltLnN0YXJ0YWxrLnRlY2g6ODA4MC9maWxlL3YyL2Rvd25sb2FkLzc3ZmY0NTk5NjdiZjE2ZDIwM2YyYTFiMTdkZWU1NzU2P25hbWU9Y3Vycl9zaGFyZV9tc2cuanNvbiZ1PTEwMDA5NXomaz0yOTA3MTE2MDYxNzI2MTE5NTI3NjM%3D&username=100095z&rk=290711606172611952763&user_id=mumu%40startalk.tech&company=openresty&domain=startalk.tech",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"sharemsg"
+									],
+									"query": [
+										{
+											"key": "jdata",
+											"value": "aHR0cDovL2ltLnN0YXJ0YWxrLnRlY2g6ODA4MC9maWxlL3YyL2Rvd25sb2FkLzc3ZmY0NTk5NjdiZjE2ZDIwM2YyYTFiMTdkZWU1NzU2P25hbWU9Y3Vycl9zaGFyZV9tc2cuanNvbiZ1PTEwMDA5NXomaz0yOTA3MTE2MDYxNzI2MTE5NTI3NjM%3D"
+										},
+										{
+											"key": "username",
+											"value": "100095z"
+										},
+										{
+											"key": "rk",
+											"value": "290711606172611952763"
+										},
+										{
+											"key": "user_id",
+											"value": "mumu%40startalk.tech"
+										},
+										{
+											"key": "company",
+											"value": "openresty"
+										},
+										{
+											"key": "domain",
+											"value": "startalk.tech"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "8425"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "212"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Nov 2020 23:08:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <title>分享聊天记录</title>\n        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n        <meta content=\"width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui\"\n        name=\"viewport\" />\n        <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n        <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" />\n        <meta id=\"twcClient\" name=\"twcClient\" content=\"false\" />\n        <style type=\"text/css\">\n        .g-flexbox {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            -webkit-box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n        }\n\n        .g-flexbox .flex {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n            height: auto;\n            display: block;\n            overflow: hidden;\n        }\n\n        .line {\n            overflow: hidden;\n            white-space: nowrap;\n            text-overflow: ellipsis;\n            width: 100%;\n        }\n\n        .line2 {\n            width: 100%;\n            display: -webkit-box;\n            overflow: hidden;\n            text-overflow: ellipsis;\n            -webkit-line-clamp: 2;\n            -webkit-box-orient: vertical;\n        }\n\n        .extleft {\n            width: 100px;\n            height: 100px;\n            margin-right: 10px;\n        }\n\n        .extleft img {\n            max-width: 100px !important;\n        }\n\n        div.speech {\n            margin: 10px 0;\n            padding: 8px;\n            table-layout: fixed;\n            word-break: break-all;\n            position: relative;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #ececec), color-stop(0.5, #dbdbdb), color-stop(0.9, #dcdcdc), to(#8c8c8c));\n            border: 1px solid #989898;\n            -webkit-border-radius: 8px;\n            -moz-border-radius: 8px;\n            border-radius: 8px;\n        }\n\n        div.speech:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            left: 15px;\n            top: -20px;\n            border: 10px solid;\n            border-color: transparent transparent #989898 transparent;\n        }\n\n        div.speech:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            left: 17px;\n            top: -16px;\n            border: 8px solid;\n            border-color: transparent transparent #ffffff transparent;\n        }\n\n        div.speech.right {\n            box-shadow: -2px 2px 5px #CCC;\n            margin-right: 10px;\n            margin-left: 4px;\n            float: right;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#e4ffa7), color-stop(0.1, #bced50), color-stop(0.4, #aed943), color-stop(0.8, #a7d143), to(#99BF40));\n        }\n\n        div.speech.right:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 9px;\n            bottom: auto;\n            left: auto;\n            right: -10px;\n            border-width: 9px 0 9px 10px;\n            border-color: transparent #989898;\n        }\n\n        div.speech.right:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 10px;\n            bottom: auto;\n            left: auto;\n            right: -8px;\n            border-width: 8px 0 8px 9px;\n            border-color: transparent #bced50;\n        }\n\n        div.speech.left {\n            box-shadow: 2px 2px 2px #CCCCCC;\n            margin-left: 10px;\n            margin-right: 4px;\n            float: left;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #eae8e8), color-stop(0.4, #E3E3E3), color-stop(0.8, #DFDFDF), to(#D9D9D9));\n        }\n\n        div.speech.left:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 9px;\n            bottom: auto;\n            left: -10px;\n            border-width: 9px 10px 9px 0;\n            border-color: transparent #989898;\n        }\n\n        div.speech.left:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 10px;\n            bottom: auto;\n            left: -8px;\n            border-width: 8px 9px 8px 0;\n            border-color: transparent #eae8e8;\n        }\n\n        .leftd,\n        .rightd {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            -webkit-box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n            margin-top: 10px;\n        }\n\n        .leftd .main,\n        .rightd .main {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n        }\n\n        .leftimg {\n            /*background: url(jquerymobile/images/icon3.png) 0px 10px no-repeat;*/\n            padding-left: 2px;\n            padding-right: 2px;\n        }\n\n        .rightimg {\n            /*background: url(jquerymobile/images/icon10.png) right 10px no-repeat;*/\n            padding-right: 2px;\n            padding-left: 2px;\n        }\n\n        .conv {\n            margin: 10px 10px 0 10px;\n            border: 1px solid #a1a1a1;\n            border-radius: 5px;\n            -moz-border-radius: 25px;\n            /* 老的 Firefox */\n            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);\n            padding: 10px\n        }\n\n        .conv>div {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n            font-size: 12px;\n        }\n\n        .conv .title {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n            color: #333;\n        }\n\n        .linkbtn {\n            background: #2ecc71;\n            color: #fff;\n            border: 1px solid #fff;\n            font-family: inherit;\n            font-size: inherit;\n            text-transform: uppercase;\n            letter-spacing: 1px;\n            font-weight: 700;\n            outline: none;\n            box-sizing: border-box;\n            align-items: flex-start;\n            text-align: center;\n            text-rendering: auto;\n            text-indent: 0px;\n            text-shadow: none;\n            -webkit-transition: all 0.3s;\n            -moz-transition: all 0.3s;\n            transition: all 0.3s;\n            padding: 2px;\n            border-radius: 5px;\n            -moz-border-radius: 25px;\n            /* 老的 Firefox */\n        }\n\n        .highlight {\n            color: red;\n            font-weight: 500;\n        }\n\n        em {\n            color: red;\n            font-weight: 500;\n            font-style: normal;\n        }\n\n        .outter {\n            background: none;\n        }\n\n        .outter .search_term {\n            padding: 10px;\n            width: 60%;\n            height: 48px;\n            border: 5px solid #dedede;\n            -moz-border-radius: 8px;\n            /* Gecko browsers */\n            -webkit-border-radius: 8px;\n            /* Webkit browsers */\n            border-radius: 8px;\n            /* W3C syntax */\n        }\n\n        .time_container {\n            display: inline-block;\n            margin-top: 10px;\n            font-size: 10px;\n            color: #666;\n            text-align: center;\n            border-radius: 20px;\n            border: 1px solid #dedede;\n            padding: 0 6px;\n        }\n\n        #m_con {\n            padding: 0 10px;\n        }\n\n        img {\n            max-width: 240px !important;\n        }\n    </style>\n    </head>\n    <body>\n        <div id=\"m_con\">\n            <div>\n                <div class=\"rightd\">\n                    <div class=\"main\">\n                        <div class=\"speech right\">\n                            <a href=\"https://qt+qunar+com/file/v2/download/27af4b78207d5fa5597ba67a796422cf?name=qvoice.tmp\">语音:0秒,点击下载</a>\n                        </div>\n                    </div>\n                    <div class=\"rightimg\">杉杉</div>\n                </div>\n                <div>\n                    <div class=\"rightd\">\n                        <div class=\"main\">\n                            <div class=\"speech right\">\n                                <a href=\"https://qt+qunar+com/file/v2/download/5ea25ed86668015a2a14c70f321552d3?name=qvoice.tmp\">语音:1秒,点击下载</a>\n                            </div>\n                        </div>\n                        <div class=\"rightimg\">杉杉</div>\n                    </div>\n                </div>\n            </body>\n        </html>"
+						},
+						{
+							"name": "emotion",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/sharemsg?jdata=aHR0cHM6Ly9pbS5zdGFydGFsay50ZWNoOjg0NDMvZmlsZS92Mi9kb3dubG9hZC8xMmRkNmIyNmE4MzJlMjY2NGY5OThmOTM0OTVjNWRmMD9uYW1lPTEyZGQ2YjI2YTgzMmUyNjY0Zjk5OGY5MzQ5NWM1ZGYwLg==&username=100095z&company=qunar&group_id=mumu@startalk.tech&rk=290711606126714666213",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"sharemsg"
+									],
+									"query": [
+										{
+											"key": "jdata",
+											"value": "aHR0cHM6Ly9pbS5zdGFydGFsay50ZWNoOjg0NDMvZmlsZS92Mi9kb3dubG9hZC8xMmRkNmIyNmE4MzJlMjY2NGY5OThmOTM0OTVjNWRmMD9uYW1lPTEyZGQ2YjI2YTgzMmUyNjY0Zjk5OGY5MzQ5NWM1ZGYwLg=="
+										},
+										{
+											"key": "username",
+											"value": "100095z"
+										},
+										{
+											"key": "company",
+											"value": "qunar"
+										},
+										{
+											"key": "group_id",
+											"value": "mumu@startalk.tech"
+										},
+										{
+											"key": "rk",
+											"value": "290711606126714666213"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "8480"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "304"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Nov 2020 11:42:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <title>分享聊天记录</title>\n        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n        <meta content=\"width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui\"\n        name=\"viewport\" />\n        <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n        <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" />\n        <meta id=\"twcClient\" name=\"twcClient\" content=\"false\" />\n        <style type=\"text/css\">\n        .g-flexbox {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            -webkit-box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n        }\n\n        .g-flexbox .flex {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n            height: auto;\n            display: block;\n            overflow: hidden;\n        }\n\n        .line {\n            overflow: hidden;\n            white-space: nowrap;\n            text-overflow: ellipsis;\n            width: 100%;\n        }\n\n        .line2 {\n            width: 100%;\n            display: -webkit-box;\n            overflow: hidden;\n            text-overflow: ellipsis;\n            -webkit-line-clamp: 2;\n            -webkit-box-orient: vertical;\n        }\n\n        .extleft {\n            width: 100px;\n            height: 100px;\n            margin-right: 10px;\n        }\n\n        .extleft img {\n            max-width: 100px !important;\n        }\n\n        div.speech {\n            margin: 10px 0;\n            padding: 8px;\n            table-layout: fixed;\n            word-break: break-all;\n            position: relative;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #ececec), color-stop(0.5, #dbdbdb), color-stop(0.9, #dcdcdc), to(#8c8c8c));\n            border: 1px solid #989898;\n            -webkit-border-radius: 8px;\n            -moz-border-radius: 8px;\n            border-radius: 8px;\n        }\n\n        div.speech:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            left: 15px;\n            top: -20px;\n            border: 10px solid;\n            border-color: transparent transparent #989898 transparent;\n        }\n\n        div.speech:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            left: 17px;\n            top: -16px;\n            border: 8px solid;\n            border-color: transparent transparent #ffffff transparent;\n        }\n\n        div.speech.right {\n            box-shadow: -2px 2px 5px #CCC;\n            margin-right: 10px;\n            margin-left: 4px;\n            float: right;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#e4ffa7), color-stop(0.1, #bced50), color-stop(0.4, #aed943), color-stop(0.8, #a7d143), to(#99BF40));\n        }\n\n        div.speech.right:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 9px;\n            bottom: auto;\n            left: auto;\n            right: -10px;\n            border-width: 9px 0 9px 10px;\n            border-color: transparent #989898;\n        }\n\n        div.speech.right:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 10px;\n            bottom: auto;\n            left: auto;\n            right: -8px;\n            border-width: 8px 0 8px 9px;\n            border-color: transparent #bced50;\n        }\n\n        div.speech.left {\n            box-shadow: 2px 2px 2px #CCCCCC;\n            margin-left: 10px;\n            margin-right: 4px;\n            float: left;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #eae8e8), color-stop(0.4, #E3E3E3), color-stop(0.8, #DFDFDF), to(#D9D9D9));\n        }\n\n        div.speech.left:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 9px;\n            bottom: auto;\n            left: -10px;\n            border-width: 9px 10px 9px 0;\n            border-color: transparent #989898;\n        }\n\n        div.speech.left:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 10px;\n            bottom: auto;\n            left: -8px;\n            border-width: 8px 9px 8px 0;\n            border-color: transparent #eae8e8;\n        }\n\n        .leftd,\n        .rightd {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            -webkit-box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n            margin-top: 10px;\n        }\n\n        .leftd .main,\n        .rightd .main {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n        }\n\n        .leftimg {\n            /*background: url(jquerymobile/images/icon3.png) 0px 10px no-repeat;*/\n            padding-left: 2px;\n            padding-right: 2px;\n        }\n\n        .rightimg {\n            /*background: url(jquerymobile/images/icon10.png) right 10px no-repeat;*/\n            padding-right: 2px;\n            padding-left: 2px;\n        }\n\n        .conv {\n            margin: 10px 10px 0 10px;\n            border: 1px solid #a1a1a1;\n            border-radius: 5px;\n            -moz-border-radius: 25px;\n            /* 老的 Firefox */\n            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);\n            padding: 10px\n        }\n\n        .conv>div {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n            font-size: 12px;\n        }\n\n        .conv .title {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n            color: #333;\n        }\n\n        .linkbtn {\n            background: #2ecc71;\n            color: #fff;\n            border: 1px solid #fff;\n            font-family: inherit;\n            font-size: inherit;\n            text-transform: uppercase;\n            letter-spacing: 1px;\n            font-weight: 700;\n            outline: none;\n            box-sizing: border-box;\n            align-items: flex-start;\n            text-align: center;\n            text-rendering: auto;\n            text-indent: 0px;\n            text-shadow: none;\n            -webkit-transition: all 0.3s;\n            -moz-transition: all 0.3s;\n            transition: all 0.3s;\n            padding: 2px;\n            border-radius: 5px;\n            -moz-border-radius: 25px;\n            /* 老的 Firefox */\n        }\n\n        .highlight {\n            color: red;\n            font-weight: 500;\n        }\n\n        em {\n            color: red;\n            font-weight: 500;\n            font-style: normal;\n        }\n\n        .outter {\n            background: none;\n        }\n\n        .outter .search_term {\n            padding: 10px;\n            width: 60%;\n            height: 48px;\n            border: 5px solid #dedede;\n            -moz-border-radius: 8px;\n            /* Gecko browsers */\n            -webkit-border-radius: 8px;\n            /* Webkit browsers */\n            border-radius: 8px;\n            /* W3C syntax */\n        }\n\n        .time_container {\n            display: inline-block;\n            margin-top: 10px;\n            font-size: 10px;\n            color: #666;\n            text-align: center;\n            border-radius: 20px;\n            border: 1px solid #dedede;\n            padding: 0 6px;\n        }\n\n        #m_con {\n            padding: 0 10px;\n        }\n\n        img {\n            max-width: 240px !important;\n        }\n    </style>\n    </head>\n    <body>\n        <div id=\"m_con\">\n            <div>\n                <div class=\"rightd\">\n                    <div class=\"main\">\n                        <div class=\"speech right\">[obj type=\"emoticon\" value=\"[/xy]\" width=EmojiOne height=0 ][obj type=\"emoticon\" value=\"[/ka]\" width=EmojiOne height=0 ][obj type=\"emoticon\" value=\"[/ka]\" width=EmojiOne height=0 ]</div>\n                    </div>\n                    <div class=\"rightimg\">杉杉</div>\n                </div>\n                <div>\n                    <div class=\"leftd\">\n                        <div class=\"leftimg\">[obj type=\"emoticon\" value=\"[/xlh]\" width=EmojiOne height=0 ][obj type=\"emoticon\" value=\"[/xlh]\" width=EmojiOne height=0 ]</div>\n                        <div class=\"main\">\n                            <div class=\"speech left\">珊珊</div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </body>\n    </html>"
+						},
+						{
+							"name": "file",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/sharemsg?jdata=aHR0cHM6Ly9pbS5zdGFydGFsay50ZWNoOjg0NDMvZmlsZS92Mi9kb3dubG9hZC9lMzQ5ZmRmNGJmNjcyYzljOTViODA1ODA4NDM0ZTdkYz9uYW1lPWUzNDlmZGY0YmY2NzJjOWM5NWI4MDU4MDg0MzRlN2RjLg==&username=100095z&company=qunar&group_id=83d2403acedf4b39877f592244043dee@conference.startalk.tech&rk=29071160617142258015",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"sharemsg"
+									],
+									"query": [
+										{
+											"key": "jdata",
+											"value": "aHR0cHM6Ly9pbS5zdGFydGFsay50ZWNoOjg0NDMvZmlsZS92Mi9kb3dubG9hZC9lMzQ5ZmRmNGJmNjcyYzljOTViODA1ODA4NDM0ZTdkYz9uYW1lPWUzNDlmZGY0YmY2NzJjOWM5NWI4MDU4MDg0MzRlN2RjLg=="
+										},
+										{
+											"key": "username",
+											"value": "100095z"
+										},
+										{
+											"key": "company",
+											"value": "qunar"
+										},
+										{
+											"key": "group_id",
+											"value": "83d2403acedf4b39877f592244043dee@conference.startalk.tech"
+										},
+										{
+											"key": "rk",
+											"value": "29071160617142258015"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "8233"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "550"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Nov 2020 23:02:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <title>分享聊天记录</title>\n        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n        <meta content=\"width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui\"\n        name=\"viewport\" />\n        <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n        <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" />\n        <meta id=\"twcClient\" name=\"twcClient\" content=\"false\" />\n        <style type=\"text/css\">\n        .g-flexbox {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            -webkit-box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n        }\n\n        .g-flexbox .flex {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n            height: auto;\n            display: block;\n            overflow: hidden;\n        }\n\n        .line {\n            overflow: hidden;\n            white-space: nowrap;\n            text-overflow: ellipsis;\n            width: 100%;\n        }\n\n        .line2 {\n            width: 100%;\n            display: -webkit-box;\n            overflow: hidden;\n            text-overflow: ellipsis;\n            -webkit-line-clamp: 2;\n            -webkit-box-orient: vertical;\n        }\n\n        .extleft {\n            width: 100px;\n            height: 100px;\n            margin-right: 10px;\n        }\n\n        .extleft img {\n            max-width: 100px !important;\n        }\n\n        div.speech {\n            margin: 10px 0;\n            padding: 8px;\n            table-layout: fixed;\n            word-break: break-all;\n            position: relative;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #ececec), color-stop(0.5, #dbdbdb), color-stop(0.9, #dcdcdc), to(#8c8c8c));\n            border: 1px solid #989898;\n            -webkit-border-radius: 8px;\n            -moz-border-radius: 8px;\n            border-radius: 8px;\n        }\n\n        div.speech:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            left: 15px;\n            top: -20px;\n            border: 10px solid;\n            border-color: transparent transparent #989898 transparent;\n        }\n\n        div.speech:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            left: 17px;\n            top: -16px;\n            border: 8px solid;\n            border-color: transparent transparent #ffffff transparent;\n        }\n\n        div.speech.right {\n            box-shadow: -2px 2px 5px #CCC;\n            margin-right: 10px;\n            margin-left: 4px;\n            float: right;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#e4ffa7), color-stop(0.1, #bced50), color-stop(0.4, #aed943), color-stop(0.8, #a7d143), to(#99BF40));\n        }\n\n        div.speech.right:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 9px;\n            bottom: auto;\n            left: auto;\n            right: -10px;\n            border-width: 9px 0 9px 10px;\n            border-color: transparent #989898;\n        }\n\n        div.speech.right:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 10px;\n            bottom: auto;\n            left: auto;\n            right: -8px;\n            border-width: 8px 0 8px 9px;\n            border-color: transparent #bced50;\n        }\n\n        div.speech.left {\n            box-shadow: 2px 2px 2px #CCCCCC;\n            margin-left: 10px;\n            margin-right: 4px;\n            float: left;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #eae8e8), color-stop(0.4, #E3E3E3), color-stop(0.8, #DFDFDF), to(#D9D9D9));\n        }\n\n        div.speech.left:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 9px;\n            bottom: auto;\n            left: -10px;\n            border-width: 9px 10px 9px 0;\n            border-color: transparent #989898;\n        }\n\n        div.speech.left:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 10px;\n            bottom: auto;\n            left: -8px;\n            border-width: 8px 9px 8px 0;\n            border-color: transparent #eae8e8;\n        }\n\n        .leftd,\n        .rightd {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            -webkit-box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n            margin-top: 10px;\n        }\n\n        .leftd .main,\n        .rightd .main {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n        }\n\n        .leftimg {\n            /*background: url(jquerymobile/images/icon3.png) 0px 10px no-repeat;*/\n            padding-left: 2px;\n            padding-right: 2px;\n        }\n\n        .rightimg {\n            /*background: url(jquerymobile/images/icon10.png) right 10px no-repeat;*/\n            padding-right: 2px;\n            padding-left: 2px;\n        }\n\n        .conv {\n            margin: 10px 10px 0 10px;\n            border: 1px solid #a1a1a1;\n            border-radius: 5px;\n            -moz-border-radius: 25px;\n            /* 老的 Firefox */\n            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);\n            padding: 10px\n        }\n\n        .conv>div {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n            font-size: 12px;\n        }\n\n        .conv .title {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n            color: #333;\n        }\n\n        .linkbtn {\n            background: #2ecc71;\n            color: #fff;\n            border: 1px solid #fff;\n            font-family: inherit;\n            font-size: inherit;\n            text-transform: uppercase;\n            letter-spacing: 1px;\n            font-weight: 700;\n            outline: none;\n            box-sizing: border-box;\n            align-items: flex-start;\n            text-align: center;\n            text-rendering: auto;\n            text-indent: 0px;\n            text-shadow: none;\n            -webkit-transition: all 0.3s;\n            -moz-transition: all 0.3s;\n            transition: all 0.3s;\n            padding: 2px;\n            border-radius: 5px;\n            -moz-border-radius: 25px;\n            /* 老的 Firefox */\n        }\n\n        .highlight {\n            color: red;\n            font-weight: 500;\n        }\n\n        em {\n            color: red;\n            font-weight: 500;\n            font-style: normal;\n        }\n\n        .outter {\n            background: none;\n        }\n\n        .outter .search_term {\n            padding: 10px;\n            width: 60%;\n            height: 48px;\n            border: 5px solid #dedede;\n            -moz-border-radius: 8px;\n            /* Gecko browsers */\n            -webkit-border-radius: 8px;\n            /* Webkit browsers */\n            border-radius: 8px;\n            /* W3C syntax */\n        }\n\n        .time_container {\n            display: inline-block;\n            margin-top: 10px;\n            font-size: 10px;\n            color: #666;\n            text-align: center;\n            border-radius: 20px;\n            border: 1px solid #dedede;\n            padding: 0 6px;\n        }\n\n        #m_con {\n            padding: 0 10px;\n        }\n\n        img {\n            max-width: 240px !important;\n        }\n    </style>\n    </head>\n    <body>\n        <div id=\"m_con\">\n            <div>\n                <div class=\"rightd\">\n                    <div class=\"main\">\n                        <div class=\"speech right\">\n                            <a href=\"https://im.startalk.tech:8443/file/v2/download/004881ebe3826cf16cfd124968f2a5bb?name=004881ebe3826cf16cfd124968f2a5bb.txt\">下载文件: test.txt,文件大小: 0.00KB</a>\n                        </div>\n                    </div>\n                    <div class=\"rightimg\">杉杉</div>\n                </div>\n            </div>\n        </body>\n    </html>"
+						},
+						{
+							"name": "666",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}:{{port}}/sharemsg?jdata=aHR0cDovL2ltLnN0YXJ0YWxrLnRlY2g6ODA4MC9maWxlL3YyL2Rvd25sb2FkLzc1Zjg1ODU2OGU4MzI3OTE1N2RjYWE1YWIwMTJkNDdkP25hbWU9Y3Vycl9zaGFyZV9tc2cuanNvbiZ1PTEwMDA5NXomaz0yOTA3MTE2MDYxMTk0OTU3MzIwMTQ%3D&username=100095z&rk=290711606119495732014&user_id=mumu%40startalk.tech&company=openresty&domain=startalk.tech",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"sharemsg"
+									],
+									"query": [
+										{
+											"key": "jdata",
+											"value": "aHR0cDovL2ltLnN0YXJ0YWxrLnRlY2g6ODA4MC9maWxlL3YyL2Rvd25sb2FkLzc1Zjg1ODU2OGU4MzI3OTE1N2RjYWE1YWIwMTJkNDdkP25hbWU9Y3Vycl9zaGFyZV9tc2cuanNvbiZ1PTEwMDA5NXomaz0yOTA3MTE2MDYxMTk0OTU3MzIwMTQ%3D"
+										},
+										{
+											"key": "username",
+											"value": "100095z"
+										},
+										{
+											"key": "rk",
+											"value": "290711606119495732014"
+										},
+										{
+											"key": "user_id",
+											"value": "mumu%40startalk.tech"
+										},
+										{
+											"key": "company",
+											"value": "openresty"
+										},
+										{
+											"key": "domain",
+											"value": "startalk.tech"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "8706"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-readtime",
+									"value": "196"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Nov 2020 10:17:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <title>分享聊天记录</title>\n        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n        <meta content=\"width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui\"\n        name=\"viewport\" />\n        <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n        <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" />\n        <meta id=\"twcClient\" name=\"twcClient\" content=\"false\" />\n        <style type=\"text/css\">\n        .g-flexbox {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            -webkit-box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n        }\n\n        .g-flexbox .flex {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n            height: auto;\n            display: block;\n            overflow: hidden;\n        }\n\n        .line {\n            overflow: hidden;\n            white-space: nowrap;\n            text-overflow: ellipsis;\n            width: 100%;\n        }\n\n        .line2 {\n            width: 100%;\n            display: -webkit-box;\n            overflow: hidden;\n            text-overflow: ellipsis;\n            -webkit-line-clamp: 2;\n            -webkit-box-orient: vertical;\n        }\n\n        .extleft {\n            width: 100px;\n            height: 100px;\n            margin-right: 10px;\n        }\n\n        .extleft img {\n            max-width: 100px !important;\n        }\n\n        div.speech {\n            margin: 10px 0;\n            padding: 8px;\n            table-layout: fixed;\n            word-break: break-all;\n            position: relative;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #ececec), color-stop(0.5, #dbdbdb), color-stop(0.9, #dcdcdc), to(#8c8c8c));\n            border: 1px solid #989898;\n            -webkit-border-radius: 8px;\n            -moz-border-radius: 8px;\n            border-radius: 8px;\n        }\n\n        div.speech:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            left: 15px;\n            top: -20px;\n            border: 10px solid;\n            border-color: transparent transparent #989898 transparent;\n        }\n\n        div.speech:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            left: 17px;\n            top: -16px;\n            border: 8px solid;\n            border-color: transparent transparent #ffffff transparent;\n        }\n\n        div.speech.right {\n            box-shadow: -2px 2px 5px #CCC;\n            margin-right: 10px;\n            margin-left: 4px;\n            float: right;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#e4ffa7), color-stop(0.1, #bced50), color-stop(0.4, #aed943), color-stop(0.8, #a7d143), to(#99BF40));\n        }\n\n        div.speech.right:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 9px;\n            bottom: auto;\n            left: auto;\n            right: -10px;\n            border-width: 9px 0 9px 10px;\n            border-color: transparent #989898;\n        }\n\n        div.speech.right:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 10px;\n            bottom: auto;\n            left: auto;\n            right: -8px;\n            border-width: 8px 0 8px 9px;\n            border-color: transparent #bced50;\n        }\n\n        div.speech.left {\n            box-shadow: 2px 2px 2px #CCCCCC;\n            margin-left: 10px;\n            margin-right: 4px;\n            float: left;\n            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #eae8e8), color-stop(0.4, #E3E3E3), color-stop(0.8, #DFDFDF), to(#D9D9D9));\n        }\n\n        div.speech.left:before {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 9px;\n            bottom: auto;\n            left: -10px;\n            border-width: 9px 10px 9px 0;\n            border-color: transparent #989898;\n        }\n\n        div.speech.left:after {\n            content: '';\n            position: absolute;\n            width: 0;\n            height: 0;\n            top: 10px;\n            bottom: auto;\n            left: -8px;\n            border-width: 8px 9px 8px 0;\n            border-color: transparent #eae8e8;\n        }\n\n        .leftd,\n        .rightd {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            -webkit-box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n            margin-top: 10px;\n        }\n\n        .leftd .main,\n        .rightd .main {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n        }\n\n        .leftimg {\n            /*background: url(jquerymobile/images/icon3.png) 0px 10px no-repeat;*/\n            padding-left: 2px;\n            padding-right: 2px;\n        }\n\n        .rightimg {\n            /*background: url(jquerymobile/images/icon10.png) right 10px no-repeat;*/\n            padding-right: 2px;\n            padding-left: 2px;\n        }\n\n        .conv {\n            margin: 10px 10px 0 10px;\n            border: 1px solid #a1a1a1;\n            border-radius: 5px;\n            -moz-border-radius: 25px;\n            /* 老的 Firefox */\n            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);\n            padding: 10px\n        }\n\n        .conv>div {\n            display: -webkit-box;\n            display: -webkit-flex;\n            display: flex;\n            box-align: center;\n            -webkit-align-items: center;\n            align-items: center;\n            font-size: 12px;\n        }\n\n        .conv .title {\n            -webkit-box-flex: 1;\n            -webkit-flex: 1;\n            flex: 1;\n            color: #333;\n        }\n\n        .linkbtn {\n            background: #2ecc71;\n            color: #fff;\n            border: 1px solid #fff;\n            font-family: inherit;\n            font-size: inherit;\n            text-transform: uppercase;\n            letter-spacing: 1px;\n            font-weight: 700;\n            outline: none;\n            box-sizing: border-box;\n            align-items: flex-start;\n            text-align: center;\n            text-rendering: auto;\n            text-indent: 0px;\n            text-shadow: none;\n            -webkit-transition: all 0.3s;\n            -moz-transition: all 0.3s;\n            transition: all 0.3s;\n            padding: 2px;\n            border-radius: 5px;\n            -moz-border-radius: 25px;\n            /* 老的 Firefox */\n        }\n\n        .highlight {\n            color: red;\n            font-weight: 500;\n        }\n\n        em {\n            color: red;\n            font-weight: 500;\n            font-style: normal;\n        }\n\n        .outter {\n            background: none;\n        }\n\n        .outter .search_term {\n            padding: 10px;\n            width: 60%;\n            height: 48px;\n            border: 5px solid #dedede;\n            -moz-border-radius: 8px;\n            /* Gecko browsers */\n            -webkit-border-radius: 8px;\n            /* Webkit browsers */\n            border-radius: 8px;\n            /* W3C syntax */\n        }\n\n        .time_container {\n            display: inline-block;\n            margin-top: 10px;\n            font-size: 10px;\n            color: #666;\n            text-align: center;\n            border-radius: 20px;\n            border: 1px solid #dedede;\n            padding: 0 6px;\n        }\n\n        #m_con {\n            padding: 0 10px;\n        }\n\n        img {\n            max-width: 240px !important;\n        }\n    </style>\n    </head>\n    <body>\n        <div id=\"m_con\">\n            <div>\n                <div class=\"rightd\">\n                    <div class=\"main\">\n                        <div class=\"speech right\">\n                            <a href=\"https://im.startalk.tech:8443/py/sharemsg?jdata=aHR0cHM6Ly9pbS5zdGFydGFsay50ZWNoOjg0NDMvZmlsZS92Mi9kb3dubG9hZC9kOGIxN2QwNWY3NzMzZDE0OGQxNmIyOWY4YWYxYzJjOD9uYW1lPWN1cnJfc2hhcmVfbXNnLmpzb24mdT0xMDAwOTV6Jms9MjkwNzExNjA2MTExNjQ0MTMyMjM%3D\">\n                                <div class=\"g-flexbox\">\n                                    <div class=\"extleft\">\n                                        <img src=\"https://im.startalk.tech:8443/file/v2/download/eb574c5a1d33c72ba14fc1616cde3a42.png\" alt=\"../{{default.png}}\"/>\n                                    </div>\n                                    <div class=\"flex\">\n                                        <p class=\"line\">沐沐的聊天记录</p>\n                                        <p class=\"line2\">点击查看全部</p>\n                                    </div>\n                                </div>\n                            </a>\n                        </div>\n                    </div>\n                    <div class=\"rightimg\">杉杉</div>\n                </div>\n                <div>\n                    <div class=\"rightd\">\n                        <div class=\"main\">\n                            <div class=\"speech right\">5</div>\n                        </div>\n                        <div class=\"rightimg\">杉杉</div>\n                    </div>\n                </div>\n            </body>\n        </html>"
+						}
+					]
+				},
+				{
+					"name": "search",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"length\": 1,\r\n    \"start\": 0.0,\r\n    \"action\": \"32\",\r\n    \"qtalkId\": \"100095z@startalk.tech\",\r\n    \"key\": \"你好\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/search",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"length\": 5.0,\r\n    \"start\": 0.0,\r\n    \"action\": \"63\",\r\n    \"qtalkId\": \"100094z@startalk.tech\",\r\n    \"key\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/search",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "muc",
+			"item": [
+				{
+					"name": "get_muc_vcard",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"domain\": \"conference.dev.startalk.tech\",\r\n        \"mucs\": [\r\n            {\r\n                \"muc_name\": \"ca533478e13d464df7ddf2f6c20ba275@conference.dev.startalk.tech\",\r\n                \"version\": \"0\"\r\n            },\r\n            {\r\n                \"muc_name\": \"863311a385e148eb9936a416366bbafc@conference.dev.startalk.tech\",\r\n                \"version\": \"0\"\r\n            }\r\n        ]\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{web_im_http_server}}/newapi/muc/get_muc_vcard.qunar?u=admin&k=290711598840365388800",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{web_im_http_server}}",
+							"path": [
+								"newapi",
+								"muc",
+								"get_muc_vcard.qunar"
+							],
+							"query": [
+								{
+									"key": "u",
+									"value": "admin"
+								},
+								{
+									"key": "k",
+									"value": "290711598840365388800"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "set_muc_vcard",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"muc_name\": \"05d6b2502a5e41a3ccde49e0c964aee3@conference.dev.startalk.tech\",\r\n        \"nick\": \"chao.zhang\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/im_http_service/newapi/muc/set_muc_vcard.qunar?u=admin&k=290711598840365388800",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"im_http_service",
+								"newapi",
+								"muc",
+								"set_muc_vcard.qunar"
+							],
+							"query": [
+								{
+									"key": "u",
+									"value": "admin"
+								},
+								{
+									"key": "k",
+									"value": "290711598840365388800"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_increment_mucs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userid\": \"test01\",\r\n    \"lastupdtime\": \"0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/im_http_service/newapi/muc/get_increment_mucs.qunar?u=admin&k=290711598840365388800",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"im_http_service",
+								"newapi",
+								"muc",
+								"get_increment_mucs.qunar"
+							],
+							"query": [
+								{
+									"key": "u",
+									"value": "admin"
+								},
+								{
+									"key": "k",
+									"value": "290711598840365388800"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_increment_muc_vcard",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userid\": \"chao.zhang\",\r\n    \"lastupdtime\": \"0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{port}}/im_http_service/newapi/muc/get_user_increment_muc_vcard.qunar?u=admin&k=290711598840365388800",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"im_http_service",
+								"newapi",
+								"muc",
+								"get_user_increment_muc_vcard.qunar"
+							],
+							"query": [
+								{
+									"key": "u",
+									"value": "admin"
+								},
+								{
+									"key": "k",
+									"value": "290711598840365388800"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ejabberd",
+			"item": [
+				{
+					"name": "send_thirdmessage",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"chao.zhang@startalk.tech\",\r\n    \"to\": \"chao.zhang1@startalk.tech\",\r\n    \"message\": \"<message xml:lang='en' from='test1@qtalk.test.org' to='test2@qtalk.test.org' type='chat'><body msgType='1' maType='3' id='7aea7e1c7b544992ace3bdb4b3ab233271sd3ffsadfsad22'>dddddddddddddddddddddddddddddddddddddddd</body></message>\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/send_thirdmessage",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"send_thirdmessage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send_notify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"from\":\"chao.zhang@startalk.tech\",\r\n   \"to\":\"chao.zhang1@startalk.tech\",\r\n   \"category\":\"参见事件说明\",\r\n   \"data\":\"参见事件说明\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/send_notify",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"send_notify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create_muc",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"muc_id\": \"8470e92d33304a27a847ddcbc3b9ae2b\",\r\n    \"muc_owner\": \"chao.zhang1\",\r\n    \"muc_domain\":\"conference.startalk.tech\",\r\n    \"system\":\"test\"\r\n}   ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/create_muc",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"create_muc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add_muc_user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"muc_id\": \"test-8470e92d33304a27a847ddcbc3b9ae2b\",\r\n    \"muc_owner\": \"chao.zhang\",\r\n    \"muc_domain\":\"conference.startalk.tech\",\r\n    \"muc_member\": [\"chao.zhang1\",\"chao.zhang2\"],\r\n    \"system\":\"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/add_muc_user",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"add_muc_user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "del_muc_user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"muc_id\": \"test-8470e92d33304a27a847ddcbc3b9ae2b\",\r\n    \"muc_owner\": \"chao.zhang\",\r\n    \"muc_domain\":\"conference.startalk.tech\",\r\n    \"muc_member\": [\"chao.zhang1\",\"chao.zhang2\"],\r\n    \"system\":\"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/del_muc_user",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"del_muc_user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destroy_muc",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"muc_id\": \"test-8470e92d33304a27a847ddcbc3b9ae2b\",\r\n    \"muc_owner\": \"chao.zhang\",\r\n    \"muc_domain\":\"conference.startalk.tech\",\r\n    \"system\":\"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/destroy_muc",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"destroy_muc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_user_nick",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ID\":\"chao.zhang\",\r\n    \"Domain\":\"startalk.tech\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/get_user_nick",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"get_user_nick"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send_message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"From\":\"chao.zhang\", \r\n    \"To\":[{\"User\":\"chao.zhang1\"}],\r\n    \"Body\":\"hello, chao.zhang\",\r\n    \"Type\":\"chat\",\r\n    \"Msg_Type\":\"1\",\r\n    \"Host\":\"startalk.tech\",\r\n    \"Domain\":\"startalk.tech\",\r\n    \"Extend_Info\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/send_message",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"send_message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "muc_users",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"muc_id\":\"5f0b6bfa2e3a4d78aefe047ab06dc589\", \r\n    \"muc_domain\":\"conference.startalk.tech\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/muc_users",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"muc_users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth_uk",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/auth_uk?u=test&k=290711548828672407278",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"auth_uk"
+							],
+							"query": [
+								{
+									"key": "u",
+									"value": "test"
+								},
+								{
+									"key": "k",
+									"value": "290711548828672407278"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "clear_staff",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"users\":[\"chao.zhang1\", \"chao.zhang2\"],\r\n    \"host\":\"startalk.tech\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/clear_staff",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"clear_staff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "muc_send_notice_vcard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/send_notice_vcard?muc_name=test-8470e92d33304a27a847ddcbc3b9ae2b\n",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"send_notice_vcard"
+							],
+							"query": [
+								{
+									"key": "muc_name",
+									"value": "test-8470e92d33304a27a847ddcbc3b9ae2b\n"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "muc_get_muc_opts",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"muc\": \"8470e92d33304a27a847ddcbc3b9ae2b\",\r\n    \"domain\": \"conference.startalk.tech\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/management/get_muc_opts",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"management",
+								"get_muc_opts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "muc_change_muc_opts",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"muc\": \"8470e92d33304a27a847ddcbc3b9ae2b\",\r\n    \"domain\": \"conference.startalk.tech\",\r\n    \"public\": \"true\",\r\n    \"persistent\": \"true\",\r\n    \"max_users\": \"10\",\r\n    \"affiliations\": \"chao.zhang2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/management/change_muc_opts",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"management",
+								"change_muc_opts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "muc_management_del_muc_user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"muc\": \"8470e92d33304a27a847ddcbc3b9ae2b\",\r\n    \"user\": \"chao.zhang\",\r\n    \"host\": \"startalk.tech\",\r\n    \"domain\": \"conference.startalk.tech\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{ejabberd}}/qtalk/management/del_muc_user",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{ejabberd}}",
+							"path": [
+								"qtalk",
+								"management",
+								"del_muc_user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
