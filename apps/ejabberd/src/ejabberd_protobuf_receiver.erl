@@ -567,6 +567,9 @@ make_auth_xml(Auth) ->
 
 decode_pb_message(Dt,State) ->
                 ?DEBUG("Dt ~p ~n",[Dt]),
+                ElixirData = 'Elixir.MessageProtobuf.Decode':decode_pb_message(Dt),
+                ?DEBUG("Elixir Dt ~p  Elixir Data ~p ~n",[Dt, ElixirData]),
+
         case ejabberd_pb2xml_public:get_potoheader_base_pb(Dt) of
         false ->
                 ok;
