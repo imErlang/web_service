@@ -398,136 +398,133 @@ process_data_len(<<0:1, H:7, R/binary>>, Base, Count) ->
 process_data_len(<<1:1, H:7, R/binary>>, Base, Count) ->
     process_data_len(R, Base + (H bsl (Count * 7)), Count + 1).
 
-handle_pro_msg(Signaltype,Proto_msg,State) ->
-        do_handle_pro_msg(message_pb:int_to_enum(signaltype,Signaltype),Proto_msg,State).
-
-do_handle_pro_msg('SignalTypeWelcome',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeWelcome',Proto_msg) ->
         Message  = Proto_msg#protomessage.message,
         Welcome = message_pb:decode_welcomemessage(Message),
         ?DEBUG("welconMsg ~p ~n",[Welcome]),
         El = make_welcome_xml(Welcome),
-        catch gen_fsm:send_event(C2SPid,  {xmlstreamstart, <<"">>, El#xmlel.attrs});
-do_handle_pro_msg('SignalStartTLS',Proto_msg, #state{c2s_pid = C2SPid})->
+        {xmlstreamstart, <<"">>, El#xmlel.attrs};
+do_handle_pro_msg('SignalStartTLS',Proto_msg)->
     Message  = Proto_msg#protomessage.message,
     StartTls =  message_pb:decode_starttls(Message),
     ?DEBUG("startTls ~p ~n",[StartTls]),
         El = make_startTls_xml(StartTls),
-        catch gen_fsm:send_event(C2SPid,  {xmlstreamelement, El});
-do_handle_pro_msg('SignalTypeAuth',Proto_msg, #state{c2s_pid = C2SPid})->
+        {xmlstreamelement, El};
+do_handle_pro_msg('SignalTypeAuth',Proto_msg)->
         Message  = Proto_msg#protomessage.message,
         AuthMsg = message_pb:decode_authmessage(Message),
         ?DEBUG("AuthMsg ~p ~n",[AuthMsg]),
         El = make_auth_xml(AuthMsg),
-        catch gen_fsm:send_event(C2SPid,  {xmlstreamelement, El});
-do_handle_pro_msg('SignalTypeIQ',Proto_msg, #state{c2s_pid = C2SPid})->
+        {xmlstreamelement, El};
+do_handle_pro_msg('SignalTypeIQ',Proto_msg)->
         ?DEBUG("Proto_msg ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_iq:parse_iq_message(Proto_msg) of
         {Stream,Packet}  when is_record(Packet,xmlel) ->
                 ?DEBUG("IQ packet~p, ~p ~n",[Stream,Packet]),
-                catch gen_fsm:send_event(C2SPid,  {Stream, Packet});
+                {Stream, Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypePresence',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypePresence',Proto_msg)->
         ?DEBUG("Presence Packet ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_presence:parse_presence_message(Proto_msg) of
         {Stream,Packet}  when is_record(Packet,xmlel) ->
                 ?DEBUG("Presence packet ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,  {Stream, Packet});
+                {Stream, Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeChat',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeChat',Proto_msg)->
         ?DEBUG("chat message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeGroupChat',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeGroupChat',Proto_msg)->
         ?DEBUG("chat message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeSubscription',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeSubscription',Proto_msg)->
         ?DEBUG("chat message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeTyping',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeTyping',Proto_msg)->
         ?DEBUG("SignalTypeTyping message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeHeadline',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeHeadline',Proto_msg)->
         ?DEBUG("chat message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeWebRtc',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeWebRtc',Proto_msg)->
         ?INFO_MSG("chat message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeReadmark',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeReadmark',Proto_msg)->
         ?DEBUG("readmark message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeRevoke',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeRevoke',Proto_msg)->
         ?DEBUG("chat message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeConsult',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeConsult',Proto_msg)->
         ?DEBUG("chat message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg('SignalTypeEncryption',Proto_msg, #state{c2s_pid = C2SPid})->
+do_handle_pro_msg('SignalTypeEncryption',Proto_msg)->
         ?DEBUG("chat message ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_message:parse_xmpp_message(Proto_msg) of
         {Stream,Packet} when is_record(Packet,xmlel) ->
                 ?DEBUG("xmlel ~p ~n",[Packet]),
-                catch gen_fsm:send_event(C2SPid,{Stream,Packet});
+                {Stream,Packet};
         _ ->
                 ok
         end;
-do_handle_pro_msg(_,Pro_msg,_State) ->
+do_handle_pro_msg(_,Pro_msg) ->
         ?DEBUG("unkown Type ~p ~n",[Pro_msg]).
 
 make_welcome_xml(Welcome) ->
@@ -565,11 +562,20 @@ make_auth_xml(Auth) ->
                                         {<<"id">>,ID}],
                    children = [{xmlcdata,Authkey}]}.
 
-decode_pb_message(Dt,State) ->
-                ?DEBUG("Dt ~p ~n",[Dt]),
-                ElixirData = 'Elixir.MessageProtobuf.Decode':decode_pb_message(Dt),
-                ?DEBUG("Elixir Dt ~p  Elixir Data ~p ~n",[Dt, ElixirData]),
+decode_pb_message(Dt,#state{c2s_pid = C2SPid}) ->
+        ?DEBUG("Dt ~p ~n",[Dt]),
+        ElixirData = 'Elixir.MessageProtobuf.Decode':decode_pb_message(Dt),
+        Stream = do_decode_pb_message(Dt),
+        case ElixirData == Stream of
+                true ->
+                        ignore;
+                false ->
+                        ?ERROR_MSG("Elixir Dt ~p  Elixir Data ~p Stream ~p ~n",[Dt, ElixirData, Stream])
+        end,
 
+        catch gen_fsm:send_event(C2SPid, ElixirData).
+
+do_decode_pb_message(Dt) ->
         case ejabberd_pb2xml_public:get_potoheader_base_pb(Dt) of
         false ->
                 ok;
@@ -578,7 +584,8 @@ decode_pb_message(Dt,State) ->
                 false ->
                         ok;
                 Pro_Msg  ->
-                        handle_pro_msg(Pro_Msg#protomessage.signaltype,Pro_Msg,State)
+                        Signaltype = Pro_Msg#protomessage.signaltype,
+                        do_handle_pro_msg(message_pb:int_to_enum(signaltype,Signaltype),Pro_Msg)
                 end
         end.
 

@@ -4,6 +4,8 @@ defmodule MessageProtobuf.Decode do
   """
   import Xml
 
+  require Logger
+
   def decode_pb_message(data) do
     pb_header = Protoheader.decode(data)
     get_potomessage_base_pbheader(pb_header)
@@ -39,30 +41,21 @@ defmodule MessageProtobuf.Decode do
   end
 
   def handle_pro_msg(:SignalTypeIQ, pb_msg) do
-    iq_msg = Iqmessage.decode(pb_msg.message)
-
-    MessageProtobuf.Decode.IQ.make_iq_message(
-      iq_msg.definedkey,
-      iq_msg.value,
-      pb_msg.from,
-      pb_msg.to,
-      Signaltype.key(pb_msg.signaltype),
-      iq_msg.messageid,
-      iq_msg.body,
-      iq_msg.bodys
-    )
+    MessageProtobuf.Decode.IQ.parse_iq(pb_msg)
   end
 
-  def handle_pro_msg(:SignalStartTLS, pb_msg) do
-    Starttls.decode(pb_msg.message)
+  def handle_pro_msg(:SignalStartTLS, _pb_msg) do
+    {:xmlstreamelement, make_starttls_xml()}
   end
 
   def handle_pro_msg(:SignalTypeWelcome, pb_msg) do
-    Welcomemessage.decode(pb_msg.message)
+    el = pb_msg.message |> Welcomemessage.decode() |> make_welcome_xml()
+    {:xmlstreamstart, "", xmlel(el, :attrs)}
   end
 
   def handle_pro_msg(:SignalTypeAuth, pb_msg) do
-    Authmessage.decode(pb_msg.message)
+    el = pb_msg.message |> Authmessage.decode() |> make_auth_xml
+    {:xmlstreamelement, el}
   end
 
   def handle_pro_msg(signal_type, pb_msg)
@@ -101,13 +94,18 @@ defmodule MessageProtobuf.Decode do
   end
 
   def make_auth_xml(auth) do
+    Logger.debug("auth: #{inspect(auth)}")
     id = get_msgid(auth.msgid)
-    attrs = [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}, {"mechanism", Mechanism}, {"id", id}]
+    attrs = [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}, {"mechanism", auth.mechanism}, {"id", id}]
     xmlel(name: "auth", attrs: attrs, children: [{:xmlcdata, auth.authkey}])
   end
 
-  def get_msgid(:undefined) do
+  def get_msgid(id) when id == :undefined or id == "" do
     "PBMSG_#{:random.uniform(65536)}#{:qtalk_public.get_exact_timestamp()}"
+  end
+
+  def get_msgid(id) do
+    id
   end
 
   def get_header_definedkey(key) do

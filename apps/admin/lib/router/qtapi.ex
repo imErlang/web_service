@@ -15,6 +15,11 @@ defmodule Admin.Router.Qtapi do
     send_resp_json(conn, body)
   end
 
+  match "/getmsgs.qunar" do
+    body = Handler.History.get_msgs(conn)
+    send_resp_json(conn, body)
+  end
+
   match "/getmuchistory.qunar" do
     body = Handler.History.get_offline_muc_history(conn)
     send_resp_json(conn, body)

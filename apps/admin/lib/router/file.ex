@@ -23,7 +23,7 @@ defmodule Admin.Router.File do
     send_resp_json(conn, body)
   end
 
-  match "/v2/upload" do
+  match "/v2/upload/:type" do
     body = Handler.File.upload(conn)
     send_resp_json(conn, body)
   end

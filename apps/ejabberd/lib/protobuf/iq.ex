@@ -5,6 +5,30 @@ defmodule MessageProtobuf.Decode.IQ do
 
   import Xml
 
+  def parse_iq(pb_msg) do
+    iq_msg = Iqmessage.decode(pb_msg.message)
+
+    iq_key =
+      case get_iqkey_type(iq_msg.definedkey) do
+        :undefined ->
+          iq_msg.key
+
+        key ->
+          key
+      end
+
+    make_iq_message(
+      iq_key,
+      iq_msg.value,
+      pb_msg.from,
+      pb_msg.to,
+      Signaltype.key(pb_msg.signaltype),
+      iq_msg.messageid,
+      iq_msg.body,
+      iq_msg.bodys
+    )
+  end
+
   def make_iq_master_attrs(:undefined, id, type) do
     [{"id", id}, {"type", type}]
   end
@@ -17,7 +41,7 @@ defmodule MessageProtobuf.Decode.IQ do
     [{"id", id}, {"type", type}]
   end
 
-  def make_iq_message(:IQKeyBind, value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("BIND", value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     data = {:xmlcdata, value}
     resource = xmlel(name: "resource", children: [data])
@@ -32,19 +56,19 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyMucCreate, value, _from, _to, _type, id, _body, _bodys) do
+  def make_iq_message("CREATE_MUC", value, _from, _to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(value, id, "set")
     children = xmlel(name: "query", attrs: [{"xmlns", "http://jabber.org/protocol/create_muc"}])
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children, {:xmlcdata, ""}])}
   end
 
-  def make_iq_message(:IQKeyMucCreateV2, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("MUC_CREATE", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     children = xmlel(name: "query", attrs: [{"xmlns", "http://jabber.org/protocol/create_muc"}])
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children, {:xmlcdata, ""}])}
   end
 
-  def make_iq_message(:IQKeyMucInviteV2, _value, _from, to, _type, id, _body, bodys) do
+  def make_iq_message("MUC_INVITE_V2", _value, _from, to, _type, id, _body, bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     bodys_children = make_attrs_xmlels(bodys)
 
@@ -58,19 +82,19 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyGetMucUser, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("GET_MUC_USER", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "get")
     children = xmlel(name: "query", attrs: [{"xmlns", "http://jabber.org/protocol/muc#register"}])
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeySetMucUser, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("SET_MUC_USER", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     children = xmlel(name: "query", attrs: [{"xmlns", "http://jabber.org/protocol/muc#register"}])
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyDelMucUser, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("DEL_MUC_USER", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
 
     children =
@@ -79,7 +103,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyAddUserSubscribe, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("ADD_USER_SUBSCRIBE", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     action = xmlel(name: "subscribe", attrs: [{"action", "add"}])
 
@@ -93,7 +117,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyDelUserSubscribe, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("DEL_USER_SUBSCRIBE", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     action = xmlel(name: "subscribe", attrs: [{"action", "delete"}])
 
@@ -107,7 +131,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyGetUserSubScribe, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("GET_USER_SUBSCRIBE", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "get")
 
     children =
@@ -119,7 +143,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeySetUserSubScribeV2, value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("SET_USER_SUBSCRIBE_V2", value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     action = xmlel(name: "subscribe", attrs: [{"action", value}])
 
@@ -133,7 +157,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyGetUserSubScribeV2, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("GET_USER_SUBSCRIBE_V2", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "get")
 
     children =
@@ -145,7 +169,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyGetVerifyFriendOpt, value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("GET_USER_OPT", value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "get")
     jid = remove_jid_domain(value)
 
@@ -158,31 +182,31 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeySetVerifyFriendOpt, _value, _from, to, _type, id, body, _bodys) do
+  def make_iq_message("SET_USER_OPT", _value, _from, to, _type, id, body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     children = make_attrs_xmlel(body.value, body.headers, "jabber:iq:verify_friend_mode", [])
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyGetUserFriend, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("GET_USER_FRIEND", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "get")
     children = xmlel(name: "get_user_friends", attrs: [{"xmlns", "jabber:x:get_friend"}])
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyDelUserFriend, _value, _from, to, _type, id, body, _bodys) do
+  def make_iq_message("DEL_USER_FRIEND", _value, _from, to, _type, id, body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
     children = make_attrs_xmlel(body.value, body.headers, "jabber:x:delete_friend", [])
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyGetUserKey, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("GET_USER_KEY", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "get")
     children = xmlel(name: "key", attrs: [{"xmlns", "urn:xmpp:key"}])
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeySetAdmin, _value, _from, to, _type, id, body, _bodys) do
+  def make_iq_message("SET_ADMIN", _value, _from, to, _type, id, body, _bodys) do
     set_admin_children = make_attrs_xmlel(body.value, body.headers, "jabber:x:mask_user", [])
     attrs = make_iq_master_attrs(to, id, "set")
 
@@ -197,7 +221,7 @@ defmodule MessageProtobuf.Decode.IQ do
   end
 
   def make_iq_message(iq_type, _value, _from, to, _type, id, body, _bodys)
-      when iq_type == :IQKeyCancelMember or iq_type == :IQKeySetMember do
+      when iq_type == "CANCEL_MEMBER" or iq_type == "SET_MEMBER" do
     set_admin_children = make_attrs_xmlel(body.value, body.headers, "", [])
     attrs = make_iq_master_attrs(to, id, "set")
 
@@ -211,7 +235,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyGetUserMucs, _value, _from, to, _type, id, body, _bodys) do
+  def make_iq_message("USER_MUCS", _value, _from, to, _type, id, body, _bodys) do
     set_admin_children = make_attrs_xmlel(body.value, body.headers, "", [])
     attrs = make_iq_master_attrs(to, id, "get")
 
@@ -225,7 +249,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyDestroyMuc, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("DESTROY_MUC", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "set")
 
     children =
@@ -238,7 +262,7 @@ defmodule MessageProtobuf.Decode.IQ do
     {:xmlstreamelement, xmlel(name: "iq", attrs: attrs, children: [children])}
   end
 
-  def make_iq_message(:IQKeyPing, _value, _from, to, _type, id, _body, _bodys) do
+  def make_iq_message("PING", _value, _from, to, _type, id, _body, _bodys) do
     attrs = make_iq_master_attrs(to, id, "get")
 
     children =
@@ -321,6 +345,46 @@ defmodule MessageProtobuf.Decode.IQ do
       :StringHeaderTypeKey -> "key"
       :StringHeaderTypeMode -> "mode"
       :StringHeaderTypeCarbon -> "carbon_message"
+    end
+  end
+
+  def get_iqkey_type(key) do
+    case key do
+      :IQKeyBind -> "BIND"
+      :IQKeyMucCreate -> "CREATE_MUC"
+      :IQKeyMucCreateV2 -> "MUC_CREATE"
+      :IQKeyMucInviteV2 -> "MUC_INVITE_V2"
+      :IQKeyGetMucUser -> "GET_MUC_USER"
+      :IQKeySetMucUser -> "SET_MUC_USER"
+      :IQKeyDelMucUser -> "DEL_MUC_USER"
+      :IQKeyAddUserSubscribe -> "ADD_USER_SUBSCRIBE"
+      :IQKeyDelUserSubscribe -> "DEL_USER_SUBSCRIBE"
+      :IQKeyGetUserSubScribe -> "GET_USER_SUBSCRIBE"
+      :IQKeySetUserSubScribeV2 -> "SET_USER_SUBSCRIBE_V2"
+      :IQKeyGetUserSubScribeV2 -> "GET_USER_SUBSCRIBE_V2"
+      :IQKeyGetVerifyFriendOpt -> "GET_USER_OPT"
+      :IQKeySetVerifyFriendOpt -> "SET_USER_OPT"
+      :IQKeyGetUserFriend -> "GET_USER_FRIEND"
+      :IQKeyDelUserFriend -> "DEL_USER_FRIEND"
+      :IQKeyGetUserKey -> "GET_USER_KEY"
+      :IQKeyGetUserMask -> "GET_USER_MASK"
+      :IQKeySetUserMask -> "SET_USER_MASK"
+      :IQKeyCancelUSerMask -> "CANCEL_USER_MASK"
+      :IQKeySetAdmin -> "SET_ADMIN"
+      :IQKeySetMember -> "SET_MEMBER"
+      :IQKeyCancelMember -> "CANCEL_MEMBER"
+      :IQKeyGetUserMucs -> "USER_MUCS"
+      :IQKeyDestroyMuc -> "DESTROY_MUC"
+      :IQKeyPing -> "PING"
+      :IQKeyAddPush -> "ADD_PUSH"
+      :IQKeyCancelPush -> "CANCEL_PUSH"
+      :IQKeyResult -> "result"
+      :IQKeyError -> "error"
+      :IQKeyGetVUser -> "GET_VUSER"
+      :IQKeyGetVUserRole -> "GET_VUSER_ROLE"
+      :IQKeyStartSession -> "RUSER_START_SESSION"
+      :IQKeyEndSession -> "RUSER_END_SESSION"
+      _ -> :undefined
     end
   end
 end
