@@ -437,7 +437,7 @@ defmodule MessageProtobuf.Encode.Presence do
     )
   end
 
-  def encode_presence("presence", from, to, packet) do
+  def xml2pb_presence(from, to, packet) do
     case :fxml.get_attr_s("xmlns", xmlel(packet, :attrs)) do
       "http://jabber.org/protocol/muc#invite" ->
         encode_presence_invite_muc(from, to, packet)
