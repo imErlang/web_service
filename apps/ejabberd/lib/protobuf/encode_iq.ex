@@ -12,10 +12,67 @@ defmodule MessageProtobuf.Encode.Iq do
     end
   end
 
+  def encode_pb_iq_bind_result(from, to, packet, key) do
+    body =
+      case :fxml.get_subtag(packet, "bind") do
+        false ->
+          :undefined
+
+        bind ->
+          cdata = :fxml.get_subtag_cdata(bind, "jid")
+          time = :qtalk_public.get_timestamp() |> Integer.to_string()
+          headers = [{"time_value", time}, {"key_value", key}]
+          Messagebody.new(headers: headers, value: cdata)
+      end
+
+    id = :qtalk_public.get_xml_attrs_id(packet)
+    struct_pb_iq_msg(from, to, :SignalTypeIQ, "result", "bind", id, :undefined, body, [], [])
+  end
+
+  def get_pb_iq_user_mucs_bodys(packet) do
+        case fxml:get_subtag(Packet,<<"query">>) of
+        false ->
+            ?INFO_MSG("get_pb_iq_user_mucs_bodys1 ~p ~n",[Packet]),
+            [];
+        Query ->
+            Mucs = fxml:get_subtags(Query,<<"muc_rooms">>),
+            Bodys =	lists:flatmap(fun(Xml) ->
+                  Headers =
+                     case is_record(Xml,xmlel) of
+                     true ->
+                    Host = proplists:get_value(<<"host">>,Xml#xmlel.attrs, qtalk_public:get_default_domain()),
+                        case proplists:get_value(<<"name">>,Xml#xmlel.attrs) of
+                        undefined ->
+                            ?INFO_MSG("get_pb_iq no found name ~n",[]),
+                            [];
+                        Name ->
+                            [{<<"name">>,Name},
+                             {<<"host">>,Host}]
+                        end;
+                    _ ->
+                        ?INFO_MSG("get_pb_iq_user_mucs_bodys ~p ~n",[Packet]),
+                        []
+                    end,
+               [ejabberd_xml2pb_public:encode_messagebody(Headers,<<"muc_room">>)] end,Mucs),
+            Bodys
+        end.
+
+  def encode_user_muc_pb(from,to,packet) do
+    bodys = get_pb_iq_user_mucs_bodys(packet),
+      ID = case  fxml:get_attr(<<"id">>,Packet#xmlel.attrs) of
+      false ->
+              integer_to_binary(qtalk_public:timestamp());
+      {_, I} ->
+              I
+      end,
+    struct_pb_iq_msg(From,To,'SignalTypeIQ',<<"result">>,<<"user_mucs">>,ID,'undefined','undefined',[],Bodys)
+    end
+
+
   def encode_iq_result_pb_packet(statedata, from, to, packet) do
     case :qtalk_public.get_sub_xmlns_name(packet) do
       {"bind", "urn:ietf:params:xml:ns:xmpp-bind"} ->
-        :ejabberd_xml2pb_iq.encode_pb_iq_bind_result(from, to, packet, statedata.key)
+        encode_pb_iq_bind_result(from, to, packet, statedata.key)
 
       {"query", "http://jabber.org/protocol/muc#user_mucs"} ->
         :ejabberd_xml2pb_iq.encode_user_muc_pb(from, to, packet)
@@ -185,5 +242,4 @@ defmodule MessageProtobuf.Encode.Iq do
     opt = MessageProtobuf.Encode.get_proto_header_opt(pb_msg)
     MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
   end
-
 end
