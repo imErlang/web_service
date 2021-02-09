@@ -62,6 +62,7 @@
 	 send_filtered/5,
 	 broadcast/4,
 	 get_subscribed/1,
+	 encode_iq_result_pb_packet/4,
          transform_listen_option/2]).
 
 -export([init/1, wait_for_stream/2, wait_for_auth/2,
