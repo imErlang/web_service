@@ -154,4 +154,8 @@ defmodule MessageProtobuf.Encode do
   def pack(pb_msg) do
     :ejabberd_encode_protobuf.uint32_pack(byte_size(pb_msg), pb_msg)
   end
+
+  def timestamp() do
+    DateTime.utc_now() |> DateTime.to_unix(:second)
+  end
 end
