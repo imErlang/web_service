@@ -22,18 +22,14 @@ defmodule MessageProtobuf.Decode.IQ do
       iq_msg.value,
       pb_msg.from,
       pb_msg.to,
-      Signaltype.key(pb_msg.signaltype),
+      pb_msg.signaltype,
       iq_msg.messageid,
       iq_msg.body,
       iq_msg.bodys
     )
   end
 
-  def make_iq_master_attrs(:undefined, id, type) do
-    [{"id", id}, {"type", type}]
-  end
-
-  def make_iq_master_attrs(to, id, type) when is_binary(to) do
+  def make_iq_master_attrs(to, id, type) when is_binary(to) and to !== "" do
     [{"to", to}, {"id", id}, {"type", type}]
   end
 

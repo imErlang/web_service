@@ -33,7 +33,7 @@ defmodule MessageProtobuf.Decode do
 
   @spec handle_pro_msg(%Protomessage{}) :: any()
   def handle_pro_msg(%Protomessage{signaltype: signaltype} = pb_msg) do
-    handle_pro_msg(Signaltype.key(signaltype), pb_msg)
+    handle_pro_msg(signaltype, pb_msg)
   end
 
   def handle_pro_msg(:SignalTypePresence, pb_msg) do

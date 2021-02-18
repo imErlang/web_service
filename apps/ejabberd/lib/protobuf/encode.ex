@@ -1,48 +1,39 @@
 defmodule MessageProtobuf.Encode do
   import Xml
+  require Logger
 
-  def get_xml_attrs_to(packet, dt) do
-    try do
-      {_, to} = :fxml.get_attr("to", xmlel(packet, :attrs))
-      to
-    catch
-      _ ->
-        :jlib.jid_to_string(:jlib.make_jid(dt))
-    end
-  end
+  def get_xml_attrs(packet, key, user) do
+    case :fxml.get_attr(key, xmlel(packet, :attrs)) do
+      {:value, from} ->
+        from
 
-  def get_xml_attrs_from(packet, df) do
-    try do
-      {_, from} = :fxml.get_attr("from", xmlel(packet, :attrs))
-      from
-    catch
-      _ ->
-        :jlib.jid_to_string(:jlib.make_jid(df))
+      false ->
+        user
     end
   end
 
   def send_probuf_msg(statedata, packet) do
-    to = get_xml_attrs_to(packet, {statedata.user, statedata.server, statedata.resource})
-    from = get_xml_attrs_from(packet, {statedata.user, statedata.server, statedata.resource})
+    Logger.debug("from: #{inspect(statedata)}, packet: #{inspect(packet)}")
+
+    user =
+      :jlib.jid_to_string(:jlib.make_jid({statedata.user, statedata.server, statedata.resource}))
+
+    to = get_xml_attrs(packet, "to", user)
+    from = get_xml_attrs(packet, "from", user)
     do_send_probuf_msg(statedata, from, to, packet)
   end
 
   def do_send_probuf_msg(statedata, from, to, packet) do
     type = xmlel(packet, :name)
-    do_send_probuf_msg(type, statedata, from, to, packet)
-  end
 
-  def do_send_probuf_msg("iq", statedata, from, to, packet) do
-    MessageProtobuf.Encode.Iq.xml2pb_iq(statedata, from, to, packet)
-  end
-  def do_send_probuf_msg("message", _statedata, from, to, packet) do
-    MessageProtobuf.Encode.Message.xml2pb_msg(from, to, packet)
-  end
+    case do_send_probuf_msg(type, statedata, from, to, packet) do
+      "error" ->
+        "error"
 
-  def do_send_probuf_msg("presence", _statedata, from, to, packet) do
-    MessageProtobuf.Encode.Presence.xml2pb_presence(from, to, packet)
+      data ->
+        pack(data)
+    end
   end
-
 
   def encode_pb_protomessage(
         from,
@@ -71,6 +62,18 @@ defmodule MessageProtobuf.Encode do
       message: msg
     )
     |> Protomessage.encode()
+  end
+
+  def do_send_probuf_msg("iq", statedata, from, to, packet) do
+    MessageProtobuf.Encode.Iq.xml2pb_iq(statedata, from, to, packet)
+  end
+
+  def do_send_probuf_msg("message", _statedata, from, to, packet) do
+    MessageProtobuf.Encode.Message.xml2pb_msg(from, to, packet)
+  end
+
+  def do_send_probuf_msg("presence", _statedata, from, to, packet) do
+    MessageProtobuf.Encode.Presence.xml2pb_presence(from, to, packet)
   end
 
   def get_proto_header_opt(pro_msg) do

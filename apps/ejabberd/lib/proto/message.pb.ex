@@ -62,26 +62,6 @@ defmodule Categorytype do
   field :CategoryTickUser, 100
 end
 
-defmodule Streamendcode do
-  @moduledoc false
-  use Protobuf, enum: true, syntax: :proto3
-
-  @type t ::
-          integer
-          | :StreamEndCodeDefault
-          | :StreamEndCodeReloginBase
-          | :StreamEndCodeReloginFromNav
-          | :StreamEndCodeNoReloginBase
-
-  field :StreamEndCodeDefault, 0
-
-  field :StreamEndCodeReloginBase, 100
-
-  field :StreamEndCodeReloginFromNav, 101
-
-  field :StreamEndCodeNoReloginBase, 200
-end
-
 defmodule Iqmessagekeytype do
   @moduledoc false
   use Protobuf, enum: true, syntax: :proto3
@@ -650,7 +630,7 @@ defmodule Stringheader do
 
   @type t :: %__MODULE__{
           params: [String.t()],
-          key: String.t(),
+          key: Stringheadertype.t(),
           value: String.t(),
           definedkey: String.t()
         }
@@ -658,7 +638,7 @@ defmodule Stringheader do
   defstruct [:params, :key, :value, :definedkey]
 
   field :params, 1, repeated: true, type: :string
-  field :key, 2, type: :string
+  field :key, 2, type: Stringheadertype, enum: true
   field :value, 3, type: :string
   field :definedkey, 4, type: :string
 end
@@ -878,7 +858,7 @@ defmodule Protomessage do
 
   @type t :: %__MODULE__{
           options: integer,
-          signaltype: integer,
+          signaltype: Signaltype.t(),
           from: String.t(),
           to: String.t(),
           message: binary,
@@ -905,7 +885,7 @@ defmodule Protomessage do
   ]
 
   field :options, 1, type: :int32
-  field :signaltype, 2, type: :int32
+  field :signaltype, 2, type: Signaltype, enum: true
   field :from, 3, type: :string
   field :to, 4, type: :string
   field :message, 5, type: :bytes
@@ -978,7 +958,7 @@ defmodule Presencemessage do
           headers: [Stringheader.t()],
           bodys: [Messagebody.t()],
           definedkey: Presencekeytype.t(),
-          categorytype: integer
+          categorytype: Categorytype.t()
         }
 
   defstruct [
@@ -1007,7 +987,7 @@ defmodule Presencemessage do
   field :headers, 9, repeated: true, type: Stringheader
   field :bodys, 10, repeated: true, type: Messagebody
   field :definedkey, 11, type: Presencekeytype, enum: true
-  field :categorytype, 12, type: :int32
+  field :categorytype, 12, type: Categorytype, enum: true
 end
 
 defmodule Xmppmessage do
@@ -1015,8 +995,8 @@ defmodule Xmppmessage do
   use Protobuf, syntax: :proto3
 
   @type t :: %__MODULE__{
-          messagetype: integer,
-          clienttype: integer,
+          messagetype: Messagetype.t(),
+          clienttype: Clienttype.t(),
           clientversion: integer,
           namespace: String.t(),
           key: String.t(),
@@ -1046,8 +1026,8 @@ defmodule Xmppmessage do
     :bodys
   ]
 
-  field :messagetype, 1, type: :int32
-  field :clienttype, 2, type: :int32
+  field :messagetype, 1, type: Messagetype, enum: true
+  field :clienttype, 2, type: Clienttype, enum: true
   field :clientversion, 3, type: :int64
   field :namespace, 4, type: :string
   field :key, 5, type: :string

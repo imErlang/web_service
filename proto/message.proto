@@ -27,13 +27,6 @@ enum categorytype {
   CategoryTickUser = 100;
 }
 
-enum streamendcode {
-  StreamEndCodeDefault = 0;
-  StreamEndCodeReloginBase = 100;
-  StreamEndCodeReloginFromNav = 101;
-  StreamEndCodeNoReloginBase = 200;
-}
-
 enum iqmessagekeytype {
   IQKeyDefault = 0;
   IQKeyBind = 1;
@@ -218,7 +211,7 @@ enum signaltype {
 
 message stringheader {
   repeated string params = 1;
-  string key = 2;
+  stringheadertype key = 2;
   string value = 3;
   string definedkey = 4;
 }
@@ -296,7 +289,7 @@ message responsefailure {
 
 message protomessage {
   int32 options = 1;
-  int32 signaltype = 2;
+  signaltype signaltype = 2;
   string from = 3;
   string to = 4;
   bytes message = 5;
@@ -334,12 +327,12 @@ message presencemessage {
   repeated stringheader headers = 9;
   repeated messagebody bodys = 10;
   presencekeytype definedkey = 11;
-  int32 categorytype = 12;
+  categorytype categorytype = 12;
 }
 
 message xmppmessage {
-  int32 messagetype = 1;
-  int32 clienttype = 2;
+  messagetype messagetype = 1;
+  clienttype clienttype = 2;
   int64 clientversion = 3;
   string namespace = 4;
   string key = 5;

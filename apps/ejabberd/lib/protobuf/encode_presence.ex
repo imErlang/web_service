@@ -2,21 +2,30 @@ defmodule MessageProtobuf.Encode.Presence do
   import Xml
   require Logger
 
-  def set_presencekey_type("result"), do: :PresenceKeyResult
-  def set_presencekey_type(_), do: :none
+  def struct_pb_presence_msg(params) do
+    from = Map.get(params, :from)
+    to = Map.get(params, :to)
+    type = Map.get(params, :type)
+    key = Map.get(params, :key, "result")
+    val = Map.get(params, :val, "")
+    msg_id = Map.get(params, :msg_id)
+    header = Map.get(params, :header, nil)
+    body = Map.get(params, :body, nil)
+    headers = Map.get(params, :headers, [])
+    bodys = Map.get(params, :bodys, [])
 
-  def encode_pb_presence_msg(
-        key,
-        val,
-        msg_id,
-        header,
-        body,
-        headers,
-        bodys,
-        definedkey,
-        categorytype
-      ) do
-    presence_pb =
+    definedkey =
+      case key == "result" do
+        true ->
+          :PresenceKeyResult
+
+        false ->
+          Map.get(params, :definedkey, "")
+      end
+
+    catagory = Map.get(params, :catagory, "")
+
+    presence =
       Presencemessage.new(
         key: key,
         value: val,
@@ -26,45 +35,17 @@ defmodule MessageProtobuf.Encode.Presence do
         receivedtime: :qtalk_public.get_timestamp(),
         headers: headers,
         bodys: bodys,
-        categorytype: categorytype,
+        categorytype: catagory,
         definedkey: definedkey
       )
-
-    presence_pb =
-      case set_presencekey_type(key) do
-        :none ->
-          presence_pb
-
-        presence_type ->
-          %{presence_pb | definedkey: presence_type}
-      end
-
-    presence_pb |> Presencemessage.encode()
-  end
-
-  def struct_pb_presence_msg(
-        from,
-        to,
-        type,
-        key,
-        val,
-        msg_id,
-        header,
-        body,
-        haeders,
-        bodys,
-        definedkey \\ "",
-        catagory \\ ""
-      ) do
-    presence =
-      encode_pb_presence_msg(key, val, msg_id, header, body, haeders, bodys, definedkey, catagory)
+      |> Presencemessage.encode()
 
     pb_msg = MessageProtobuf.Encode.encode_pb_protomessage(from, to, type, 0, presence)
     opt = MessageProtobuf.Encode.get_proto_header_opt(pb_msg)
     MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
   end
 
-  def encode_presence_invite_muc(from, to, packet) do
+  def encode_presence_invite_muc(packet) do
     attrs = xmlel(packet, :attrs)
     jid = :proplists.get_value("invite_jid", attrs)
     status = :proplists.get_value("status", attrs)
@@ -72,62 +53,26 @@ defmodule MessageProtobuf.Encode.Presence do
     headers =
       MessageProtobuf.Encode.encode_pb_stringheaders([{"invite_jid", jid}, {"status", status}])
 
-    msg_body = Messagebody.new(headers: headers, value: "invite_info")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "invite_user",
-      "",
-      :undefined,
-      msg_body,
-      [],
-      []
-    )
+    body = Messagebody.new(headers: headers, value: "invite_info")
+    %{val: "invite_user", body: body}
   end
 
-  def encode_del_muc_register(from, to, packet) do
+  def encode_del_muc_register(packet) do
     del_jid = :proplists.get_value("del_jid", xmlel(packet, :attrs))
     headers = [{"del_jid", del_jid}]
     body = Messagebody.new(headers: headers, value: "del_muc_register")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "del_muc_register",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "del_muc_register", body: body}
   end
 
-  def encode_set_user_subscribe_v2(from, to, packet) do
+  def encode_set_user_subscribe_v2(packet) do
     subscribe = :fxml.get_subtag(packet, "subscribe_updte")
     status = :proplists.get_value("status", xmlel(subscribe, :attrs), "0")
     headers = [{"status", status}]
     body = Messagebody.new(headers: headers, value: "subscribe_update")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "subscribe_update",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "subscribe_update", body: body}
   end
 
-  def encode_update_muc_vcard(from, to, packet) do
+  def encode_update_muc_vcard(packet) do
     els = :fxml.get_subtag(packet, "vcard_updte")
     attrs = xmlel(els, :attrs)
     nick = :proplists.get_value("nick", attrs)
@@ -145,22 +90,10 @@ defmodule MessageProtobuf.Encode.Presence do
     ]
 
     body = Messagebody.new(headers: headers, value: "update_muc_vcard")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "update_muc_vcard",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "update_muc_vcard", body: body}
   end
 
-  def encode_manual_authentication_confirm(from, to, packet) do
+  def encode_manual_authentication_confirm(packet) do
     attrs = xmlel(packet, :attrs)
     friend_num = :proplists.get_value("friend_num", attrs, "")
     type = :proplists.get_value("type", attrs, "")
@@ -177,22 +110,10 @@ defmodule MessageProtobuf.Encode.Presence do
     ]
 
     body = Messagebody.new(headers: headers, value: "verify_friend")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "manual_authentication_confirm",
-      "confirm_verify_friend",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{key: "manual_authentication_confirm", val: "confirm_verify_friend", body: body}
   end
 
-  def encode_verify_friend(from, to, packet) do
+  def encode_verify_friend(packet) do
     attrs = xmlel(packet, :attrs)
     type = :proplists.get_value("type", attrs)
     rslt = :proplists.get_value("result", attrs, "")
@@ -209,22 +130,10 @@ defmodule MessageProtobuf.Encode.Presence do
     ]
 
     body = Messagebody.new(headers: headers, value: "verify_friend")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "verify_friend",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "verify_friend", body: body}
   end
 
-  def encode_delete_friend(from, to, packet) do
+  def encode_delete_friend(packet) do
     attrs = xmlel(packet, :attrs)
     type = :proplists.get_value("type", attrs, "")
     rslt = :proplists.get_value("result", attrs, "")
@@ -232,71 +141,35 @@ defmodule MessageProtobuf.Encode.Presence do
     domain = :proplists.get_value("domain", attrs, "")
     headers = [{"type", type}, {"result", rslt}, {"jid", jid}, {"domain", domain}]
     body = Messagebody.new(headers: headers, value: "delete_friend")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "delete_friend",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "delete_friend", body: body}
   end
 
-  def encode_mask_user(from, to, packet) do
+  def encode_mask_user(packet) do
     jid = :proplists.get_value("jid", xmlel(packet, :attrs), "")
     headers = [{"jid", jid}]
     body = Messagebody.new(headers: headers, value: "mask_user")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "mask_user",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "mask_user", body: body}
   end
 
-  def encode_cancel_mask_user(from, to, packet) do
+  def encode_cancel_mask_user(packet) do
     jid = :proplists.get_value("jid", xmlel(packet, :attrs), "")
     headers = [{"jid", jid}]
     body = Messagebody.new(headers: headers, value: "cancel_mask_user")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "cancel_mask_user",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "cancel_mask_user", body: body}
   end
 
-  def encode_presence_mask_user(from, to, packet) do
+  def encode_presence_mask_user(packet) do
     case :fxml.get_subtag(packet, "mask_user") do
       false ->
         cancel_mask = :fxml.get_subtag(packet, "cancel_masked_user")
-        encode_cancel_mask_user(from, to, cancel_mask)
+        encode_cancel_mask_user(cancel_mask)
 
       mask ->
-        encode_mask_user(from, to, mask)
+        encode_mask_user(mask)
     end
   end
 
-  def encode_presence_del_muc_user(from, to, packet) do
+  def encode_presence_del_muc_user(packet) do
     els = :fxml.get_subtag(packet, "x")
     item = :fxml.get_subtag(els, "item")
     item_attrs = xmlel(item, :attrs)
@@ -307,22 +180,10 @@ defmodule MessageProtobuf.Encode.Presence do
 
     headers = [{"affiliation", affiliation}, {"role", role}, {"code", code}]
     body = Messagebody.new(headers: headers, value: "item")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "del_muc_user",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "del_muc_user", body: body}
   end
 
-  def encode_presence_muc_destory(from, to, packet) do
+  def encode_presence_muc_destory(packet) do
     els = :fxml.get_subtag(packet, "x")
     item = :fxml.get_subtag(els, "item")
     item_attrs = xmlel(item, :attrs)
@@ -331,22 +192,10 @@ defmodule MessageProtobuf.Encode.Presence do
 
     headers = [{"affiliation", affiliation}, {"role", role}]
     body = Messagebody.new(headers: headers, value: "item")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "destory_muc",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "destory_muc", body: body}
   end
 
-  def encode_presence_muc_notice_add_user(from, to, packet) do
+  def encode_presence_muc_notice_add_user(packet) do
     els = :fxml.get_subtag(packet, "x")
     item = :fxml.get_subtag(els, "item")
     item_attrs = xmlel(item, :attrs)
@@ -362,146 +211,138 @@ defmodule MessageProtobuf.Encode.Presence do
     ]
 
     body = Messagebody.new(headers: headers, value: "user_info")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "user_join_muc",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{val: "user_join_muc", body: body}
   end
 
-  def encode_x_user_packet(from, to, packet) do
+  def encode_x_user_packet(packet) do
     case :fxml.get_attr_s("type", xmlel(packet, :attrs)) do
       "unavailable" ->
         packet1 = :fxml.get_subtag(packet, "x")
 
         case :fxml.get_subtag(packet1, "destroy") == false do
           true ->
-            encode_presence_del_muc_user(from, to, packet)
+            encode_presence_del_muc_user(packet)
 
           false ->
-            encode_presence_muc_destory(from, to, packet)
+            encode_presence_muc_destory(packet)
         end
 
       _ ->
-        encode_presence_muc_notice_add_user(from, to, packet)
+        encode_presence_muc_notice_add_user(packet)
     end
   end
 
-  def encode_notify_presence(from, to, packet) do
+  def encode_notify_presence(packet) do
     attrs = xmlel(packet, :attrs)
     data = :proplists.get_value("data", attrs, "")
     category = :proplists.get_value("category", attrs, "1") |> String.to_integer()
     body = Messagebody.new(value: data)
 
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "notify",
-      "",
-      :undefined,
-      body,
-      [],
-      [],
-      :PresenceKeyNotify,
-      category
-    )
+    %{
+      key: "notify",
+      body: body,
+      definedkey: :PresenceKeyNotify,
+      category: category
+    }
   end
 
-  def enocde_status(from, to, packet) do
+  def enocde_status(packet) do
     show = :fxml.get_subtag_cdata(packet, "show")
     priority = :fxml.get_subtag_cdata(packet, "priority")
     headers = [{"show", show}, {"priority", priority}]
     body = Messagebody.new(headers: headers, value: "user_update_status")
-
-    struct_pb_presence_msg(
-      from,
-      to,
-      :SignalTypePresence,
-      "result",
-      "update_user_status",
-      "",
-      :undefined,
-      body,
-      [],
-      []
-    )
+    %{key: "update_user_status", body: body}
   end
 
   def xml2pb_presence(from, to, packet) do
-    case :fxml.get_attr_s("xmlns", xmlel(packet, :attrs)) do
-      "http://jabber.org/protocol/muc#invite" ->
-        encode_presence_invite_muc(from, to, packet)
+    ns = :fxml.get_attr_s("xmlns", xmlel(packet, :attrs))
 
-      "http://jabber.org/protocol/muc#del_register" ->
-        encode_del_muc_register(from, to, packet)
+    case xml2pb_presence_ns(ns, packet) do
+      "error" ->
+        Logger.error("encode presence error #{inspect(packet)}")
+        "error"
 
-      "http://jabber.org/protocol/muc#muc_user_subscribe_v2" ->
-        encode_set_user_subscribe_v2(from, to, packet)
+      params ->
+        Map.merge(%{from: from, to: to, type: :SignalTypePresence}, params)
+        |> struct_pb_presence_msg
+    end
+  end
 
-      "http://jabber.org/protocol/muc#vcard_update" ->
-        encode_update_muc_vcard(from, to, packet)
+  @muc_invite "http://jabber.org/protocol/muc#invite"
+  @muc_del_register "http://jabber.org/protocol/muc#del_register"
+  @muc_user_subscribe_v2 "http://jabber.org/protocol/muc#muc_user_subscribe_v2"
+  @muc_vcard_update "http://jabber.org/protocol/muc#vcard_update"
+  @verify_friend "jabber:x:verify_friend"
+  @invite_rslt "http://jabber.org/protocol/user#invite_rslt"
+  @delete_friend "jabber:x:delete_friend"
+  @mask_user "jabber:x:mask_user"
+  @muc_user "http://jabber.org/protocol/muc#user"
+  @muc_owner "http://jabber.org/protocol/muc#owner"
+  @presence_notify "jabber:x:presence_notify"
 
-      "jabber:x:verify_friend" ->
-        attrs = xmlel(packet, :attrs)
+  def xml2pb_presence_ns(@muc_invite, packet),
+    do: encode_presence_invite_muc(packet)
 
-        case :proplists.get_value("result", attrs, :undefined) do
-          :undefined ->
-            case :proplists.get_value("method", attrs) == "manual_authentication_confirm" do
-              true ->
-                encode_manual_authentication_confirm(from, to, packet)
+  def xml2pb_presence_ns(@muc_del_register, packet),
+    do: encode_del_muc_register(packet)
 
-              false ->
-                "error"
-            end
+  def xml2pb_presence_ns(@muc_user_subscribe_v2, packet),
+    do: encode_set_user_subscribe_v2(packet)
 
-          _ ->
-            encode_verify_friend(from, to, packet)
+  def xml2pb_presence_ns(@muc_vcard_update, packet),
+    do: encode_update_muc_vcard(packet)
+
+  def xml2pb_presence_ns(@verify_friend, packet) do
+    attrs = xmlel(packet, :attrs)
+
+    case :proplists.get_value("result", attrs, :undefined) do
+      :undefined ->
+        case :proplists.get_value("method", attrs) == "manual_authentication_confirm" do
+          true ->
+            encode_manual_authentication_confirm(packet)
+
+          false ->
+            "error"
         end
 
-      "http://jabber.org/protocol/user#invite_rslt" ->
-        encode_verify_friend(from, to, packet)
+      _ ->
+        encode_verify_friend(packet)
+    end
+  end
 
-      "jabber:x:delete_friend" ->
-        encode_delete_friend(from, to, packet)
+  def xml2pb_presence_ns(@invite_rslt, packet),
+    do: encode_verify_friend(packet)
 
-      "jabber:x:mask_user" ->
-        encode_presence_mask_user(from, to, packet)
+  def xml2pb_presence_ns(@delete_friend, packet),
+    do: encode_delete_friend(packet)
 
-      "" ->
-        case :qtalk_public.get_sub_xmlns_name(packet) do
-          {"x", "http://jabber.org/protocol/muc#user"} ->
-            case :fxml.get_attr("type", xmlel(packet, :attrs)) do
-              false ->
-                :ok
+  def xml2pb_presence_ns(@mask_user, packet),
+    do: encode_presence_mask_user(packet)
 
-              _ ->
-                encode_x_user_packet(from, to, packet)
-            end
-
-          {"query", "http://jabber.org/protocol/muc#owner"} ->
-            encode_update_muc_vcard(from, to, packet)
-
-          {"notify", "jabber:x:presence_notify"} ->
-            encode_notify_presence(from, to, packet)
+  def xml2pb_presence_ns("", packet) do
+    case :qtalk_public.get_sub_xmlns_name(packet) do
+      {"x", @muc_user} ->
+        case :fxml.get_attr("type", xmlel(packet, :attrs)) do
+          false ->
+            :ok
 
           _ ->
-            case :fxml.get_subtag(packet, "show") do
-              false ->
-                "error"
+            encode_x_user_packet(packet)
+        end
 
-              _ ->
-                enocde_status(from, to, packet)
-            end
+      {"query", @muc_owner} ->
+        encode_update_muc_vcard(packet)
+
+      {"notify", @presence_notify} ->
+        encode_notify_presence(packet)
+
+      _ ->
+        case :fxml.get_subtag(packet, "show") do
+          false ->
+            "error"
+
+          _ ->
+            enocde_status(packet)
         end
     end
   end

@@ -112,19 +112,20 @@ defmodule Mix.Tasks.Compile.Asn1 do
   use Mix.Task
   alias Mix.Compilers.Erlang
 
+  require Logger
+
   @recursive true
   @manifest ".compile.asn1"
 
   def run(args) do
-    {opts, _, _} = OptionParser.parse(args, switches: [force: :boolean])
+    {_opts, _, _} = OptionParser.parse(args, switches: [force: :boolean])
 
     project = Mix.Project.config()
     source_paths = project[:asn1_paths] || ["asn1"]
     dest_paths = project[:asn1_target] || ["src"]
     mappings = Enum.zip(source_paths, dest_paths)
     options = project[:asn1_options] || []
-
-    Erlang.compile(manifest(), mappings, :asn1, :erl, opts[:force], fn
+    Erlang.compile(manifest(), mappings, :asn1, :erl, [], fn
       input, output ->
         options = options ++ [:noobj, outdir: Erlang.to_erl_file(Path.dirname(output))]
 

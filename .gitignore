@@ -29,3 +29,5 @@ upload
 
 /log
 
+apps/ejabberd/log
+

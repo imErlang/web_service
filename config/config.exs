@@ -17,7 +17,7 @@ import Config
 #       metadata: [:user_id]
 #
 config :logger, :console,
-  level: :debug,
+  level: :error,
   format: "$date $time [$level] $metadata$message\n",
   metadata: [:user_id]
 
