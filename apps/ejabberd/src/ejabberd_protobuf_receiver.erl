@@ -38,6 +38,7 @@
 	 starttls/2,
 	 compress/2,
 	 become_controller/2,
+         do_decode_pb_message/1,
 	 close/1]).
 
 %% gen_server callbacks
@@ -420,9 +421,10 @@ do_handle_pro_msg('SignalTypeIQ',Proto_msg)->
         ?DEBUG("Proto_msg ~p ~n",[Proto_msg]),
         case catch ejabberd_pb2xml_iq:parse_iq_message(Proto_msg) of
         {Stream,Packet}  when is_record(Packet,xmlel) ->
-                ?DEBUG("IQ packet~p, ~p ~n",[Stream,Packet]),
+                ?ERROR_MSG("IQ packet~p, ~p ~n",[Stream,Packet]),
                 {Stream, Packet};
-        _ ->
+        Error ->
+                ?ERROR_MSG("IQ packet~p, ~n",[Error]),
                 ok
         end;
 do_handle_pro_msg('SignalTypePresence',Proto_msg)->
@@ -566,13 +568,7 @@ decode_pb_message(Dt,#state{c2s_pid = C2SPid}) ->
         ?DEBUG("Dt ~p ~n",[Dt]),
         ElixirData = 'Elixir.MessageProtobuf.Decode':decode_pb_message(Dt),
         Stream = do_decode_pb_message(Dt),
-        case ElixirData == Stream of
-                true ->
-                        ignore;
-                false ->
-                        ?ERROR_MSG("Elixir Dt ~p  Elixir Data ~p Stream ~p ~n",[Dt, ElixirData, Stream])
-        end,
-
+        ?DEBUG("Elixir Dt ~p  Elixir Data ~p Stream ~p ~n",[Dt, ElixirData, Stream]),
         catch gen_fsm:send_event(C2SPid, ElixirData).
 
 do_decode_pb_message(Dt) ->

@@ -1,6 +1,6 @@
 defmodule Presencekeytype do
   @moduledoc false
-  use Protobuf, enum: true, syntax: :proto3
+  use Protobuf, enum: true, syntax: :proto2
 
   @type t ::
           integer
@@ -29,7 +29,7 @@ end
 
 defmodule Categorytype do
   @moduledoc false
-  use Protobuf, enum: true, syntax: :proto3
+  use Protobuf, enum: true, syntax: :proto2
 
   @type t ::
           integer
@@ -64,7 +64,7 @@ end
 
 defmodule Iqmessagekeytype do
   @moduledoc false
-  use Protobuf, enum: true, syntax: :proto3
+  use Protobuf, enum: true, syntax: :proto2
 
   @type t ::
           integer
@@ -180,7 +180,7 @@ end
 
 defmodule Stringheadertype do
   @moduledoc false
-  use Protobuf, enum: true, syntax: :proto3
+  use Protobuf, enum: true, syntax: :proto2
 
   @type t ::
           integer
@@ -299,7 +299,7 @@ end
 
 defmodule Messagetype do
   @moduledoc false
-  use Protobuf, enum: true, syntax: :proto3
+  use Protobuf, enum: true, syntax: :proto2
 
   @type t ::
           integer
@@ -475,7 +475,7 @@ end
 
 defmodule Clienttype do
   @moduledoc false
-  use Protobuf, enum: true, syntax: :proto3
+  use Protobuf, enum: true, syntax: :proto2
 
   @type t ::
           integer
@@ -504,7 +504,7 @@ end
 
 defmodule Signaltype do
   @moduledoc false
-  use Protobuf, enum: true, syntax: :proto3
+  use Protobuf, enum: true, syntax: :proto2
 
   @type t ::
           integer
@@ -609,24 +609,9 @@ defmodule Signaltype do
   field :SignalTypeCollection, 140
 end
 
-defmodule Messagekeyvalue do
-  @moduledoc false
-  use Protobuf, syntax: :proto3
-
-  @type t :: %__MODULE__{
-          key: String.t(),
-          value: String.t()
-        }
-
-  defstruct [:key, :value]
-
-  field :key, 1, type: :string
-  field :value, 2, type: :string
-end
-
 defmodule Stringheader do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           params: [String.t()],
@@ -638,14 +623,14 @@ defmodule Stringheader do
   defstruct [:params, :key, :value, :definedkey]
 
   field :params, 1, repeated: true, type: :string
-  field :key, 2, type: Stringheadertype, enum: true
-  field :value, 3, type: :string
-  field :definedkey, 4, type: :string
+  field :key, 2, optional: true, type: Stringheadertype, enum: true
+  field :value, 3, optional: true, type: :string
+  field :definedkey, 4, optional: true, type: :string
 end
 
 defmodule Packagelength do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           length: integer
@@ -653,12 +638,12 @@ defmodule Packagelength do
 
   defstruct [:length]
 
-  field :length, 1, type: :int32
+  field :length, 1, optional: true, type: :int32
 end
 
 defmodule Protoheader do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           version: integer,
@@ -671,17 +656,17 @@ defmodule Protoheader do
 
   defstruct [:version, :options, :optionlist, :length, :content, :message]
 
-  field :version, 1, type: :int32
-  field :options, 2, type: :int32
-  field :optionlist, 3, repeated: true, type: :int32
-  field :length, 4, type: :int32
-  field :content, 5, type: :string
-  field :message, 6, type: :bytes
+  field :version, 1, optional: true, type: :int32
+  field :options, 2, optional: true, type: :int32
+  field :optionlist, 3, repeated: true, type: :int32, packed: true
+  field :length, 4, optional: true, type: :int32
+  field :content, 5, optional: true, type: :string
+  field :message, 6, optional: true, type: :bytes
 end
 
 defmodule Messagebody do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           headers: [Stringheader.t()],
@@ -692,13 +677,13 @@ defmodule Messagebody do
   defstruct [:headers, :value, :bodys]
 
   field :headers, 1, repeated: true, type: Stringheader
-  field :value, 2, type: :string
+  field :value, 2, optional: true, type: :string
   field :bodys, 3, repeated: true, type: Messagebody
 end
 
 defmodule Authmessage do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           mechanism: String.t(),
@@ -710,16 +695,16 @@ defmodule Authmessage do
 
   defstruct [:mechanism, :method, :msgid, :authkey, :otherbody]
 
-  field :mechanism, 1, type: :string
-  field :method, 2, type: :string
-  field :msgid, 3, type: :string
-  field :authkey, 4, type: :string
-  field :otherbody, 5, type: Messagebody
+  field :mechanism, 1, optional: true, type: :string
+  field :method, 2, optional: true, type: :string
+  field :msgid, 3, optional: true, type: :string
+  field :authkey, 4, optional: true, type: :string
+  field :otherbody, 5, optional: true, type: Messagebody
 end
 
 defmodule Welcomemessage do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           domain: String.t(),
@@ -730,15 +715,15 @@ defmodule Welcomemessage do
 
   defstruct [:domain, :version, :user, :sockmod]
 
-  field :domain, 1, type: :string
-  field :version, 2, type: :string
-  field :user, 3, type: :string
-  field :sockmod, 4, type: :string
+  field :domain, 1, optional: true, type: :string
+  field :version, 2, optional: true, type: :string
+  field :user, 3, optional: true, type: :string
+  field :sockmod, 4, optional: true, type: :string
 end
 
 defmodule Streambegin do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           domain: String.t(),
@@ -748,14 +733,14 @@ defmodule Streambegin do
 
   defstruct [:domain, :version, :bodys]
 
-  field :domain, 1, type: :string
-  field :version, 2, type: :string
+  field :domain, 1, optional: true, type: :string
+  field :version, 2, optional: true, type: :string
   field :bodys, 3, repeated: true, type: Messagebody
 end
 
 defmodule Starttls do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
   @type t :: %__MODULE__{}
 
   defstruct []
@@ -763,7 +748,7 @@ end
 
 defmodule Proceedtls do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
   @type t :: %__MODULE__{}
 
   defstruct []
@@ -771,7 +756,7 @@ end
 
 defmodule Streamend do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           reason: String.t(),
@@ -780,13 +765,13 @@ defmodule Streamend do
 
   defstruct [:reason, :code]
 
-  field :reason, 1, type: :string
-  field :code, 2, type: :int32
+  field :reason, 1, optional: true, type: :string
+  field :code, 2, optional: true, type: :int32
 end
 
 defmodule Userconnect do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           domain: String.t(),
@@ -795,13 +780,13 @@ defmodule Userconnect do
 
   defstruct [:domain, :version]
 
-  field :domain, 1, type: :string
-  field :version, 2, type: :string
+  field :domain, 1, optional: true, type: :string
+  field :version, 2, optional: true, type: :string
 end
 
 defmodule Capability do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           version: String.t(),
@@ -810,13 +795,13 @@ defmodule Capability do
 
   defstruct [:version, :bodys]
 
-  field :version, 1, type: :string
-  field :bodys, 2, type: :string
+  field :version, 1, optional: true, type: :string
+  field :bodys, 2, optional: true, type: :string
 end
 
 defmodule Responsesucceeded do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           code: integer,
@@ -827,15 +812,15 @@ defmodule Responsesucceeded do
 
   defstruct [:code, :msgid, :info, :body]
 
-  field :code, 1, type: :int32
-  field :msgid, 2, type: :string
-  field :info, 3, type: :string
-  field :body, 4, type: Messagebody
+  field :code, 1, optional: true, type: :int32
+  field :msgid, 2, optional: true, type: :string
+  field :info, 3, optional: true, type: :string
+  field :body, 4, optional: true, type: Messagebody
 end
 
 defmodule Responsefailure do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           code: integer,
@@ -846,15 +831,15 @@ defmodule Responsefailure do
 
   defstruct [:code, :msgid, :error, :body]
 
-  field :code, 1, type: :int32
-  field :msgid, 2, type: :string
-  field :error, 3, type: :string
-  field :body, 4, type: Messagebody
+  field :code, 1, optional: true, type: :int32
+  field :msgid, 2, optional: true, type: :string
+  field :error, 3, optional: true, type: :string
+  field :body, 4, optional: true, type: Messagebody
 end
 
 defmodule Protomessage do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           options: integer,
@@ -884,22 +869,22 @@ defmodule Protomessage do
     :sendjid
   ]
 
-  field :options, 1, type: :int32
-  field :signaltype, 2, type: Signaltype, enum: true
-  field :from, 3, type: :string
-  field :to, 4, type: :string
-  field :message, 5, type: :bytes
-  field :realfrom, 6, type: :string
-  field :realto, 7, type: :string
-  field :originfrom, 8, type: :string
-  field :originto, 9, type: :string
-  field :origintype, 10, type: :string
-  field :sendjid, 11, type: :string
+  field :options, 1, optional: true, type: :int32
+  field :signaltype, 2, required: true, type: Signaltype, enum: true
+  field :from, 3, optional: true, type: :string
+  field :to, 4, optional: true, type: :string
+  field :message, 5, optional: true, type: :bytes
+  field :realfrom, 6, optional: true, type: :string
+  field :realto, 7, optional: true, type: :string
+  field :originfrom, 8, optional: true, type: :string
+  field :originto, 9, optional: true, type: :string
+  field :origintype, 10, optional: true, type: :string
+  field :sendjid, 11, optional: true, type: :string
 end
 
 defmodule Iqmessage do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           namespace: String.t(),
@@ -929,22 +914,22 @@ defmodule Iqmessage do
     :definedkey
   ]
 
-  field :namespace, 1, type: :string
-  field :key, 2, type: :string
-  field :value, 3, type: :string
-  field :messageid, 4, type: :string
-  field :header, 5, type: Stringheader
-  field :body, 6, type: Messagebody
-  field :receivedtime, 7, type: :int64
-  field :transfertime, 8, type: :int64
+  field :namespace, 1, optional: true, type: :string
+  field :key, 2, optional: true, type: :string
+  field :value, 3, optional: true, type: :string
+  field :messageid, 4, optional: true, type: :string
+  field :header, 5, optional: true, type: Stringheader
+  field :body, 6, optional: true, type: Messagebody
+  field :receivedtime, 7, optional: true, type: :int64
+  field :transfertime, 8, optional: true, type: :int64
   field :headers, 9, repeated: true, type: Stringheader
   field :bodys, 10, repeated: true, type: Messagebody
-  field :definedkey, 11, type: Iqmessagekeytype, enum: true
+  field :definedkey, 11, optional: true, type: Iqmessagekeytype, enum: true
 end
 
 defmodule Presencemessage do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           namespace: String.t(),
@@ -976,23 +961,23 @@ defmodule Presencemessage do
     :categorytype
   ]
 
-  field :namespace, 1, type: :string
-  field :key, 2, type: :string
-  field :value, 3, type: :string
-  field :messageid, 4, type: :string
-  field :header, 5, type: :string
-  field :body, 6, type: Messagebody
-  field :receivedtime, 7, type: :int64
-  field :transfertime, 8, type: :int64
+  field :namespace, 1, optional: true, type: :string
+  field :key, 2, optional: true, type: :string
+  field :value, 3, optional: true, type: :string
+  field :messageid, 4, optional: true, type: :string
+  field :header, 5, optional: true, type: :string
+  field :body, 6, optional: true, type: Messagebody
+  field :receivedtime, 7, optional: true, type: :int64
+  field :transfertime, 8, optional: true, type: :int64
   field :headers, 9, repeated: true, type: Stringheader
   field :bodys, 10, repeated: true, type: Messagebody
-  field :definedkey, 11, type: Presencekeytype, enum: true
-  field :categorytype, 12, type: Categorytype, enum: true
+  field :definedkey, 11, optional: true, type: Presencekeytype, enum: true
+  field :categorytype, 12, optional: true, type: Categorytype, enum: true
 end
 
 defmodule Xmppmessage do
   @moduledoc false
-  use Protobuf, syntax: :proto3
+  use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
           messagetype: Messagetype.t(),
@@ -1026,17 +1011,17 @@ defmodule Xmppmessage do
     :bodys
   ]
 
-  field :messagetype, 1, type: Messagetype, enum: true
-  field :clienttype, 2, type: Clienttype, enum: true
-  field :clientversion, 3, type: :int64
-  field :namespace, 4, type: :string
-  field :key, 5, type: :string
-  field :value, 6, type: :string
-  field :messageid, 7, type: :string
-  field :header, 8, type: Stringheader
-  field :body, 9, type: Messagebody
-  field :receivedtime, 10, type: :int64
-  field :transfertime, 11, type: :int64
+  field :messagetype, 1, required: true, type: Messagetype, enum: true
+  field :clienttype, 2, required: true, type: Clienttype, enum: true
+  field :clientversion, 3, required: true, type: :int64
+  field :namespace, 4, optional: true, type: :string
+  field :key, 5, optional: true, type: :string
+  field :value, 6, optional: true, type: :string
+  field :messageid, 7, optional: true, type: :string
+  field :header, 8, optional: true, type: Stringheader
+  field :body, 9, optional: true, type: Messagebody
+  field :receivedtime, 10, optional: true, type: :int64
+  field :transfertime, 11, optional: true, type: :int64
   field :headers, 12, repeated: true, type: Stringheader
   field :bodys, 13, repeated: true, type: Messagebody
 end

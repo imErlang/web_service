@@ -3345,8 +3345,27 @@ make_new_presence_packet(LServer,From,Packet,_Attrs) ->
 send_probuf_msg(StateData, Packet) ->
     To = qtalk_public:get_xml_attrs_to(Packet,{StateData#state.user,StateData#state.server,StateData#state.resource}),
     From = qtalk_public:get_xml_attrs_from(Packet,{StateData#state.user,StateData#state.server,StateData#state.resource}),
-    catch do_send_probuf_msg(StateData,ejabberd_pb2xml_public:list_and_character_to_binary(From),
-                                ejabberd_pb2xml_public:list_and_character_to_binary(To), Packet).
+    Text = do_send_probuf_msg(StateData,ejabberd_pb2xml_public:list_and_character_to_binary(From),
+                                ejabberd_pb2xml_public:list_and_character_to_binary(To), Packet),
+	State = #{user => StateData#state.user, server => StateData#state.server, resource => StateData#state.resource, key => StateData#state.key},
+	ElixirText = case catch 'Elixir.MessageProtobuf.Encode':send_probuf_msg(State, Packet) of
+		{'EIXT', Error} ->
+			?DEBUG("send elixir data: ~p ~n", [Error]),
+			<<"error">>;
+		ElixirData ->
+			case byte_size(ElixirData) =/= byte_size(Text) of
+				true ->
+					?ERROR_MSG("send elixir packet: ~p data: ~p  text: ~p ~n", [Packet, ElixirData, Text]);
+				false ->
+					ignore
+			end
+	end,								
+	case Text == <<"error">> of
+		true ->
+			ok;
+		false ->
+			send_text(StateData, Text)
+	end.
 
 do_send_probuf_msg(StateData,From,To, Packet = #xmlel{name = <<"iq">>}) ->
    ?DEBUG("PB_IQ ~p,~p  ~n",[Packet,StateData]),
@@ -3354,13 +3373,13 @@ do_send_probuf_msg(StateData,From,To, Packet = #xmlel{name = <<"iq">>}) ->
    ?DEBUG("PB_IQ ~p,~p  ~n",[PB_IQ,Packet]),
     case PB_IQ of
     <<"error">> ->
-        ok;
+        <<"error">>;
     _ ->
         Text = ejabberd_encode_protobuf:uint32_pack(byte_size(PB_IQ),PB_IQ),
         ?DEBUG("PB_IQ ~p ,Text ~p ~n",[PB_IQ,Text]),
-        send_text(StateData, Text)
+		Text
     end;
-do_send_probuf_msg(StateData,From,To, Packet = #xmlel{name = <<"message">>}) ->
+do_send_probuf_msg(_StateData,From,To, Packet = #xmlel{name = <<"message">>}) ->
     PB_MSG = ejabberd_xml2pb_message:xml2pb_msg(From,To,Packet),
     case PB_MSG of
     <<"">> ->
@@ -3368,16 +3387,15 @@ do_send_probuf_msg(StateData,From,To, Packet = #xmlel{name = <<"message">>}) ->
     _ ->
         ok
     end,
-    Text =
         case catch ejabberd_encode_protobuf:uint32_pack(byte_size(PB_MSG),PB_MSG) of
         I  when is_binary(I) ->
             I;
         V ->
             ?DEBUG("Paket ~p ~n",[Packet]),
             V
-        end,
-    send_text(StateData, Text);
-do_send_probuf_msg(StateData,From,To, Packet = #xmlel{name = <<"presence">>}) ->
+        end;
+
+do_send_probuf_msg(_StateData,From,To, Packet = #xmlel{name = <<"presence">>}) ->
 	?DEBUG("Packet ~p ~n",[Packet]),
     PB_PRESENCE =
         case catch fxml:get_attr_s(<<"xmlns">>,Packet#xmlel.attrs) of
@@ -3439,14 +3457,16 @@ do_send_probuf_msg(StateData,From,To, Packet = #xmlel{name = <<"presence">>}) ->
 
     case PB_PRESENCE of
     <<"error">> ->
-        ok;
+		?ERROR_MSG("presence error: ~p ~n", [Packet]),
+        <<"error">>;
     _ ->
         Text = ejabberd_encode_protobuf:uint32_pack(byte_size(PB_PRESENCE),PB_PRESENCE),
         ?DEBUG("PB_PRESENCE ~p ,Text ~p ~n",[PB_PRESENCE,Text]),
-        send_text(StateData, Text)
+		Text
     end;
 do_send_probuf_msg(_StateData, _From, _To, Packet) ->
-    ?ERROR_MSG("Packet drop ~p ~n",[Packet]).
+    ?ERROR_MSG("Packet drop ~p ~n",[Packet]),
+	<<"error">>.
 
 send_welcome_msg(StateData,User,Server,Version,SockMod) ->
     From = jlib:jid_to_string({User,Server,<<"">>}),

@@ -1,9 +1,4 @@
-syntax = "proto3";
-
-message messagekeyvalue {
-  string key = 1;
-  string value = 2;
-}
+syntax = "proto2";
 
 enum presencekeytype {
   PresenceKeyDefault = 0;
@@ -211,46 +206,46 @@ enum signaltype {
 
 message stringheader {
   repeated string params = 1;
-  stringheadertype key = 2;
-  string value = 3;
-  string definedkey = 4;
+  optional stringheadertype key = 2;
+  optional string value = 3;
+  optional string definedkey = 4;
 }
 
-message packagelength { int32 length = 1; }
+message packagelength { optional int32 length = 1; }
 
 message protoheader {
-  int32 version = 1;
-  int32 options = 2;
-  repeated int32 optionlist = 3;
-  int32 length = 4;
-  string content = 5;
-  bytes message = 6;
+  optional int32 version = 1;
+  optional int32 options = 2;
+  repeated int32 optionlist = 3 [packed=true];
+  optional int32 length = 4;
+  optional string content = 5;
+  optional bytes message = 6;
 }
 
 message messagebody {
   repeated stringheader headers = 1;
-  string value = 2;
+  optional string value = 2;
   repeated messagebody bodys = 3;
 }
 
 message authmessage {
-  string mechanism = 1;
-  string method = 2;
-  string msgid = 3;
-  string authkey = 4;
-  messagebody otherbody = 5;
+  optional string mechanism = 1;
+  optional string method = 2;
+  optional string msgid = 3;
+  optional string authkey = 4;
+  optional messagebody otherbody = 5;
 }
 
 message welcomemessage {
-  string domain = 1;
-  string version = 2;
-  string user = 3;
-  string sockmod = 4;
+  optional string domain = 1;
+  optional string version = 2;
+  optional string user = 3;
+  optional string sockmod = 4;
 }
 
 message streambegin {
-  string domain = 1;
-  string version = 2;
+  optional string domain = 1;
+  optional string version = 2;
   repeated messagebody bodys = 3;
 }
 
@@ -259,89 +254,89 @@ message starttls {}
 message proceedtls {}
 
 message streamend {
-  string reason = 1;
-  int32 code = 2;
+  optional string reason = 1;
+  optional int32 code = 2;
 }
 
 message userconnect {
-  string domain = 1;
-  string version = 2;
+  optional string domain = 1;
+  optional string version = 2;
 }
 
 message capability {
-  string version = 1;
-  string bodys = 2;
+  optional string version = 1;
+  optional string bodys = 2;
 }
 
 message responsesucceeded {
-  int32 code = 1;
-  string msgid = 2;
-  string info = 3;
-  messagebody body = 4;
+  optional int32 code = 1;
+  optional string msgid = 2;
+  optional string info = 3;
+  optional messagebody body = 4;
 }
 
 message responsefailure {
-  int32 code = 1;
-  string msgid = 2;
-  string error = 3;
-  messagebody body = 4;
+  optional int32 code = 1;
+  optional string msgid = 2;
+  optional string error = 3;
+  optional messagebody body = 4;
 }
 
 message protomessage {
-  int32 options = 1;
-  signaltype signaltype = 2;
-  string from = 3;
-  string to = 4;
-  bytes message = 5;
-  string realfrom = 6;
-  string realto = 7;
-  string originfrom = 8;
-  string originto = 9;
-  string origintype = 10;
-  string sendjid = 11;
+  optional int32 options = 1;
+  required signaltype signaltype = 2;
+  optional string from = 3;
+  optional string to = 4;
+  optional bytes message = 5;
+  optional string realfrom = 6;
+  optional string realto = 7;
+  optional string originfrom = 8;
+  optional string originto = 9;
+  optional string origintype = 10;
+  optional string sendjid = 11;
 }
 
 message iqmessage {
-  string namespace = 1;
-  string key = 2;
-  string value = 3;
-  string messageid = 4;
-  stringheader header = 5;
-  messagebody body = 6;
-  int64 receivedtime = 7;
-  int64 transfertime = 8;
+  optional string namespace = 1;
+  optional string key = 2;
+  optional string value = 3;
+  optional string messageid = 4;
+  optional stringheader header = 5;
+  optional messagebody body = 6;
+  optional int64 receivedtime = 7;
+  optional int64 transfertime = 8;
   repeated stringheader headers = 9;
   repeated messagebody bodys = 10;
-  iqmessagekeytype definedkey = 11;
+  optional iqmessagekeytype definedkey = 11;
 }
 
 message presencemessage {
-  string namespace = 1;
-  string key = 2;
-  string value = 3;
-  string messageid = 4;
-  string header = 5;
-  messagebody body = 6;
-  int64 receivedtime = 7;
-  int64 transfertime = 8;
+  optional string namespace = 1;
+  optional string key = 2;
+  optional string value = 3;
+  optional string messageid = 4;
+  optional string header = 5;
+  optional messagebody body = 6;
+  optional int64 receivedtime = 7;
+  optional int64 transfertime = 8;
   repeated stringheader headers = 9;
   repeated messagebody bodys = 10;
-  presencekeytype definedkey = 11;
-  categorytype categorytype = 12;
+  optional presencekeytype definedkey = 11;
+  optional categorytype categorytype = 12;
 }
 
 message xmppmessage {
-  messagetype messagetype = 1;
-  clienttype clienttype = 2;
-  int64 clientversion = 3;
-  string namespace = 4;
-  string key = 5;
-  string value = 6;
-  string messageid = 7;
-  stringheader header = 8;
-  messagebody body = 9;
-  int64 receivedtime = 10;
-  int64 transfertime = 11;
+  required messagetype messagetype = 1;
+  required clienttype clienttype = 2;
+  required int64 clientversion = 3;
+  optional string namespace = 4;
+  optional string key = 5;
+  optional string value = 6;
+  optional string messageid = 7;
+  optional stringheader header = 8;
+  optional messagebody body = 9;
+  optional int64 receivedtime = 10;
+  optional int64 transfertime = 11;
   repeated stringheader headers = 12;
   repeated messagebody bodys = 13;
 }

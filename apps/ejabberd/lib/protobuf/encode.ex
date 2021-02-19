@@ -41,12 +41,12 @@ defmodule MessageProtobuf.Encode do
         type,
         opts,
         msg,
-        realfrom \\ "",
-        realto \\ "",
-        originfrom \\ "",
-        originto \\ "",
-        origintype \\ "",
-        sendjid \\ ""
+        realfrom \\ nil,
+        realto \\ nil,
+        originfrom \\ nil,
+        originto \\ nil,
+        origintype \\ nil,
+        sendjid \\ nil
       ) do
     Protomessage.new(
       options: opts,

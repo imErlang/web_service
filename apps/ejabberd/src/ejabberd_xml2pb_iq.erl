@@ -31,8 +31,12 @@ encode_pb_iq_msg(Key,Val,Msg_ID,Header,Body,Headers,Bodys) ->
     			headers = Headers,
     			bodys = Bodys
 			},
+                
     FPB_IQ = handle_pb_iq_key(Key,PB_IQ), 
-	message_pb:encode_iqmessage(FPB_IQ).
+	Ret = message_pb:encode_iqmessage(FPB_IQ),
+    ?ERROR_MSG("Key: ~p PB_IQ ~p FPB_IQ ~p ~n ~p ~n", [Key, PB_IQ, FPB_IQ, Ret]),
+    Ret.
+
 
 
 handle_pb_iq_key(Key,IQ) ->
@@ -50,14 +54,14 @@ handle_pb_iq_key(Key,IQ) ->
 %% 对iqmessage进行封包
 %%----------------------------------------------
 struct_pb_iq_msg(From,To,Type,Key,Val,Msg_ID,Header,Body,Haeders,Bodys) ->
-        IQ = list_to_binary(encode_pb_iq_msg(Key,Val,Msg_ID,Header,Body,Haeders,Bodys)),
-        ?DEBUG("IQ ~p,Type ~p  ~n",[IQ,Type]),
-        Pb_Msg = list_to_binary(ejabberd_xml2pb_public:encode_pb_protomessage(From,To,Type,0,IQ)),
-        ?DEBUG("Pb_MSg ~p , size ~p~n",[Pb_Msg,size(Pb_Msg)]),
-        Opt = ejabberd_xml2pb_public:get_proto_header_opt(Pb_Msg),
-        Res = list_to_binary(ejabberd_xml2pb_public:encode_pb_protoheader(Opt,Pb_Msg)),
-        ?DEBUG("Pb_MSg  , sizeen   ~p~n",[size(Res)]),
-        Res.
+    IQ = list_to_binary(encode_pb_iq_msg(Key,Val,Msg_ID,Header,Body,Haeders,Bodys)),
+    ?ERROR_MSG("IQ ~p,Type ~p  ~n",[IQ,Type]),
+    Pb_Msg = list_to_binary(ejabberd_xml2pb_public:encode_pb_protomessage(From,To,Type,1,IQ)),
+    ?ERROR_MSG("Pb_MSg ~p , size ~p~n",[Pb_Msg,size(Pb_Msg)]),
+    Opt = ejabberd_xml2pb_public:get_proto_header_opt(Pb_Msg),
+    Res = list_to_binary(ejabberd_xml2pb_public:encode_pb_protoheader(Opt,Pb_Msg)),
+    ?ERROR_MSG("Pb_MSg  , sizeen   ~p~n",[size(Res)]),
+    Res.
         
 	
 %%----------------------------------------------
@@ -133,7 +137,7 @@ encode_pb_error_iq(From,To,Packet) ->
 %% encode PB IQ BIND Resut
 %%----------------------------------------------
 encode_pb_iq_bind_result(From,To,Packet,Key) ->
-	?DEBUG("key ~p ~n",[Key]),
+	?ERROR_MSG("From: ~p To: ~p Packet: ~p key ~p ~n",[From, To, Packet, Key]),
     Body = 
         case fxml:get_subtag(Packet,<<"bind">>) of
         false ->
@@ -145,7 +149,7 @@ encode_pb_iq_bind_result(From,To,Packet,Key) ->
             ejabberd_xml2pb_public:encode_messagebody(Headers,CData)
         end,
     ID = qtalk_public:get_xml_attrs_id(Packet),
-	?DEBUG("id ~p ~n",[ID]),
+	?ERROR_MSG("id ~p Body: ~p ~n",[ID, Body]),
     Res  = struct_pb_iq_msg(From,To,'SignalTypeIQ',<<"result">>,<<"bind">>,ID,'undefined',Body,[],[]),
 ?DEBUG("Res ~p~n",[Res]),
 	Res.

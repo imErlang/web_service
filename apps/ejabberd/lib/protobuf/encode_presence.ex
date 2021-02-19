@@ -3,6 +3,7 @@ defmodule MessageProtobuf.Encode.Presence do
   require Logger
 
   def struct_pb_presence_msg(params) do
+    Logger.error("presence params: #{inspect(params)}")
     from = Map.get(params, :from)
     to = Map.get(params, :to)
     type = Map.get(params, :type)
@@ -23,7 +24,7 @@ defmodule MessageProtobuf.Encode.Presence do
           Map.get(params, :definedkey, "")
       end
 
-    catagory = Map.get(params, :catagory, "")
+    catagory = Map.get(params, :category, "")
 
     presence =
       Presencemessage.new(

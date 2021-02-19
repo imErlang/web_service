@@ -100,7 +100,7 @@ defmodule MessageProtobuf.Decode do
     xmlel(name: "auth", attrs: attrs, children: [{:xmlcdata, auth.authkey}])
   end
 
-  def get_msgid(id) when id == :undefined or id == "" do
+  def get_msgid(id) when id == nil or id == "" do
     "PBMSG_#{:random.uniform(65536)}#{:qtalk_public.get_exact_timestamp()}"
   end
 

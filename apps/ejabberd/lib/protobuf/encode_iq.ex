@@ -587,7 +587,7 @@ defmodule MessageProtobuf.Encode.Iq do
     bodys = Map.get(params, :bodys, [])
 
     iq = encode_pb_iq_msg(key, val, msg_id, header, body, headers, bodys)
-    pb_msg = MessageProtobuf.Encode.encode_pb_protomessage(from, to, type, 0, iq)
+    pb_msg = MessageProtobuf.Encode.encode_pb_protomessage(from, to, type, 1, iq)
     opt = MessageProtobuf.Encode.get_proto_header_opt(pb_msg)
     MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
   end
