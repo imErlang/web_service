@@ -4,15 +4,16 @@ defmodule MessageProtobuf.Decode.Message do
 
   def parse_xmpp_message(pb_msg) do
     message = Xmppmessage.decode(pb_msg.message)
-    Logger.debug("message: #{inspect(message)}")
+    Logger.debug("pb_msg: #{inspect(pb_msg)} message: #{inspect(message)}")
+
     make_xmpp_message(
       pb_msg.from,
       pb_msg.to,
       pb_msg.realfrom,
       pb_msg.realto,
-      Signaltype.key(pb_msg.signaltype),
+      pb_msg.signaltype,
       message.messagetype,
-      Clienttype.key(message.clienttype),
+      message.clienttype,
       message.clientversion,
       message.messageid,
       message.headers,
@@ -78,6 +79,9 @@ defmodule MessageProtobuf.Decode.Message do
     |> Enum.flat_map(fn attr ->
       case attr do
         {_attr_key, :undefined} ->
+          []
+
+        {_attr_key, nil} ->
           []
 
         {_attr_key, ""} ->

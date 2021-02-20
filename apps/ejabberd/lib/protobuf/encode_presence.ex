@@ -3,7 +3,7 @@ defmodule MessageProtobuf.Encode.Presence do
   require Logger
 
   def struct_pb_presence_msg(params) do
-    Logger.error("presence params: #{inspect(params)}")
+    Logger.debug("presence params: #{inspect(params)}")
     from = Map.get(params, :from)
     to = Map.get(params, :to)
     type = Map.get(params, :type)
@@ -51,7 +51,7 @@ defmodule MessageProtobuf.Encode.Presence do
     opt = MessageProtobuf.Encode.get_proto_header_opt(pb_msg)
     pb = MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
 
-    Logger.error(
+    Logger.debug(
       "presence = #{inspect(presence, limit: :infinity)} iq = #{inspect(pb_msg, limit: :infinity)} pb = #{
         inspect(pb, limit: :infinity)
       } "
@@ -264,7 +264,7 @@ defmodule MessageProtobuf.Encode.Presence do
   def enocde_status(packet) do
     show = :fxml.get_subtag_cdata(packet, "show")
     priority = :fxml.get_subtag_cdata(packet, "priority")
-    headers = [{"show", show}, {"priority", priority}]
+    headers = [{"show", show}, {"priority", priority}] |> MessageProtobuf.Encode.encode_pb_stringheaders
     body = Messagebody.new(headers: headers, value: "user_update_status")
     %{value: "update_user_status", body: body}
   end
@@ -274,7 +274,7 @@ defmodule MessageProtobuf.Encode.Presence do
 
     case xml2pb_presence_ns(ns, packet) do
       "error" ->
-        Logger.error("encode presence error #{inspect(packet)}")
+        Logger.debug("encode presence error #{inspect(packet)}")
         "error"
 
       params ->

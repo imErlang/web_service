@@ -533,7 +533,7 @@ defmodule MessageProtobuf.Encode.Iq do
 
     fpb_iq = handle_pb_iq_key(key, pb_iq)
     iq = Iqmessage.encode(fpb_iq)
-    Logger.error("key: #{inspect(key)} fpb_iq: #{inspect(fpb_iq)}, iq: #{inspect(iq)}")
+    Logger.debug("key: #{inspect(key)} fpb_iq: #{inspect(fpb_iq)}, iq: #{inspect(iq)}")
     iq
   end
 
@@ -573,7 +573,7 @@ defmodule MessageProtobuf.Encode.Iq do
   end
 
   def struct_pb_iq_msg(params) do
-    Logger.error("params: #{inspect(params)}")
+    Logger.debug("params: #{inspect(params)}")
     from = Map.get(params, :from)
     to = Map.get(params, :to)
     type = Map.get(params, :type)
@@ -589,7 +589,7 @@ defmodule MessageProtobuf.Encode.Iq do
     pb_msg = MessageProtobuf.Encode.encode_pb_protomessage(from, to, type, 1, iq)
     opt = MessageProtobuf.Encode.get_proto_header_opt(pb_msg)
     pb = MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
-    Logger.error("iq = #{inspect(iq, limit: :infinity)} pb = #{inspect(pb, limit: :infinity)} pb_msg = #{inspect(pb_msg, limit: :infinity)} ")
+    Logger.debug("iq = #{inspect(iq, limit: :infinity)} pb = #{inspect(pb, limit: :infinity)} pb_msg = #{inspect(pb_msg, limit: :infinity)} ")
     pb
   end
 end

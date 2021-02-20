@@ -17,12 +17,12 @@ import Config
 #       metadata: [:user_id]
 #
 config :logger,
-  level: :error,
+  level: :debug,
   path: "log/dev.log",
   truncate: :infinity
 
 config :logger, :console,
-  level: :error,
+  level: :debug,
   truncate: :infinity
 
 config :admin, port: 7004

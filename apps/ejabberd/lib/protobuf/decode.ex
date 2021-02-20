@@ -96,7 +96,13 @@ defmodule MessageProtobuf.Decode do
   def make_auth_xml(auth) do
     Logger.debug("auth: #{inspect(auth)}")
     id = get_msgid(auth.msgid)
-    attrs = [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}, {"mechanism", auth.mechanism}, {"id", id}]
+
+    attrs = [
+      {"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"},
+      {"mechanism", auth.mechanism},
+      {"id", id}
+    ]
+
     xmlel(name: "auth", attrs: attrs, children: [{:xmlcdata, auth.authkey}])
   end
 
@@ -146,7 +152,7 @@ defmodule MessageProtobuf.Decode do
       :StringHeaderTypeKey -> "key"
       :StringHeaderTypeMode -> "mode"
       :StringHeaderTypeCarbon -> "carbon_message"
-      _ -> :undefined
+      _ -> :none
     end
   end
 
@@ -176,6 +182,21 @@ defmodule MessageProtobuf.Decode do
       :SignalTypeConsult -> "consult"
       :SignalTypeEncryption -> "encrypt"
       _ -> "normal"
+    end
+  end
+
+  def make_cdata_xmlels(headers) do
+    headers
+    |> Enum.flat_map(&make_header_xmlel/1)
+  end
+
+  def make_header_xmlel(header) do
+    case get_header_definedkey(header.definedkey) do
+      :none ->
+        [xmlel(name: header.key, children: [{:xmlcdata, header.value}])]
+
+      name ->
+        [xmlel(name: name, children: [{:xmlcdata, header.value}])]
     end
   end
 end

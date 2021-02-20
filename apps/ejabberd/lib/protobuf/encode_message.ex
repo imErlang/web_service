@@ -42,15 +42,18 @@ defmodule MessageProtobuf.Encode.Message do
     headers = encode_pb_stringheaders([])
     msg_body = Messagebody.new(headers: headers, value: "")
 
-    Xmppmessage.new(
-      messagetype: 1,
-      clienttype: :ClientTypePc,
-      clientversion: client_ver,
-      messageid: "",
-      body: msg_body,
-      receivedtime: time
-    )
-    |> Xmppmessage.encode()
+    xmpp =
+      Xmppmessage.new(
+        messagetype: :MessageTypeText,
+        clienttype: :ClientTypePC,
+        clientversion: client_ver,
+        messageid: "",
+        body: msg_body,
+        receivedtime: time
+      )
+
+    Logger.debug("#{inspect(xmpp)}")
+    xmpp |> Xmppmessage.encode()
   end
 
   def do_struct_pb_xmpp_msg(_, pattrs, battrs, message, id, time, packet, type) do
@@ -71,7 +74,7 @@ defmodule MessageProtobuf.Encode.Message do
     read_type = :proplists.get_value("read_type", pattrs, "")
     auto_reply = :proplists.get_value("auto_reply", pattrs, "")
 
-    msg_type = :proplists.get_value("msgType", battrs, "1")
+    msg_type = :proplists.get_value("msgType", battrs, :MessageTypeText)
     channel_id = :proplists.get_value("channelid", battrs, "")
     ex_info = :proplists.get_value("extendInfo", battrs, "")
     backup_info = :proplists.get_value("backupinfo", battrs, "")
@@ -149,12 +152,12 @@ defmodule MessageProtobuf.Encode.Message do
         packet: packet
       }) do
     msg = do_struct_pb_xmpp_msg(bodyflag, pattrs, battrs, message, id, time, packet, type)
-    realfrom = :proplists.get_value("realfrom", pattrs, :undefined)
-    realto = :proplists.get_value("realto", pattrs, :undefined)
-    originfrom = :proplists.get_value("originfrom", pattrs, :undefined)
-    originto = :proplists.get_value("originto", pattrs, :undefined)
-    origintype = :proplists.get_value("origintype", pattrs, :undefined)
-    sendjid = :proplists.get_value("sendjid", pattrs, :undefined)
+    realfrom = :proplists.get_value("realfrom", pattrs, nil)
+    realto = :proplists.get_value("realto", pattrs, nil)
+    originfrom = :proplists.get_value("originfrom", pattrs, nil)
+    originto = :proplists.get_value("originto", pattrs, nil)
+    origintype = :proplists.get_value("origintype", pattrs, nil)
+    sendjid = :proplists.get_value("sendjid", pattrs, nil)
     msg_type = set_type(type)
 
     pb_msg =

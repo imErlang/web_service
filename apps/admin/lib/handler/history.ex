@@ -473,6 +473,10 @@ defmodule Handler.History do
     num = Map.get(conn.body_params, "num", 500)
     time = Map.get(conn.body_params, "time", 0) |> get_time()
     Logger.debug("get history time: #{inspect(time)}")
+    get_history_local(user, host, read_flag, num, time)
+  end
+
+  def get_history_local(user, host, read_flag, num, time) do
     histories = Persistence.MsgHistory.get_history(user, host, num, time)
     Logger.debug("histories: #{inspect(histories)}")
 
@@ -497,7 +501,7 @@ defmodule Handler.History do
     Ejabberd.Util.success(result)
   end
 
-  defp translate_history(history, read_flag) do
+  def translate_history(history, read_flag) do
     Logger.debug("history: #{history.m_body}")
     body = SweetXml.parse(history.m_body)
 
@@ -511,15 +515,15 @@ defmodule Handler.History do
     msg_body = get_content(body, :name, :body)
     Logger.debug("msg_body: #{inspect(msg_body)}")
 
-    body_content =
-      get_content(msg_body, :type, :text)
-      |> SweetXml.xmlText(:value)
-      |> to_string()
-
     msg_content =
-      msg_body
-      |> attrs_to_json()
-      |> Map.put(:content, body_content)
+      case get_content(msg_body, :type, :text) do
+        nil ->
+          attrs_to_json(msg_body)
+
+        msg_content ->
+          attrs_content = SweetXml.xmlText(msg_content, :value) |> to_string()
+          attrs_to_json(msg_body) |> Map.put(:content, attrs_content)
+      end
 
     Logger.debug("msgContent: #{inspect(msg_content)}")
 
