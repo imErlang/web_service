@@ -3350,21 +3350,22 @@ send_probuf_msg(StateData, Packet) ->
 	State = #{user => StateData#state.user, server => StateData#state.server, resource => StateData#state.resource, key => StateData#state.key},
 	ElixirText = case catch 'Elixir.MessageProtobuf.Encode':send_probuf_msg(State, Packet) of
 		{'EIXT', Error} ->
-			?DEBUG("send elixir data: ~p ~n", [Error]),
+			?ERROR_MSG("send elixir data: ~p ~n", [Error]),
 			<<"error">>;
 		ElixirData ->
-			case byte_size(ElixirData) =/= byte_size(Text) of
+			case ElixirData =/= Text of
 				true ->
 					?ERROR_MSG("send elixir packet: ~p data: ~p  text: ~p ~n", [Packet, ElixirData, Text]);
 				false ->
 					ignore
-			end
+			end,
+			ElixirData
 	end,								
-	case Text == <<"error">> of
+	case ElixirText == <<"error">> of
 		true ->
 			ok;
 		false ->
-			send_text(StateData, Text)
+			send_text(StateData, ElixirText)
 	end.
 
 do_send_probuf_msg(StateData,From,To, Packet = #xmlel{name = <<"iq">>}) ->

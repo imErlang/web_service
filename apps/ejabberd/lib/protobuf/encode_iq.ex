@@ -15,8 +15,7 @@ defmodule MessageProtobuf.Encode.Iq do
 
   def encode_pb_iq_bind_result(packet, key) do
     cdata = :fxml.get_subtag(packet, "bind") |> :fxml.get_subtag_cdata("jid")
-    # time = Util.get_timestamp() |> Integer.to_string()
-    time = 1613646637 |> Integer.to_string()
+    time = Util.get_timestamp() |> Integer.to_string()
     headers = [{"time_value", time}, {"key_value", key}] |> MessageProtobuf.Encode.encode_pb_stringheaders
     body = Messagebody.new(headers: headers, value: cdata)
     %{value: "bind", body: body}
@@ -589,6 +588,8 @@ defmodule MessageProtobuf.Encode.Iq do
     iq = encode_pb_iq_msg(key, val, msg_id, header, body, headers, bodys)
     pb_msg = MessageProtobuf.Encode.encode_pb_protomessage(from, to, type, 1, iq)
     opt = MessageProtobuf.Encode.get_proto_header_opt(pb_msg)
-    MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
+    pb = MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
+    Logger.error("iq = #{inspect(iq, limit: :infinity)} pb = #{inspect(pb, limit: :infinity)} pb_msg = #{inspect(pb_msg, limit: :infinity)} ")
+    pb
   end
 end

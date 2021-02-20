@@ -609,23 +609,38 @@ defmodule Signaltype do
   field :SignalTypeCollection, 140
 end
 
+defmodule Messagekeyvalue do
+  @moduledoc false
+  use Protobuf, syntax: :proto2
+
+  @type t :: %__MODULE__{
+          key: String.t(),
+          value: String.t()
+        }
+
+  defstruct [:key, :value]
+
+  field :key, 1, optional: true, type: :string
+  field :value, 2, optional: true, type: :string
+end
+
 defmodule Stringheader do
   @moduledoc false
   use Protobuf, syntax: :proto2
 
   @type t :: %__MODULE__{
-          params: [String.t()],
-          key: Stringheadertype.t(),
+          params: [Messagekeyvalue.t()],
+          key: String.t(),
           value: String.t(),
-          definedkey: String.t()
+          definedkey: Stringheadertype.t()
         }
 
   defstruct [:params, :key, :value, :definedkey]
 
-  field :params, 1, repeated: true, type: :string
-  field :key, 2, optional: true, type: Stringheadertype, enum: true
+  field :params, 1, repeated: true, type: Messagekeyvalue
+  field :key, 2, optional: true, type: :string
   field :value, 3, optional: true, type: :string
-  field :definedkey, 4, optional: true, type: :string
+  field :definedkey, 4, optional: true, type: Stringheadertype, enum: true
 end
 
 defmodule Packagelength do
@@ -790,13 +805,13 @@ defmodule Capability do
 
   @type t :: %__MODULE__{
           version: String.t(),
-          bodys: String.t()
+          bodys: Messagebody.t() | nil
         }
 
   defstruct [:version, :bodys]
 
   field :version, 1, optional: true, type: :string
-  field :bodys, 2, optional: true, type: :string
+  field :bodys, 2, optional: true, type: Messagebody
 end
 
 defmodule Responsesucceeded do

@@ -30,6 +30,10 @@ defmodule Admin.Router do
     send_resp_json(conn, body)
   end
 
+  match "/startalk/management/find/get/navigation" do
+    send_nav(conn)
+  end
+
   forward("/host/", to: Admin.Router.HostInfo)
   forward("/user", to: Admin.Router.User)
   forward("/muc", to: Admin.Router.Muc)
@@ -45,6 +49,10 @@ defmodule Admin.Router do
   forward("/package/qtapi", to: Admin.Router.Qtapi)
 
   match "/startalk_nav" do
+    send_nav(conn)
+  end
+
+  def send_nav(conn) do
     Logger.debug("query #{inspect(conn.query_params)}")
     server_ip = Application.get_env(:admin, :server_ip, "127.0.0.1")
     port = Application.get_env(:admin, :server_port, 8080)

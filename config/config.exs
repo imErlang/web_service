@@ -16,10 +16,14 @@ import Config
 #       format: "$date $time [$level] $metadata$message\n",
 #       metadata: [:user_id]
 #
+config :logger,
+  level: :error,
+  path: "log/dev.log",
+  truncate: :infinity
+
 config :logger, :console,
   level: :error,
-  format: "$date $time [$level] $metadata$message\n",
-  metadata: [:user_id]
+  truncate: :infinity
 
 config :admin, port: 7004
 

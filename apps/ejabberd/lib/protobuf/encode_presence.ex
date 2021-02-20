@@ -8,20 +8,26 @@ defmodule MessageProtobuf.Encode.Presence do
     to = Map.get(params, :to)
     type = Map.get(params, :type)
     key = Map.get(params, :key, "result")
-    val = Map.get(params, :val, "")
-    msg_id = Map.get(params, :msg_id)
+    val = Map.get(params, :value, "")
+    msg_id = Map.get(params, :msg_id, "")
     header = Map.get(params, :header, nil)
     body = Map.get(params, :body, nil)
     headers = Map.get(params, :headers, [])
     bodys = Map.get(params, :bodys, [])
 
     definedkey =
-      case key == "result" do
-        true ->
-          :PresenceKeyResult
+      case Map.get(params, :definedkey, nil) do
+        nil ->
+          case key == "result" do
+            true ->
+              :PresenceKeyResult
 
-        false ->
-          Map.get(params, :definedkey, "")
+            false ->
+              nil
+          end
+
+        definedkeyvalue ->
+          definedkeyvalue
       end
 
     catagory = Map.get(params, :category, "")
@@ -43,7 +49,15 @@ defmodule MessageProtobuf.Encode.Presence do
 
     pb_msg = MessageProtobuf.Encode.encode_pb_protomessage(from, to, type, 0, presence)
     opt = MessageProtobuf.Encode.get_proto_header_opt(pb_msg)
-    MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
+    pb = MessageProtobuf.Encode.encode_pb_protoheader(opt, pb_msg)
+
+    Logger.error(
+      "presence = #{inspect(presence, limit: :infinity)} iq = #{inspect(pb_msg, limit: :infinity)} pb = #{
+        inspect(pb, limit: :infinity)
+      } "
+    )
+
+    pb
   end
 
   def encode_presence_invite_muc(packet) do
@@ -55,14 +69,14 @@ defmodule MessageProtobuf.Encode.Presence do
       MessageProtobuf.Encode.encode_pb_stringheaders([{"invite_jid", jid}, {"status", status}])
 
     body = Messagebody.new(headers: headers, value: "invite_info")
-    %{val: "invite_user", body: body}
+    %{value: "invite_user", body: body}
   end
 
   def encode_del_muc_register(packet) do
     del_jid = :proplists.get_value("del_jid", xmlel(packet, :attrs))
     headers = [{"del_jid", del_jid}]
     body = Messagebody.new(headers: headers, value: "del_muc_register")
-    %{val: "del_muc_register", body: body}
+    %{value: "del_muc_register", body: body}
   end
 
   def encode_set_user_subscribe_v2(packet) do
@@ -70,7 +84,7 @@ defmodule MessageProtobuf.Encode.Presence do
     status = :proplists.get_value("status", xmlel(subscribe, :attrs), "0")
     headers = [{"status", status}]
     body = Messagebody.new(headers: headers, value: "subscribe_update")
-    %{val: "subscribe_update", body: body}
+    %{value: "subscribe_update", body: body}
   end
 
   def encode_update_muc_vcard(packet) do
@@ -91,7 +105,7 @@ defmodule MessageProtobuf.Encode.Presence do
     ]
 
     body = Messagebody.new(headers: headers, value: "update_muc_vcard")
-    %{val: "update_muc_vcard", body: body}
+    %{value: "update_muc_vcard", body: body}
   end
 
   def encode_manual_authentication_confirm(packet) do
@@ -111,7 +125,7 @@ defmodule MessageProtobuf.Encode.Presence do
     ]
 
     body = Messagebody.new(headers: headers, value: "verify_friend")
-    %{key: "manual_authentication_confirm", val: "confirm_verify_friend", body: body}
+    %{key: "manual_authentication_confirm", value: "confirm_verify_friend", body: body}
   end
 
   def encode_verify_friend(packet) do
@@ -131,7 +145,7 @@ defmodule MessageProtobuf.Encode.Presence do
     ]
 
     body = Messagebody.new(headers: headers, value: "verify_friend")
-    %{val: "verify_friend", body: body}
+    %{value: "verify_friend", body: body}
   end
 
   def encode_delete_friend(packet) do
@@ -142,21 +156,21 @@ defmodule MessageProtobuf.Encode.Presence do
     domain = :proplists.get_value("domain", attrs, "")
     headers = [{"type", type}, {"result", rslt}, {"jid", jid}, {"domain", domain}]
     body = Messagebody.new(headers: headers, value: "delete_friend")
-    %{val: "delete_friend", body: body}
+    %{value: "delete_friend", body: body}
   end
 
   def encode_mask_user(packet) do
     jid = :proplists.get_value("jid", xmlel(packet, :attrs), "")
     headers = [{"jid", jid}]
     body = Messagebody.new(headers: headers, value: "mask_user")
-    %{val: "mask_user", body: body}
+    %{value: "mask_user", body: body}
   end
 
   def encode_cancel_mask_user(packet) do
     jid = :proplists.get_value("jid", xmlel(packet, :attrs), "")
     headers = [{"jid", jid}]
     body = Messagebody.new(headers: headers, value: "cancel_mask_user")
-    %{val: "cancel_mask_user", body: body}
+    %{value: "cancel_mask_user", body: body}
   end
 
   def encode_presence_mask_user(packet) do
@@ -181,7 +195,7 @@ defmodule MessageProtobuf.Encode.Presence do
 
     headers = [{"affiliation", affiliation}, {"role", role}, {"code", code}]
     body = Messagebody.new(headers: headers, value: "item")
-    %{val: "del_muc_user", body: body}
+    %{value: "del_muc_user", body: body}
   end
 
   def encode_presence_muc_destory(packet) do
@@ -193,7 +207,7 @@ defmodule MessageProtobuf.Encode.Presence do
 
     headers = [{"affiliation", affiliation}, {"role", role}]
     body = Messagebody.new(headers: headers, value: "item")
-    %{val: "destory_muc", body: body}
+    %{value: "destory_muc", body: body}
   end
 
   def encode_presence_muc_notice_add_user(packet) do
@@ -212,7 +226,7 @@ defmodule MessageProtobuf.Encode.Presence do
     ]
 
     body = Messagebody.new(headers: headers, value: "user_info")
-    %{val: "user_join_muc", body: body}
+    %{value: "user_join_muc", body: body}
   end
 
   def encode_x_user_packet(packet) do
@@ -240,7 +254,7 @@ defmodule MessageProtobuf.Encode.Presence do
     body = Messagebody.new(value: data)
 
     %{
-      key: "notify",
+      value: "notify",
       body: body,
       definedkey: :PresenceKeyNotify,
       category: category
@@ -252,7 +266,7 @@ defmodule MessageProtobuf.Encode.Presence do
     priority = :fxml.get_subtag_cdata(packet, "priority")
     headers = [{"show", show}, {"priority", priority}]
     body = Messagebody.new(headers: headers, value: "user_update_status")
-    %{key: "update_user_status", body: body}
+    %{value: "update_user_status", body: body}
   end
 
   def xml2pb_presence(from, to, packet) do

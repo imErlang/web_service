@@ -143,7 +143,7 @@ defmodule MessageProtobuf.Encode do
   def encode_pb_stringheader({k, v}) do
     case set_header_definedkey(k) do
       :none -> [Stringheader.new(key: k, value: v)]
-      dv -> [Stringheader.new(key: dv, value: v)]
+      dv -> [Stringheader.new(definedkey: dv, value: v)]
     end
   end
 
