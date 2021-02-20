@@ -30,7 +30,7 @@ defmodule MessageProtobuf.Encode.Presence do
           definedkeyvalue
       end
 
-    catagory = Map.get(params, :category, "")
+    catagory = Map.get(params, :category, nil)
 
     presence =
       Presencemessage.new(

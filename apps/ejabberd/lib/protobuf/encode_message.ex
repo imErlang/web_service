@@ -74,7 +74,7 @@ defmodule MessageProtobuf.Encode.Message do
     read_type = :proplists.get_value("read_type", pattrs, "")
     auto_reply = :proplists.get_value("auto_reply", pattrs, "")
 
-    msg_type = :proplists.get_value("msgType", battrs, :MessageTypeText)
+    msg_type = :proplists.get_value("msgType", battrs, "1") |> String.to_integer()
     channel_id = :proplists.get_value("channelid", battrs, "")
     ex_info = :proplists.get_value("extendInfo", battrs, "")
     backup_info = :proplists.get_value("backupinfo", battrs, "")
@@ -110,7 +110,7 @@ defmodule MessageProtobuf.Encode.Message do
       ])
 
     msg_body = Messagebody.new(headers: headers, value: message)
-
+    Logger.debug("msg_type: #{inspect(msg_type)}, clienttype: #{inspect(client_type)}")
     Xmppmessage.new(
       messagetype: msg_type,
       clienttype: client_type,
