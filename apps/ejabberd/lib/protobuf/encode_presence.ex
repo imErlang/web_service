@@ -66,7 +66,8 @@ defmodule MessageProtobuf.Encode.Presence do
     status = :proplists.get_value("status", attrs)
 
     headers =
-      MessageProtobuf.Encode.encode_pb_stringheaders([{"invite_jid", jid}, {"status", status}])
+      [{"invite_jid", jid}, {"status", status}]
+      |> MessageProtobuf.Encode.encode_pb_stringheaders()
 
     body = Messagebody.new(headers: headers, value: "invite_info")
     %{value: "invite_user", body: body}
@@ -74,7 +75,7 @@ defmodule MessageProtobuf.Encode.Presence do
 
   def encode_del_muc_register(packet) do
     del_jid = :proplists.get_value("del_jid", xmlel(packet, :attrs))
-    headers = [{"del_jid", del_jid}]
+    headers = [{"del_jid", del_jid}] |> MessageProtobuf.Encode.encode_pb_stringheaders()
     body = Messagebody.new(headers: headers, value: "del_muc_register")
     %{value: "del_muc_register", body: body}
   end
@@ -82,7 +83,7 @@ defmodule MessageProtobuf.Encode.Presence do
   def encode_set_user_subscribe_v2(packet) do
     subscribe = :fxml.get_subtag(packet, "subscribe_updte")
     status = :proplists.get_value("status", xmlel(subscribe, :attrs), "0")
-    headers = [{"status", status}]
+    headers = [{"status", status}] |> MessageProtobuf.Encode.encode_pb_stringheaders()
     body = Messagebody.new(headers: headers, value: "subscribe_update")
     %{value: "subscribe_update", body: body}
   end
@@ -96,13 +97,15 @@ defmodule MessageProtobuf.Encode.Presence do
     pic = :proplists.get_value("pic", attrs)
     version = :proplists.get_value("version", attrs)
 
-    headers = [
-      {"nick", nick},
-      {"desc", desc},
-      {"title", title},
-      {"pic", pic},
-      {"version", version}
-    ]
+    headers =
+      [
+        {"nick", nick},
+        {"desc", desc},
+        {"title", title},
+        {"pic", pic},
+        {"version", version}
+      ]
+      |> MessageProtobuf.Encode.encode_pb_stringheaders()
 
     body = Messagebody.new(headers: headers, value: "update_muc_vcard")
     %{value: "update_muc_vcard", body: body}
@@ -116,13 +119,15 @@ defmodule MessageProtobuf.Encode.Presence do
     method = :proplists.get_value("method", attrs, "")
     body1 = :proplists.get_value("body", attrs, "")
 
-    headers = [
-      {"type", type},
-      {"reason", reason},
-      {"method", method},
-      {"body", body1},
-      {"friend_num", friend_num}
-    ]
+    headers =
+      [
+        {"type", type},
+        {"reason", reason},
+        {"method", method},
+        {"body", body1},
+        {"friend_num", friend_num}
+      ]
+      |> MessageProtobuf.Encode.encode_pb_stringheaders()
 
     body = Messagebody.new(headers: headers, value: "verify_friend")
     %{key: "manual_authentication_confirm", value: "confirm_verify_friend", body: body}
@@ -136,13 +141,15 @@ defmodule MessageProtobuf.Encode.Presence do
     method = :proplists.get_value("method", attrs, "")
     body1 = :proplists.get_value("body", attrs, "")
 
-    headers = [
-      {"type", type},
-      {"result", rslt},
-      {"reason", reason},
-      {"method", method},
-      {"body", body1}
-    ]
+    headers =
+      [
+        {"type", type},
+        {"result", rslt},
+        {"reason", reason},
+        {"method", method},
+        {"body", body1}
+      ]
+      |> MessageProtobuf.Encode.encode_pb_stringheaders()
 
     body = Messagebody.new(headers: headers, value: "verify_friend")
     %{value: "verify_friend", body: body}
@@ -154,21 +161,25 @@ defmodule MessageProtobuf.Encode.Presence do
     rslt = :proplists.get_value("result", attrs, "")
     jid = :proplists.get_value("jid", attrs, "")
     domain = :proplists.get_value("domain", attrs, "")
-    headers = [{"type", type}, {"result", rslt}, {"jid", jid}, {"domain", domain}]
+
+    headers =
+      [{"type", type}, {"result", rslt}, {"jid", jid}, {"domain", domain}]
+      |> MessageProtobuf.Encode.encode_pb_stringheaders()
+
     body = Messagebody.new(headers: headers, value: "delete_friend")
     %{value: "delete_friend", body: body}
   end
 
   def encode_mask_user(packet) do
     jid = :proplists.get_value("jid", xmlel(packet, :attrs), "")
-    headers = [{"jid", jid}]
+    headers = [{"jid", jid}] |> MessageProtobuf.Encode.encode_pb_stringheaders()
     body = Messagebody.new(headers: headers, value: "mask_user")
     %{value: "mask_user", body: body}
   end
 
   def encode_cancel_mask_user(packet) do
     jid = :proplists.get_value("jid", xmlel(packet, :attrs), "")
-    headers = [{"jid", jid}]
+    headers = [{"jid", jid}] |> MessageProtobuf.Encode.encode_pb_stringheaders()
     body = Messagebody.new(headers: headers, value: "cancel_mask_user")
     %{value: "cancel_mask_user", body: body}
   end
@@ -193,7 +204,10 @@ defmodule MessageProtobuf.Encode.Presence do
     status = :fxml.get_subtag(els, "status")
     code = :proplists.get_value("code", xmlel(status, :attrs))
 
-    headers = [{"affiliation", affiliation}, {"role", role}, {"code", code}]
+    headers =
+      [{"affiliation", affiliation}, {"role", role}, {"code", code}]
+      |> MessageProtobuf.Encode.encode_pb_stringheaders()
+
     body = Messagebody.new(headers: headers, value: "item")
     %{value: "del_muc_user", body: body}
   end
@@ -205,7 +219,10 @@ defmodule MessageProtobuf.Encode.Presence do
     affiliation = :proplists.get_value("affiliation", item_attrs)
     role = :proplists.get_value("role", item_attrs)
 
-    headers = [{"affiliation", affiliation}, {"role", role}]
+    headers =
+      [{"affiliation", affiliation}, {"role", role}]
+      |> MessageProtobuf.Encode.encode_pb_stringheaders()
+
     body = Messagebody.new(headers: headers, value: "item")
     %{value: "destory_muc", body: body}
   end
@@ -219,11 +236,13 @@ defmodule MessageProtobuf.Encode.Presence do
     affiliation = :proplists.get_value("affiliation", item_attrs)
     domain = :proplists.get_value("domain", item_attrs)
 
-    headers = [
-      {"jid", :qtalk_public.tokens_jid(jid)},
-      {"affiliation", affiliation},
-      {"domain", domain}
-    ]
+    headers =
+      [
+        {"jid", :qtalk_public.tokens_jid(jid)},
+        {"affiliation", affiliation},
+        {"domain", domain}
+      ]
+      |> MessageProtobuf.Encode.encode_pb_stringheaders()
 
     body = Messagebody.new(headers: headers, value: "user_info")
     %{value: "user_join_muc", body: body}
@@ -264,7 +283,10 @@ defmodule MessageProtobuf.Encode.Presence do
   def enocde_status(packet) do
     show = :fxml.get_subtag_cdata(packet, "show")
     priority = :fxml.get_subtag_cdata(packet, "priority")
-    headers = [{"show", show}, {"priority", priority}] |> MessageProtobuf.Encode.encode_pb_stringheaders
+
+    headers =
+      [{"show", show}, {"priority", priority}] |> MessageProtobuf.Encode.encode_pb_stringheaders()
+
     body = Messagebody.new(headers: headers, value: "user_update_status")
     %{value: "update_user_status", body: body}
   end
@@ -339,7 +361,7 @@ defmodule MessageProtobuf.Encode.Presence do
       {"x", @muc_user} ->
         case :fxml.get_attr("type", xmlel(packet, :attrs)) do
           false ->
-            :ok
+            "error"
 
           _ ->
             encode_x_user_packet(packet)
