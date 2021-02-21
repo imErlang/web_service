@@ -5,8 +5,11 @@ defmodule MessageProtobuf.Decode.IQ do
 
   import Xml
 
+  require Logger
+
   def parse_iq(pb_msg) do
     iq_msg = Iqmessage.decode(pb_msg.message)
+    Logger.error("parse iq #{inspect(pb_msg, limit: :infinity)}, iq_msg #{inspect(iq_msg, limit: :infinity)}")
 
     iq_key =
       case get_iqkey_type(iq_msg.definedkey) do
@@ -299,48 +302,11 @@ defmodule MessageProtobuf.Decode.IQ do
   end
 
   def handle_header_attrs(header) do
-    v = get_header_definedkey(header.definedkey)
-    [{v, header.value}]
-  end
-
-  def get_header_definedkey(header_key) do
-    case header_key do
-      :StringHeaderTypeChatId -> "chatid"
-      :StringHeaderTypeChannelId -> "channelid"
-      :StringHeaderTypeExtendInfo -> "extendInfo"
-      :StringHeaderTypeBackupInfo -> "backupinfo"
-      :StringHeaderTypeReadType -> "read_type"
-      :StringHeaderTypeJid -> "jid"
-      :StringHeaderTypeRealJid -> "real_jid"
-      :StringHeaderTypeInviteJid -> "invite_jid"
-      :StringHeaderTypeDeleleJid -> "del_jid"
-      :StringHeaderTypeNick -> "nick"
-      :StringHeaderTypeTitle -> "title"
-      :StringHeaderTypePic -> "pic"
-      :StringHeaderTypeVersion -> "version"
-      :StringHeaderTypeMethod -> "method"
-      :StringHeaderTypeBody -> "body"
-      :StringHeaderTypeAffiliation -> "affiliation"
-      :StringHeaderTypeType -> "type"
-      :StringHeaderTypeResult -> "result"
-      :StringHeaderTypeReason -> "reason"
-      :StringHeaderTypeRole -> "role"
-      :StringHeaderTypeDomain -> "domain"
-      :StringHeaderTypeStatus -> "status"
-      :StringHeaderTypeCode -> "code"
-      :StringHeaderTypeCdata -> "cdata"
-      :StringHeaderTypeTimeValue -> "time_value"
-      :StringHeaderTypeKeyValue -> "key_value"
-      :StringHeaderTypeName -> "name"
-      :StringHeaderTypeHost -> "host"
-      :StringHeaderTypeQuestion -> "question"
-      :StringHeaderTypeAnswer -> "answer"
-      :StringHeaderTypeFriends -> "friends"
-      :StringHeaderTypeValue -> "value"
-      :StringHeaderTypeMaskedUuser -> "masked_user"
-      :StringHeaderTypeKey -> "key"
-      :StringHeaderTypeMode -> "mode"
-      :StringHeaderTypeCarbon -> "carbon_message"
+    case MessageProtobuf.Decode.get_header_definedkey(header.definedkey) do
+      :none ->
+        [{header.key, header.value}]
+      v ->
+        [{v, header.value}]
     end
   end
 

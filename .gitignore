@@ -31,3 +31,5 @@ upload
 
 /apps/ejabberd/log
 
+docker/data
+

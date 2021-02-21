@@ -30,9 +30,10 @@ defmodule Admin.Router do
     send_resp_json(conn, body)
   end
 
-  match "/startalk/management/find/get/navigation" do
-    send_nav(conn)
-  end
+  # match "/startalk/management/find/get/navigation" do
+  #   body = Ejabberd.Util.success(%{errorCode: 0}, "")
+  #   send_resp_json(conn, body)
+  # end
 
   forward("/host/", to: Admin.Router.HostInfo)
   forward("/user", to: Admin.Router.User)

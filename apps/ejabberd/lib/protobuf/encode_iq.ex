@@ -25,10 +25,10 @@ defmodule MessageProtobuf.Encode.Iq do
     mucs =
       :fxml.get_subtag(packet, "query")
       |> :fxml.get_subtags("muc_rooms")
-      |> Enum.flat_map(fn xml ->
+      |> Enum.map(fn xml ->
         attrs = xmlel(xml, :attrs)
-        host = List.keyfind(attrs, "host", 1, Util.get_default_domain())
-        name = List.keyfind(attrs, "name", 1, "")
+        {_, host} = List.keyfind(attrs, "host", 1, Util.get_default_domain())
+        {_, name} = List.keyfind(attrs, "name", 1, "")
         headers = MessageProtobuf.Encode.encode_pb_stringheaders([{"name", name}, {"host", host}])
         Messagebody.new(headers: headers, value: "muc_room")
       end)
@@ -55,16 +55,16 @@ defmodule MessageProtobuf.Encode.Iq do
     bodys =
       :fxml.get_subtag(packet, "query")
       |> :fxml.get_subtags("muc_invites")
-      |> Enum.flat_map(fn xml ->
+      |> Enum.map(fn xml ->
         attrs = xmlel(xml, :attrs)
         {_, jid} = List.keyfind(attrs, "jid", 0, "")
 
         header =
-          case List.keyfind(attrs, "status", 0, :undefined) do
-            :undefined ->
+          case List.keyfind(attrs, "status", 0, nil) do
+            nil ->
               [{"jid", jid}]
 
-            status ->
+            {_, status} ->
               [{"jid", jid}, {"status", status}]
           end
 
@@ -86,10 +86,11 @@ defmodule MessageProtobuf.Encode.Iq do
   end
 
   def encode_muc_user_pb(packet) do
+    Logger.error("packet: #{inspect(packet, limit: :infinity)}")
     bodys =
       :fxml.get_subtag(packet, "query")
       |> :fxml.get_subtags("m_user")
-      |> Enum.flat_map(fn xml ->
+      |> Enum.map(fn xml ->
         attrs = xmlel(xml, :attrs)
         {_, jid} = List.keyfind(attrs, "jid", 0, "")
 
@@ -98,7 +99,7 @@ defmodule MessageProtobuf.Encode.Iq do
             :undefined ->
               [{"jid", jid}]
 
-            aff ->
+            {_, aff} ->
               [{"jid", jid}, {"affiliation", aff}]
           end
 
@@ -194,13 +195,13 @@ defmodule MessageProtobuf.Encode.Iq do
   def encode_pb_get_mask_user(packet) do
     bodys =
       :fxml.get_subtags(packet, "get_mask_user")
-      |> Enum.flat_map(fn xml ->
+      |> Enum.map(fn xml ->
         header =
           case List.keyfind(xmlel(xml, :attrs), "masked_user", 0, :undefined) do
             :undefined ->
               []
 
-            jid ->
+            {_, jid} ->
               [{"masked_user", jid}]
           end
 
@@ -334,13 +335,13 @@ defmodule MessageProtobuf.Encode.Iq do
   def encode_pb_get_virtual_user(packet) do
     bodys =
       :fxml.get_subtags(packet, "virtual_user")
-      |> Enum.flat_map(fn xml ->
+      |> Enum.map(fn xml ->
         header =
           case List.keyfind(xmlel(xml, :attrs), "virtual_user", 1, :undefined) do
             :undefined ->
               []
 
-            [vu] ->
+            {_, [vu]} ->
               [{"vuser", vu}]
           end
 

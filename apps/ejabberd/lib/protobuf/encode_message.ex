@@ -30,30 +30,8 @@ defmodule MessageProtobuf.Encode.Message do
     :ClientTypePC
   end
 
-  def encode_pb_stringheaders(headers) do
-    headers
-    |> Enum.flat_map(fn header ->
-      MessageProtobuf.Encode.encode_pb_stringheader(header)
-    end)
-  end
-
   def do_struct_pb_xmpp_msg("nbodyStat", pattrs, _battrs, _message, _id, time, _packet, _type) do
-    client_ver = :proplists.get_value("client_ver", pattrs, "0") |> String.to_integer()
-    headers = encode_pb_stringheaders([])
-    msg_body = Messagebody.new(headers: headers, value: "")
-
-    xmpp =
-      Xmppmessage.new(
-        messagetype: :MessageTypeText,
-        clienttype: :ClientTypePC,
-        clientversion: client_ver,
-        messageid: "",
-        body: msg_body,
-        receivedtime: time
-      )
-
-    Logger.debug("#{inspect(xmpp)}")
-    xmpp |> Xmppmessage.encode()
+    do_struct_pb_xmpp_msg("", pattrs, [], "", "", time, "", "")
   end
 
   def do_struct_pb_xmpp_msg(_, pattrs, battrs, message, id, time, packet, type) do
@@ -98,28 +76,36 @@ defmodule MessageProtobuf.Encode.Message do
       end
 
     headers =
-      encode_pb_stringheaders([
-        {"qchatid ", qchat_id},
+      MessageProtobuf.Encode.encode_pb_stringheaders([
+        {"qchatid", qchat_id},
         {"channelid", channel_id},
-        {"extendInfo ", ex_info},
-        {"backupinfo ", backup_info},
-        {"read_type ", read_type},
-        {"auto_reply ", auto_reply},
-        {"errcode ", errcode},
-        {"carbon_message ", carbon}
+        {"extendInfo", ex_info},
+        {"backupinfo", backup_info},
+        {"read_type", read_type},
+        {"auto_reply", auto_reply},
+        {"errcode", errcode},
+        {"carbon_message", carbon}
       ])
 
     msg_body = Messagebody.new(headers: headers, value: message)
-    Logger.debug("msg_type: #{inspect(msg_type)}, clienttype: #{inspect(client_type)}")
-    Xmppmessage.new(
-      messagetype: msg_type,
-      clienttype: client_type,
-      clientversion: client_ver,
-      messageid: id,
-      body: msg_body,
-      receivedtime: time
-    )
-    |> Xmppmessage.encode()
+
+    xmpp =
+      Xmppmessage.new(
+        messagetype: msg_type,
+        clienttype: client_type,
+        clientversion: client_ver,
+        messageid: id,
+        body: msg_body,
+        receivedtime: time
+      )
+
+     encoded = xmpp |> Xmppmessage.encode()
+    Logger.error(
+      "msg_type: #{inspect(msg_type)}, clienttype: #{inspect(client_type)}, msg_body: #{
+        inspect(msg_body, limit: :infinity)
+      }, xmpp: #{inspect(xmpp, limit: :infinity)}, encoded: #{inspect(encoded, limit: :infinity)}"
+      )
+      encoded
   end
 
   def set_type("chat"), do: :SignalTypeChat
