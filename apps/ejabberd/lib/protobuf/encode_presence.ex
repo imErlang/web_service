@@ -359,13 +359,7 @@ defmodule MessageProtobuf.Encode.Presence do
   def xml2pb_presence_ns("", packet) do
     case :qtalk_public.get_sub_xmlns_name(packet) do
       {"x", @muc_user} ->
-        case :fxml.get_attr("type", xmlel(packet, :attrs)) do
-          false ->
-            "error"
-
-          _ ->
-            encode_x_user_packet(packet)
-        end
+        encode_x_user_packet(packet)
 
       {"query", @muc_owner} ->
         encode_update_muc_vcard(packet)

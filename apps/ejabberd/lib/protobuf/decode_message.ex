@@ -16,7 +16,7 @@ defmodule MessageProtobuf.Decode.Message do
       message.clienttype,
       message.clientversion,
       message.messageid,
-      message.headers,
+      message.body.headers,
       message.body.value
     )
   end
@@ -34,6 +34,8 @@ defmodule MessageProtobuf.Decode.Message do
         headers,
         cdata
       ) do
+
+    Logger.error("headers: #{inspect(headers)}")
     channel_id = get_header_key(:definedkey, :StringHeaderTypeChannelId, headers)
     ex_info = get_header_key(:definedkey, :StringHeaderTypeExtendInfo, headers)
     backup_info = get_header_key(:definedkey, :StringHeaderTypeBackupInfo, headers)
@@ -106,21 +108,13 @@ defmodule MessageProtobuf.Decode.Message do
     [xmlel(name: "body", attrs: attrs, children: [{:xmlcdata, cdata}])]
   end
 
-  def get_msg_type(type) when is_integer(type) do
-    Integer.to_string(type)
-  end
-
-  def get_msg_type(type) when is_binary(type) do
-    type
-  end
-
-  def get_msg_type(_) do
-    "1"
+  def get_msg_type(type) do
+    type |> Messagetype.value() |> Integer.to_string()
   end
 
   def get_header_key(type, key, headers) do
     headers
-    |> Enum.find_value(:undefined, fn header ->
+    |> Enum.find_value(:nil, fn header ->
       find_key =
         case type do
           :definedkey ->
