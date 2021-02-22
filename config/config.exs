@@ -52,7 +52,7 @@ config :admin,
 config :tesla, adapter: Tesla.Adapter.Hackney
 
 config :ejabberd,
-  file: "apps/ejabberd/config/ejabberd.yml",
+  file: "config/ejabberd.yml",
   log_path: 'log/ejabberd.log'
 
 # Customize Mnesia directory:

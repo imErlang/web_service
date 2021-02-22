@@ -18,7 +18,13 @@ defmodule WebService.MixProject do
   defp deps do
     [
       {:distillery, "~> 2.1"},
-      {:cowboy, "~> 2.7", override: true}
+      {:cowboy, "~> 2.7", override: true},
+      {:lager, "~> 3.8.1", override: true},
+      {:jiffy, "~> 1.0.8", override: true},
+      {:stun, "~> 1.0.41", override: true},
+      {:p1_utils, "~> 1.0.21", override: true},
+      {:jose, "~> 1.11.1", override: true},
+      {:idna, "~> 6.1", override: true}
     ]
   end
 end
