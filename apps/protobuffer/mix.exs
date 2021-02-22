@@ -26,7 +26,8 @@ defmodule Protobuffer.MixProject do
   defp deps do
     [
       {:protobuf, "~> 0.7.1"},
-      {:fast_xml, "~> 1.1"}
+      {:fast_xml, "~> 1.1"},
+      {:ejabberd, in_umbrella: true}
     ]
   end
 end
