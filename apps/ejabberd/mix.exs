@@ -87,8 +87,7 @@ defmodule Ejabberd.Mixfile do
       {:recon_ex, "~> 0.9.1"},
       {:rfc4627_jsonrpc, github: "tonyg/erlang-rfc4627"},
       {:distillery, "~> 2.1"},
-      {:credo, "~> 0.5", only: [:dev, :test]},
-      {:protobuf, "~> 0.7.1"}
+      {:credo, "~> 0.5", only: [:dev, :test]}
     ]
   end
 
