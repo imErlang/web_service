@@ -408,8 +408,8 @@ defmodule MessageProtobuf.Encode.Iq do
   end
 
   def encode_iq_result_pb_packet(statedata, from, to, packet) do
-    params = :qtalk_public.get_sub_xmlns_name(packet) |> encode_iq_ns(statedata, from, to, packet)
-    id = :qtalk_public.get_xml_attrs_id(packet)
+    params = Util.get_sub_xmlns_name(packet) |> encode_iq_ns(statedata, from, to, packet)
+    id = Util.get_xml_attrs_id(packet)
 
     Map.merge(
       %{

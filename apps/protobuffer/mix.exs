@@ -27,7 +27,8 @@ defmodule Protobuffer.MixProject do
     [
       {:protobuf, "~> 0.7.1"},
       {:fast_xml, "~> 1.1"},
-      {:ejabberd, "~> 21.1"}
+      {:ejabberd, "~> 21.1"},
+      {:xmpp, "~> 1.5.2"}
     ]
   end
 end

@@ -15,8 +15,7 @@ defmodule MessageProtobuf.Encode do
   def send_probuf_msg(statedata, packet) do
     Logger.debug("from: #{inspect(statedata)}, packet: #{inspect(packet)}")
 
-    user =
-      :jlib.jid_to_string(:jlib.make_jid({statedata.user, statedata.server, statedata.resource}))
+    user = :jid.make(statedata.user, statedata.server, statedata.resource)
 
     to = get_xml_attrs(packet, "to", user)
     from = get_xml_attrs(packet, "from", user)
@@ -155,7 +154,7 @@ defmodule MessageProtobuf.Encode do
   end
 
   def pack(pb_msg) do
-    :ejabberd_encode_protobuf.uint32_pack(byte_size(pb_msg), pb_msg)
+    :ejabberd_protobuf.uint32_pack(byte_size(pb_msg), pb_msg)
   end
 
   def timestamp() do

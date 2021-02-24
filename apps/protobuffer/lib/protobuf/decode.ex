@@ -107,7 +107,7 @@ defmodule MessageProtobuf.Decode do
   end
 
   def get_msgid(id) when id == nil or id == "" do
-    "PBMSG_#{:random.uniform(65536)}#{:qtalk_public.get_exact_timestamp()}"
+    "PBMSG_#{:random.uniform(65536)}#{Util.get_exact_timestamp()}"
   end
 
   def get_msgid(id) do

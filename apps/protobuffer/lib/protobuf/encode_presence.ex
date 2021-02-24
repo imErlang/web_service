@@ -39,7 +39,7 @@ defmodule MessageProtobuf.Encode.Presence do
         messageid: msg_id,
         header: header,
         body: body,
-        receivedtime: :qtalk_public.get_timestamp(),
+        receivedtime: Util.get_timestamp(),
         headers: headers,
         bodys: bodys,
         categorytype: catagory,
@@ -238,7 +238,7 @@ defmodule MessageProtobuf.Encode.Presence do
 
     headers =
       [
-        {"jid", :qtalk_public.tokens_jid(jid)},
+        {"jid", Util.tokens_jid(jid)},
         {"affiliation", affiliation},
         {"domain", domain}
       ]
@@ -357,7 +357,7 @@ defmodule MessageProtobuf.Encode.Presence do
     do: encode_presence_mask_user(packet)
 
   def xml2pb_presence_ns("", packet) do
-    case :qtalk_public.get_sub_xmlns_name(packet) do
+    case Util.get_sub_xmlns_name(packet) do
       {"x", @muc_user} ->
         encode_x_user_packet(packet)
 

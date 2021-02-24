@@ -172,7 +172,7 @@ defmodule MessageProtobuf.Encode.Message do
         ""
 
       {_value, type} ->
-        time = :qtalk_public.get_exact_timestamp()
+        time = Util.get_exact_timestamp()
 
         case :fxml.get_subtag(packet, "body") do
           false ->
@@ -213,7 +213,7 @@ defmodule MessageProtobuf.Encode.Message do
             id =
               case :proplists.get_value("id", xmlel(body, :attrs), :undefined) do
                 :undefined ->
-                  "http_#{:random.uniform(65536)}#{:qtalk_public.get_exact_timestamp()}"
+                  "http_#{:random.uniform(65536)}#{Util.get_exact_timestamp()}"
 
                 i ->
                   i
@@ -241,7 +241,7 @@ defmodule MessageProtobuf.Encode.Message do
 
   def get_packet_time(pattrs) do
     case :proplists.get_value("msec_times", pattrs, :undefined) do
-      :undefined -> :qtalk_public.get_exact_timestamp()
+      :undefined -> Util.get_exact_timestamp()
       t -> String.to_integer(t)
     end
   end
