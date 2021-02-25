@@ -1,5 +1,4 @@
 defmodule Mod.Protobuf do
-  @behaviour :ejabberd_listener
   use GenServer
   require Logger
   require Record
@@ -13,45 +12,9 @@ defmodule Mod.Protobuf do
     sock_peer_name: :none
   )
 
-  def listeners() do
-    [
-      {{5202, {0, 0, 0, 0, 0, 0, 0, 0}, :tcp}, Mod.Protobuf,
-       %{
-         accept_interval: 0,
-         access: :c2s,
-         backlog: 5,
-         cafile: :undefined,
-         ciphers: :undefined,
-         dhfile: :undefined,
-         ip: {0, 0, 0, 0, 0, 0, 0, 0},
-         max_fsm_queue: 10000,
-         max_stanza_size: 262_144,
-         protocol_options: :undefined,
-         shaper: :c2s_shaper,
-         starttls: false,
-         starttls_required: true,
-         supervisor: true,
-         tls: true,
-         tls_compression: false,
-         tls_verify: false,
-         transport: :tcp,
-         use_proxy_protocol: false,
-         zlib: false
-       }}
-    ]
-    |> :ejabberd_listener.listeners_childspec()
-    |> Enum.map(fn spec ->
-      :supervisor.start_child(:ejabberd_listener, spec)
-    end)
-  end
-
-  def stop_listener() do
-    :ejabberd_listener.delete_listener({5202, {0, 0, 0, 0, 0, 0, 0, 0}, :tcp}, Mod.Protobuf)
-  end
-
   @impl GenServer
-  def init([sockmod, socket, opts]) do
-    :xmpp_stream_in.init([Mod.Protobuf, {sockmod, socket}, opts])
+  def init([state, opts]) do
+    :xmpp_stream_in.init([Mod.Protobuf.C2s, state, opts])
   end
 
   @impl GenServer
@@ -68,6 +31,7 @@ defmodule Mod.Protobuf do
   end
 
   def starttls(socketdata, tlsopts) do
+    Logger.debug("starttls: #{inspect(socketdata)}, tlsopts #{inspect(tlsopts)}")
     sockmod = socket_state(socketdata, :sockmod)
 
     case sockmod do
@@ -89,11 +53,12 @@ defmodule Mod.Protobuf do
   end
 
   def init_state(%{socket: socket, mod: mod} = state, opts) do
+    Logger.debug("init state #{inspect(state)}, opts: #{inspect(opts)}")
     encrypted = :proplists.get_bool(:tls, opts)
 
-    state = %{
-      state
-      | stream_direction: :in,
+    state =
+      Map.merge(state, %{
+        stream_direction: :in,
         stream_id: :xmpp_stream.new_id(),
         stream_state: :wait_for_stream,
         stream_header_sent: false,
@@ -109,7 +74,7 @@ defmodule Mod.Protobuf do
         server: "",
         resource: "",
         lserver: ""
-    }
+      })
 
     init =
       try do
@@ -117,6 +82,8 @@ defmodule Mod.Protobuf do
       catch
         _, :undef -> {:ok, state}
       end
+
+    Logger.debug("mod init #{inspect(init)}")
 
     case init do
       {:ok, state2} when not encrypted ->
@@ -141,7 +108,7 @@ defmodule Mod.Protobuf do
     end
   end
 
-  def process_stream_end(_, %{stream_state: :disconnected} = state) do
+  def process_stream_ends(_, %{stream_state: :disconnected} = state) do
     state
   end
 
@@ -153,13 +120,19 @@ defmodule Mod.Protobuf do
 
   @impl GenServer
   def handle_cast(:accept, %{socket: socket, socket_mod: sockmod, socket_opts: opts} = state) do
+    Logger.debug("accept: #{inspect(state, limit: :infinity)}")
     xmppsocket = :xmpp_socket.new(sockmod, socket, opts)
     socketmonitor = :xmpp_socket.monitor(xmppsocket)
 
     case :xmpp_socket.peername(xmppsocket) do
       {:ok, ip} ->
-        state = state |> Map.delete(:socket_mod) |> Map.delete(:socket_opts)
-        state = %{state | socket: xmppsocket, socket_monitor: socketmonitor, ip: ip}
+        state =
+          state
+          |> Map.delete(:socket_mod)
+          |> Map.delete(:socket_opts)
+          |> Map.put(:socket, xmppsocket)
+          |> Map.put(:socket_monitor, socketmonitor)
+          |> Map.put(:ip, ip)
 
         case init_state(state, opts) do
           {:stop, newstate} ->
@@ -171,6 +144,7 @@ defmodule Mod.Protobuf do
                 {:noreply, newstate}
 
               false ->
+                Logger.debug("accept suc")
                 handle_info({:tcp, socket, ""}, newstate)
             end
         end
@@ -197,23 +171,14 @@ defmodule Mod.Protobuf do
     {:ok, data}
   end
 
-  def activate_socket({sockmod, sock} = socket) do
-    res =
-      case sockmod do
-        :gen_tcp -> :inet.setopts(sock, active: :once)
-        _ -> sockmod.setopts(sock, active: :once)
-      end
+  def activate_socket(socket) do
+    sockmod = socket_state(socket, :sockmod)
+    sock = socket_state(socket, :socket)
 
-    check_sock_result(socket, res)
-  end
-
-  def check_sock_result(_, :ok) do
-    :ok
-  end
-
-  def check_sock_result({_, sock}, {:error, why}) do
-    send(self(), {:tcp_closed, sock})
-    Logger.debug("MQTT socket error: #{inspect(why)}")
+    case sockmod do
+      :gen_tcp -> :inet.setopts(sock, active: :once)
+      _ -> sockmod.setopts(sock, active: :once)
+    end
   end
 
   def process_recv_data(data, %{left: true, last_data: last} = state) do
@@ -232,7 +197,7 @@ defmodule Mod.Protobuf do
 
       :continue ->
         activate_socket(state.socket)
-        %{state | left: true, last_data: data}
+        Map.merge(state, %{left: true, last_data: data})
 
       {len, rdata} ->
         rdatasize = byte_size(rdata)
@@ -240,17 +205,17 @@ defmodule Mod.Protobuf do
         cond do
           len > rdatasize ->
             activate_socket(state.socket)
-            %{state | left: true, last_data: data}
+            Map.merge(state,%{ left: true, last_data: data})
 
           len == rdatasize ->
             decode_pb_message(rdata, state)
             activate_socket(state.socket)
-            %{state | left: false, last_data: ""}
+            Map.merge(state, %{ left: false, last_data: ""})
 
           true ->
             <<rrdata::binary-size(len), r::binary>> = rdata
             decode_pb_message(rrdata, state)
-            parse_recv_data(r, %{state | left: true, last_data: r})
+            parse_recv_data(r, Map.merge(state,%{ left: true, last_data: r}))
         end
     end
   end
@@ -263,9 +228,11 @@ defmodule Mod.Protobuf do
 
   @impl GenServer
   def handle_info({:tcp, _tcpsock, tcpdata}, %{socket: socket} = state) do
+    Logger.debug("recv socket data: #{inspect(tcpdata, limit: :infinity)}")
+
     case recv_data(socket, tcpdata) do
       {:ok, data} ->
-        process_recv_data(data, state)
+        {:noreply, process_recv_data(data, state)}
 
       {:more, _codec1} ->
         {:noreply, state}
@@ -276,18 +243,13 @@ defmodule Mod.Protobuf do
     end
   end
 
-  def handle_info({:tcp_closed, _sock}, state) do
-    Logger.debug("MQTT connection reset by peer")
-    {:stop, {:socket, :closed}, state}
+  def handle_info(msg, state) do
+    :xmpp_stream_in.handle_info(msg, state)
   end
 
-  def handle_info({:tcp_error, _sock, reason}, state) do
-    Logger.debug("MQTT connection error: #{inspect(reason)}")
-    {:stop, {:socket, reason}, state}
-  end
-
-  @impl :ejabberd_listener
   def start_link(sockmod, socket, opts) do
+    Logger.debug("protobu start ")
+
     GenServer.start_link(
       Mod.Protobuf,
       [{sockmod, socket}, opts],
@@ -295,7 +257,6 @@ defmodule Mod.Protobuf do
     )
   end
 
-  @impl :ejabberd_listener
   def start(sockmod, socket, opts) do
     GenServer.start(
       Mod.Protobuf,
@@ -304,30 +265,9 @@ defmodule Mod.Protobuf do
     )
   end
 
-  @impl :ejabberd_listener
   def accept(pid) do
+    Logger.debug("protobuf accept: #{inspect(pid)}")
     GenServer.cast(pid, :accept)
-  end
-
-  @impl :ejabberd_listener
-  def listen_opt_type(_) do
-    :econf.bool()
-  end
-
-  @impl :ejabberd_listener
-  def listen_options() do
-    [
-      access: :all,
-      shaper: :none,
-      tls: false,
-      tls_compression: false,
-      starttls: false,
-      starttls_required: false,
-      tls_verify: false,
-      zlib: false,
-      max_stanza_size: :infinity,
-      max_fsm_queue: 10000
-    ]
   end
 
   def become_controller(pid, _) do
