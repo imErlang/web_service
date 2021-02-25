@@ -1,4 +1,5 @@
 defmodule Mod.Protobuf do
+  import Kernel, except: [send: 2]
   use GenServer
   require Logger
   require Record
@@ -22,12 +23,24 @@ defmodule Mod.Protobuf do
     {:reply, :ok, state}
   end
 
-  def peername(%{socket: {:gen_tcp, sock}}) do
-    :inet.peername(sock)
+  def get_owner(_socket) do
+    self()
   end
 
-  def peername(%{socket: {sockmod, sock}}) do
-    sockmod.peername(sock)
+  def send(socket, el) do
+    Logger.debug("socket: #{inspect(socket)}, el: #{inspect(el)}")
+    element = :fxml_stream.parse_element(el)
+    Logger.debug("socket: #{inspect(element)}")
+
+    :fast_tls.send(socket, el)
+  end
+
+  def get_transport(_) do
+    :tls
+  end
+
+  def setopts(socket, opts) do
+    :fast_tls.setopts(socket, opts)
   end
 
   def starttls(socketdata, tlsopts) do
@@ -40,7 +53,7 @@ defmodule Mod.Protobuf do
 
         case :fast_tls.tcp_to_tls(socket, tlsopts) do
           {:ok, tlssocket} ->
-            socketdata = socket_state(socketdata, socket: tlssocket, sockmod: :fast_tls)
+            socketdata = socket_state(socketdata, socket: tlssocket, sockmod: Mod.Protobuf)
             {:ok, socketdata}
 
           {:error, _} = err ->
@@ -192,7 +205,7 @@ defmodule Mod.Protobuf do
   def parse_recv_data(data, state) do
     case :ejabberd_protobuf.process_data_len(data) do
       false ->
-        send(self(), {:tcp_closed, state.socket})
+        Kernel.send(self(), {:tcp_closed, state.socket})
         state
 
       :continue ->
@@ -223,7 +236,7 @@ defmodule Mod.Protobuf do
   def decode_pb_message(data, _state) do
     pb = MessageProtobuf.Decode.decode_pb_message(data)
     Logger.debug("data #{inspect(data, limit: :infinity)}, pb: #{inspect(pb, limit: :infinity)}")
-    send(self(), {:"$gen_event", pb})
+    Kernel.send(self(), {:"$gen_event", pb})
   end
 
   @impl GenServer
