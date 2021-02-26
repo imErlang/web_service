@@ -16,12 +16,10 @@ import Config
 #       format: "$date $time [$level] $metadata$message\n",
 #       metadata: [:user_id]
 #
-config :logger,
-  level: :debug,
-  path: "log/dev.log",
-  truncate: :infinity
 
-config :logger, :console,
+config :logger,
+  backends: [LoggerLagerBackend],
+  handle_otp_reports: false,
   level: :debug,
   truncate: :infinity
 

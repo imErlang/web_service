@@ -24,7 +24,8 @@ defmodule WebService.MixProject do
       {:stun, "~> 1.0.41", override: true},
       {:p1_utils, "~> 1.0.21", override: true},
       {:jose, "~> 1.11.1", override: true},
-      {:idna, "~> 6.1", override: true}
+      {:idna, "~> 6.1", override: true},
+      {:logger_lager_backend, "~> 0.2.0"}
     ]
   end
 end

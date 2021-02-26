@@ -30,6 +30,7 @@
   "jiffy": {:hex, :jiffy, "1.0.8", "60e36f00be35e5ac6e6cf2d4caf3bdf3103d4460aff385f543a8d7df2d6d9613", [:rebar3], [], "hexpm", "f9ae986ba5a0854eb48cf6a76192d9367086da86c20197da430630be7c087a4e"},
   "jose": {:hex, :jose, "1.11.1", "59da64010c69aad6cde2f5b9248b896b84472e99bd18f246085b7b9fe435dcdb", [:mix, :rebar3], [], "hexpm", "078f6c9fb3cd2f4cfafc972c814261a7d1e8d2b3685c0a76eb87e158efff1ac5"},
   "lager": {:hex, :lager, "3.8.2", "b180b814fd8b7082b6ca8aaf287e55a908d304cfc7a240d32f4db2d07092b7d0", [:rebar3], [{:goldrush, "0.1.9", [hex: :goldrush, repo: "hexpm", optional: false]}], "hexpm", "73329ce700410b423f64aafc5f94583073904899098e4461f3558ed2980462ab"},
+  "logger_lager_backend": {:hex, :logger_lager_backend, "0.2.0", "c5e618c1a9965e46c88d00091e22c1de2c091b28db8e3ca59d96774e4fc8cdfa", [:mix], [{:lager, "~> 3.2", [hex: :lager, repo: "hexpm", optional: false]}], "hexpm", "33c02afc5f2192cd9aae43114b6aa65cde71bff278c0726e434afa9c3c218f72"},
   "metrics": {:hex, :metrics, "1.0.1", "25f094dea2cda98213cecc3aeff09e940299d950904393b2a29d191c346a8486", [:rebar3], [], "hexpm", "69b09adddc4f74a40716ae54d140f93beb0fb8978d8636eaded0c31b6f099f16"},
   "mime": {:hex, :mime, "1.5.0", "203ef35ef3389aae6d361918bf3f952fa17a09e8e43b5aa592b93eba05d0fb8d", [:mix], [], "hexpm", "55a94c0f552249fc1a3dd9cd2d3ab9de9d3c89b559c2bd01121f824834f24746"},
   "mimerl": {:hex, :mimerl, "1.2.0", "67e2d3f571088d5cfd3e550c383094b47159f3eee8ffa08e64106cdf5e981be3", [:rebar3], [], "hexpm", "f278585650aa581986264638ebf698f8bb19df297f66ad91b18910dfc6e19323"},

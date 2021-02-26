@@ -27,12 +27,21 @@ defmodule Mod.Protobuf do
     self()
   end
 
-  def send(socket, el) do
-    Logger.debug("socket: #{inspect(socket)}, el: #{inspect(el)}")
-    element = :fxml_stream.parse_element(el)
-    Logger.debug("socket: #{inspect(element)}")
+  def peername(socket) when is_port(socket) do
+    :inet.peername(socket)
+  end
+  def peername(socket) do
+    :fast_tls.peername(socket)
+  end
 
-    :fast_tls.send(socket, el)
+  def send_xml(_socket, {:xmlstreamstart, _, _}) do
+    :ok
+  end
+  def send_xml(socket, el) do
+    Logger.debug("socket: #{inspect(socket)}, el: #{inspect(el)}")
+    # :fast_tls.send(socket, el)
+    data = MessageProtobuf.Encode.send_probuf_msg(%{}, el)
+    Logger.debug("data: #{inspect(data)}")
   end
 
   def get_transport(_) do
@@ -45,22 +54,20 @@ defmodule Mod.Protobuf do
 
   def starttls(socketdata, tlsopts) do
     Logger.debug("starttls: #{inspect(socketdata)}, tlsopts #{inspect(tlsopts)}")
-    sockmod = socket_state(socketdata, :sockmod)
-
-    case sockmod do
-      :gen_tcp ->
-        socket = socket_state(socketdata, :socket)
-
+    socket = socket_state(socketdata, :socket)
+    case is_port(socket) do
+      true ->
         case :fast_tls.tcp_to_tls(socket, tlsopts) do
           {:ok, tlssocket} ->
-            socketdata = socket_state(socketdata, socket: tlssocket, sockmod: Mod.Protobuf)
+            socketdata = socket_state(socketdata, socket: tlssocket)
+            Logger.debug("starttls new socketdata: #{inspect(socketdata)}")
             {:ok, socketdata}
 
           {:error, _} = err ->
             err
         end
 
-      _ ->
+      false ->
         :erlang.error(:badarg)
     end
   end
@@ -133,8 +140,8 @@ defmodule Mod.Protobuf do
 
   @impl GenServer
   def handle_cast(:accept, %{socket: socket, socket_mod: sockmod, socket_opts: opts} = state) do
-    Logger.debug("accept: #{inspect(state, limit: :infinity)}")
-    xmppsocket = :xmpp_socket.new(sockmod, socket, opts)
+    xmppsocket = :xmpp_socket.new(sockmod, socket, opts) |> socket_state(xml_stream: :undefined)
+    Logger.debug("accept state: #{inspect(state, limit: :infinity)}, xmppsocket: #{inspect(xmppsocket, limit: :infinity)}")
     socketmonitor = :xmpp_socket.monitor(xmppsocket)
 
     case :xmpp_socket.peername(xmppsocket) do
@@ -257,15 +264,16 @@ defmodule Mod.Protobuf do
   end
 
   def handle_info(msg, state) do
+    Logger.debug("recv msg: #{inspect(msg)}")
     :xmpp_stream_in.handle_info(msg, state)
   end
 
-  def start_link(sockmod, socket, opts) do
+  def start_link(_sockmod, socket, opts) do
     Logger.debug("protobu start ")
 
     GenServer.start_link(
       Mod.Protobuf,
-      [{sockmod, socket}, opts],
+      [{Mod.Protobuf, socket}, opts],
       :ejabberd_config.fsm_limit_opts(opts)
     )
   end
