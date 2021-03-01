@@ -23,6 +23,10 @@ defmodule Mod.Protobuf do
     {:reply, :ok, state}
   end
 
+  def reset_stream(socket) do
+    socket
+  end
+
   def get_owner(_socket) do
     self()
   end
@@ -30,6 +34,7 @@ defmodule Mod.Protobuf do
   def peername(socket) when is_port(socket) do
     :inet.peername(socket)
   end
+
   def peername(socket) do
     :fast_tls.peername(socket)
   end
@@ -37,6 +42,32 @@ defmodule Mod.Protobuf do
   def send_xml(_socket, {:xmlstreamstart, _, _}) do
     :ok
   end
+
+  def send_xml(_socket, {:xmlstreamelement, {:xmlel, "stream:features", [], []}}) do
+    # send auth request
+    auth =
+      {:xmlstreamelement,
+       {:xmlel, "auth", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}, {"mechanism", "PLAIN"}],
+        [xmlcdata: "AGNoYW8AMQ=="]}}
+
+    Kernel.send(self(), {:"$gen_event", auth})
+    :ok
+  end
+
+  def send_xml(_socket, {:xmlstreamelement, {:xmlel, "stream:features", [], [{:xmlel, "bind", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-bind"}], []}, {:xmlel, "session", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-session"}], [{:xmlel, "optional", [], []}]}]}}) do
+    :ok
+  end
+
+  def send_xml(
+        _socket,
+        {:xmlstreamelement,
+         {:xmlel, "success", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}], []}}
+      ) do
+    # send auth succ to client
+    Kernel.send(self(), {:"$gen_event", start_element()})
+    :ok
+  end
+
   def send_xml(socket, el) do
     Logger.debug("socket: #{inspect(socket)}, el: #{inspect(el)}")
     # :fast_tls.send(socket, el)
@@ -55,6 +86,7 @@ defmodule Mod.Protobuf do
   def starttls(socketdata, tlsopts) do
     Logger.debug("starttls: #{inspect(socketdata)}, tlsopts #{inspect(tlsopts)}")
     socket = socket_state(socketdata, :socket)
+
     case is_port(socket) do
       true ->
         case :fast_tls.tcp_to_tls(socket, tlsopts) do
@@ -141,7 +173,13 @@ defmodule Mod.Protobuf do
   @impl GenServer
   def handle_cast(:accept, %{socket: socket, socket_mod: sockmod, socket_opts: opts} = state) do
     xmppsocket = :xmpp_socket.new(sockmod, socket, opts) |> socket_state(xml_stream: :undefined)
-    Logger.debug("accept state: #{inspect(state, limit: :infinity)}, xmppsocket: #{inspect(xmppsocket, limit: :infinity)}")
+
+    Logger.debug(
+      "accept state: #{inspect(state, limit: :infinity)}, xmppsocket: #{
+        inspect(xmppsocket, limit: :infinity)
+      }"
+    )
+
     socketmonitor = :xmpp_socket.monitor(xmppsocket)
 
     case :xmpp_socket.peername(xmppsocket) do
@@ -221,29 +259,51 @@ defmodule Mod.Protobuf do
 
       {len, rdata} ->
         rdatasize = byte_size(rdata)
-
+        Logger.debug("rdatasize: #{inspect(rdatasize)}, len: #{inspect(len)}")
         cond do
           len > rdatasize ->
             activate_socket(state.socket)
-            Map.merge(state,%{ left: true, last_data: data})
+            Map.merge(state, %{left: true, last_data: data})
 
           len == rdatasize ->
             decode_pb_message(rdata, state)
             activate_socket(state.socket)
-            Map.merge(state, %{ left: false, last_data: ""})
+            Map.merge(state, %{left: false, last_data: ""})
 
           true ->
             <<rrdata::binary-size(len), r::binary>> = rdata
             decode_pb_message(rrdata, state)
-            parse_recv_data(r, Map.merge(state,%{ left: true, last_data: r}))
+            parse_recv_data(r, Map.merge(state, %{left: true, last_data: r}))
         end
     end
+  end
+
+  def start_element() do
+    {:xmlstreamstart, "stream:stream",
+     [
+       {"xmlns", "jabber:client"},
+       {"xmlns:stream", "http://etherx.jabber.org/streams"},
+       {"version", "1.0"},
+       {"to", "localhost"},
+       {"xml:lang", "en"}
+     ]}
+  end
+
+  def pb2transfer({:xmlstreamstart, _name, _attrs} = pb) do
+    Logger.debug("pb #{inspect(pb)}")
+    # stream start
+    start_element()
+  end
+
+  def pb2transfer(pb) do
+    Logger.debug("pb #{inspect(pb)}")
+    pb
   end
 
   def decode_pb_message(data, _state) do
     pb = MessageProtobuf.Decode.decode_pb_message(data)
     Logger.debug("data #{inspect(data, limit: :infinity)}, pb: #{inspect(pb, limit: :infinity)}")
-    Kernel.send(self(), {:"$gen_event", pb})
+    Kernel.send(self(), {:"$gen_event", pb2transfer(pb)})
   end
 
   @impl GenServer

@@ -37,4 +37,43 @@ defmodule Mod.Protobuf.C2s do
     Logger.debug("#{inspect(state)}")
     state
   end
+
+  @impl :xmpp_stream_in
+  def handle_recv(el, pkt, %{lserver: lserver} = state) do
+    :ejabberd_hooks.run_fold(:c2s_handle_recv, lserver, state, [el, pkt])
+    state
+  end
+
+  @impl :xmpp_stream_in
+  def handle_stream_start(streamstart, state) do
+    Logger.debug("stream start : #{inspect(streamstart)}, state: #{inspect(state)}")
+    state
+  end
+
+  @impl :xmpp_stream_in
+  def handle_stream_end(reason, state) do
+    Logger.debug("stream end : #{inspect(reason)}, state: #{inspect(state)}")
+    state
+  end
+
+  @impl :xmpp_stream_in
+  def sasl_mechanisms(mechs, state) do
+    :ejabberd_c2s.sasl_mechanisms(mechs, state)
+  end
+
+  @impl :xmpp_stream_in
+  def get_password_fun(mech, state) do
+    :ejabberd_c2s.get_password_fun(mech, state)
+  end
+
+  @impl :xmpp_stream_in
+  def check_password_fun(mech, state) do
+    :ejabberd_c2s.check_password_fun(mech, state)
+  end
+
+  @impl :xmpp_stream_in
+  def check_password_digest_fun(mech, state) do
+    :ejabberd_c2s.check_password_digest_fun(mech, state)
+  end
+
 end
