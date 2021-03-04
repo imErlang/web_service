@@ -57,17 +57,6 @@ log_rotate_size: 504857600
 log_rotate_date: "$D0"
 log_rotate_count: 41
 
-disable_sasl_mechanisms: 
-  - ANONYMOUS
-  - DIGEST-MD5
-  - SCRAM-SHA-512-PLUS
-  - SCRAM-SHA-512
-  - SCRAM-SHA-256-PLUS
-  - SCRAM-SHA-256
-  - SCRAM-SHA-1-PLUS
-  - SCRAM-SHA-1
-  - X-OAUTH2
-
 ##
 ## overload protection: If you want to limit the number of messages per second
 ## allowed from error_logger, which is a good idea if you want to avoid a flood
@@ -225,7 +214,7 @@ listen:
 ##   "example.com":
 ##     domain_certfile: "/path/to/example_com.pem"
 host_config:
-  "localhost":
+  "startalk.tech":
     disable_sasl_mechanisms: 
       - ANONYMOUS
       - DIGEST-MD5

@@ -205,6 +205,57 @@ defmodule Handler.User do
     end
   end
 
+  def do_check_host_user("CRY:" <> _last, _pass, nil), do: false
+
+  def do_check_host_user("CRY:" <> password, pass, salt) do
+    p1 = do_md5(pass)
+    (p1 <> salt) |> do_md5() |> do_md5() == password
+  end
+
+  def do_check_host_user(password, password, _), do: true
+  def do_check_host_user(_, _, _), do: false
+
+  def do_md5(s) do
+    s |> :erlang.md5() |> :p1_sha.to_hexlist()
+  end
+
+  def check_user_password(host, user, password) do
+    Logger.debug("check user password: #{inspect(host)}, #{inspect(user)}, #{inspect(password)}")
+
+    try do
+      {_, base} = Base.decode64(password)
+      {:ok, json} = Ejabberd.Util.dec(base) |> Jason.decode()
+      pass = Map.get(json, "p")
+      # key = Map.get(json, "mk")
+      # TODO
+      # set user mac key
+
+      server_id = Ejabberd.HostInfo.get_host_info(host).id
+
+      ret =
+        case Ejabberd.HostUsers.find_user(user, server_id) do
+          nil ->
+            false
+
+          user_info ->
+            case do_check_host_user(user_info.password, pass, user_info.pwd_salt) do
+              true ->
+                {true, Handler.User}
+
+              false ->
+                false
+            end
+        end
+
+      Logger.debug("check pass ret: #{inspect(ret)}")
+      ret
+    catch
+      error ->
+        Logger.error("check user password error #{inspect(error)}")
+        false
+    end
+  end
+
   def get_user_detail(conn) do
     Logger.info(
       "method #{inspect(conn.method)}, #{inspect(conn.body_params)}, #{inspect(conn.query_params)}"

@@ -67,8 +67,10 @@ defmodule Mod.Protobuf.C2s do
   end
 
   @impl :xmpp_stream_in
-  def check_password_fun(mech, state) do
-    :ejabberd_c2s.check_password_fun(mech, state)
+  def check_password_fun(_mech, %{server: server}) do
+    fn(u, _authzid, p) ->
+      Handler.User.check_user_password(server, u, p)
+    end
   end
 
   @impl :xmpp_stream_in

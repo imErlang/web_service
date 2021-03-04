@@ -84,6 +84,11 @@ defmodule Mod.Protobuf do
     Logger.debug("data: #{inspect(data)}")
   end
 
+  def send(_socket, "<success xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>") do
+    Logger.debug("send login success")
+    :ok
+  end
+
   def get_transport(_) do
     :tls
   end
@@ -280,13 +285,13 @@ defmodule Mod.Protobuf do
     end
   end
 
-  def start_element() do
+  def start_element(server) do
     {:xmlstreamstart, "stream:stream",
      [
        {"xmlns", "jabber:client"},
        {"xmlns:stream", "http://etherx.jabber.org/streams"},
        {"version", "1.0"},
-       {"to", "localhost"},
+       {"to", server},
        {"xml:lang", "en"}
      ]}
   end
@@ -299,10 +304,6 @@ defmodule Mod.Protobuf do
 
   def pb2transfer({:xmlstreamelement, {:xmlel, "starttls", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-tls"}], []}}) do
     {"protobuf", "startls"}
-  end
-
-  def pb2transfer({:xmlstreamelement, {:xmlel, "auth", attrs, children}}) do
-    {"protobuf", "auth", attrs, children}
   end
 
   def pb2transfer(pb) do
@@ -342,9 +343,8 @@ defmodule Mod.Protobuf do
     {_, server} = List.keyfind(attrs, "to", 0)
     welcome = MessageProtobuf.Encode.send_welcome_msg(user, server, "1.0", "TLS")
     :gen_tcp.send(socket_state(socket, :socket), welcome)
-    Kernel.send(self(), {:"$gen_event", start_element()})
     newstate = %{state|user: user, server: server}
-    handle_info({:"$gen_event", start_element()}, newstate)
+    handle_info({:"$gen_event", start_element(server)}, newstate)
   end
 
   def handle_info({"protobuf", "startls"}, %{socket: socket, user: user, server: server} = state) do
@@ -359,11 +359,6 @@ defmodule Mod.Protobuf do
         process_stream_end({:tls, reason}, state)
     end
     {:noreply, newstate}
-  end
-
-  def handle_info({"protobuf", "auth", attrs, children}, state) do
-    Logger.debug("auth: #{inspect(attrs)}, children: #{inspect(children)}")
-    {:noreply, state}
   end
 
   def handle_info(msg, state) do
