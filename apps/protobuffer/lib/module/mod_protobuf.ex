@@ -45,16 +45,25 @@ defmodule Mod.Protobuf do
 
   def send_xml(_socket, {:xmlstreamelement, {:xmlel, "stream:features", [], []}}) do
     # send auth request
-    auth =
-      {:xmlstreamelement,
-       {:xmlel, "auth", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}, {"mechanism", "PLAIN"}],
-        [xmlcdata: "AGNoYW8AMQ=="]}}
+    # auth =
+    #   {:xmlstreamelement,
+    #    {:xmlel, "auth", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}, {"mechanism", "PLAIN"}],
+    #     [xmlcdata: "AGNoYW8AMQ=="]}}
 
-    Kernel.send(self(), {:"$gen_event", auth})
+    # Kernel.send(self(), {:"$gen_event", auth})
     :ok
   end
 
-  def send_xml(_socket, {:xmlstreamelement, {:xmlel, "stream:features", [], [{:xmlel, "bind", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-bind"}], []}, {:xmlel, "session", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-session"}], [{:xmlel, "optional", [], []}]}]}}) do
+  def send_xml(
+        _socket,
+        {:xmlstreamelement,
+         {:xmlel, "stream:features", [],
+          [
+            {:xmlel, "bind", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-bind"}], []},
+            {:xmlel, "session", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-session"}],
+             [{:xmlel, "optional", [], []}]}
+          ]}}
+      ) do
     :ok
   end
 
@@ -64,7 +73,7 @@ defmodule Mod.Protobuf do
          {:xmlel, "success", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}], []}}
       ) do
     # send auth succ to client
-    Kernel.send(self(), {:"$gen_event", start_element()})
+    # Kernel.send(self(), {:"$gen_event", start_element()})
     :ok
   end
 
@@ -77,6 +86,10 @@ defmodule Mod.Protobuf do
 
   def get_transport(_) do
     :tls
+  end
+
+  def setopts(socket, opts) when is_port(socket) do
+    :inet.setopts(socket, opts)
   end
 
   def setopts(socket, opts) do
@@ -104,9 +117,8 @@ defmodule Mod.Protobuf do
     end
   end
 
-  def init_state(%{socket: socket, mod: mod} = state, opts) do
+  def init_state(%{mod: mod} = state, opts) do
     Logger.debug("init state #{inspect(state)}, opts: #{inspect(opts)}")
-    encrypted = :proplists.get_bool(:tls, opts)
 
     state =
       Map.merge(state, %{
@@ -138,19 +150,8 @@ defmodule Mod.Protobuf do
     Logger.debug("mod init #{inspect(init)}")
 
     case init do
-      {:ok, state2} when not encrypted ->
+      {:ok, state2} ->
         state2
-
-      {:ok, state2} when encrypted ->
-        tlsopts = :ejabberd_c2s.tls_options(state2)
-
-        case starttls(socket, tlsopts) do
-          {:ok, tlssocket} ->
-            %{state | socket: tlssocket}
-
-          {:error, reason} ->
-            process_stream_end({:tls, reason}, state2)
-        end
 
       {:error, reason} ->
         process_stream_end(reason, state)
@@ -186,8 +187,7 @@ defmodule Mod.Protobuf do
       {:ok, ip} ->
         state =
           state
-          |> Map.delete(:socket_mod)
-          |> Map.delete(:socket_opts)
+          |> Map.put(:socket_mod, :gen_tcp)
           |> Map.put(:socket, xmppsocket)
           |> Map.put(:socket_monitor, socketmonitor)
           |> Map.put(:ip, ip)
@@ -216,26 +216,27 @@ defmodule Mod.Protobuf do
     :xmpp_stream_in.handle_cast(msg, state)
   end
 
-  def recv_data({:fast_tls, sock}, data) do
-    case :fast_tls.recv_data(sock, data) do
-      {:ok, _} = ok -> ok
-      {:error, e} when is_atom(e) -> {:error, {:socket, e}}
-      {:error, e} when is_binary(e) -> {:error, {:tls, e}}
-      {:error, _} = err -> err
+  def recv_data(socket, data) do
+    socket = socket_state(socket, :socket)
+
+    case is_port(socket) do
+      true ->
+        {:ok, data}
+
+      false ->
+        case :fast_tls.recv_data(socket, data) do
+          {:ok, _} = ok -> ok
+          error -> error
+        end
     end
   end
 
-  def recv_data(_, data) do
-    {:ok, data}
-  end
-
   def activate_socket(socket) do
-    sockmod = socket_state(socket, :sockmod)
     sock = socket_state(socket, :socket)
 
-    case sockmod do
-      :gen_tcp -> :inet.setopts(sock, active: :once)
-      _ -> sockmod.setopts(sock, active: :once)
+    case is_port(sock) do
+      true -> :inet.setopts(sock, active: :once)
+      false -> :fast_tls.setopts(sock, active: :once)
     end
   end
 
@@ -260,6 +261,7 @@ defmodule Mod.Protobuf do
       {len, rdata} ->
         rdatasize = byte_size(rdata)
         Logger.debug("rdatasize: #{inspect(rdatasize)}, len: #{inspect(len)}")
+
         cond do
           len > rdatasize ->
             activate_socket(state.socket)
@@ -289,26 +291,38 @@ defmodule Mod.Protobuf do
      ]}
   end
 
-  def pb2transfer({:xmlstreamstart, _name, _attrs} = pb) do
+  def pb2transfer({:xmlstreamstart, _name, attrs} = pb) do
     Logger.debug("pb #{inspect(pb)}")
     # stream start
-    start_element()
+    {"protobuf", "welcome", attrs}
+  end
+
+  def pb2transfer({:xmlstreamelement, {:xmlel, "starttls", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-tls"}], []}}) do
+    {"protobuf", "startls"}
+  end
+
+  def pb2transfer({:xmlstreamelement, {:xmlel, "auth", attrs, children}}) do
+    {"protobuf", "auth", attrs, children}
   end
 
   def pb2transfer(pb) do
     Logger.debug("pb #{inspect(pb)}")
-    pb
+    {:"$gen_event", pb}
   end
 
   def decode_pb_message(data, _state) do
     pb = MessageProtobuf.Decode.decode_pb_message(data)
     Logger.debug("data #{inspect(data, limit: :infinity)}, pb: #{inspect(pb, limit: :infinity)}")
-    Kernel.send(self(), {:"$gen_event", pb2transfer(pb)})
+    Kernel.send(self(), pb2transfer(pb))
   end
 
   @impl GenServer
   def handle_info({:tcp, _tcpsock, tcpdata}, %{socket: socket} = state) do
-    Logger.debug("recv socket data: #{inspect(tcpdata, limit: :infinity)}")
+    Logger.debug(
+      "recv socket data: #{inspect(tcpdata, limit: :infinity)}, socket: #{
+        inspect(socket, limit: :infinity)
+      }"
+    )
 
     case recv_data(socket, tcpdata) do
       {:ok, data} ->
@@ -321,6 +335,35 @@ defmodule Mod.Protobuf do
         Logger.error("recv data error #{inspect(why)}")
         {:stop, :normal, state}
     end
+  end
+
+  def handle_info({"protobuf", "welcome", attrs}, %{socket: socket} = state) do
+    {_, user} = List.keyfind(attrs, "user", 0)
+    {_, server} = List.keyfind(attrs, "to", 0)
+    welcome = MessageProtobuf.Encode.send_welcome_msg(user, server, "1.0", "TLS")
+    :gen_tcp.send(socket_state(socket, :socket), welcome)
+    Kernel.send(self(), {:"$gen_event", start_element()})
+    newstate = %{state|user: user, server: server}
+    handle_info({:"$gen_event", start_element()}, newstate)
+  end
+
+  def handle_info({"protobuf", "startls"}, %{socket: socket, user: user, server: server} = state) do
+    tlsopts = :ejabberd_c2s.tls_options(state)
+    newstate = case starttls(socket, tlsopts) do
+      {:ok, tlssocket} ->
+        starttls = MessageProtobuf.Encode.send_starttls(user, server)
+        :gen_tcp.send(socket_state(socket, :socket), starttls)
+        %{state | socket: tlssocket}
+
+      {:error, reason} ->
+        process_stream_end({:tls, reason}, state)
+    end
+    {:noreply, newstate}
+  end
+
+  def handle_info({"protobuf", "auth", attrs, children}, state) do
+    Logger.debug("auth: #{inspect(attrs)}, children: #{inspect(children)}")
+    {:noreply, state}
   end
 
   def handle_info(msg, state) do

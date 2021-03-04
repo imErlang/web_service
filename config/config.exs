@@ -18,7 +18,7 @@ import Config
 #
 
 config :logger,
-  backends: [LoggerLagerBackend],
+  backends: [LoggerLagerBackend, :console],
   handle_otp_reports: false,
   level: :debug,
   truncate: :infinity

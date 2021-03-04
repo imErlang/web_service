@@ -34,6 +34,57 @@ defmodule MessageProtobuf.Encode do
     end
   end
 
+  def send_stream_end(code, reason) do
+    stream_end = Streamend.new(code: code, reason: reason) |> Streamend.encode()
+    msg = encode_pb_protomessage("", "", :SignalTypeStreamEnd, 0, stream_end)
+    encode_pb_protoheader(0, msg) |> pack
+  end
+
+  def send_auth_login_response_sucess(user, server, msg_id, info) do
+    from = :jid.make(user, server, "") |> :jid.to_string
+
+    response_suc =
+      Responsesucceeded.new(
+        code: 0,
+        msgid: msg_id,
+        info: info,
+        body: Messagebody.new(value: "login sucess")
+      )
+      |> Responsesucceeded.encode()
+
+    msg = encode_pb_protomessage(from, from, :SignalTypeSucceededResponse, 0, response_suc)
+    encode_pb_protoheader(0, msg) |> pack
+  end
+
+  def send_auth_login_response_failed(user, server, _msg_id, info) do
+    from = :jid.make(user, server, "") |> :jid.to_string
+
+    response_errr =
+      Responsefailure.new(code: 0, error: info, body: Messagebody.new(value: "login failed"))
+      |> Responsefailure.encode()
+
+    msg = encode_pb_protomessage(from, from, :SignalTypeFailureResponse, 0, response_errr)
+    encode_pb_protoheader(0, msg) |> pack
+  end
+
+  def send_starttls(user, server) do
+    from = :jid.make(user, server, "") |> :jid.to_string
+    tls = Proceedtls.new() |> Proceedtls.encode()
+    msg = encode_pb_protomessage(from, from, :SignalProceedTLS, 0, tls)
+    encode_pb_protoheader(0, msg) |> pack
+  end
+
+  def send_welcome_msg(user, server, version, sockmod) do
+    from = :jid.make(user, server, "") |> :jid.to_string
+
+    welcome =
+      Welcomemessage.new(domain: server, version: version, user: user, sockmod: sockmod)
+      |> Welcomemessage.encode()
+
+    msg = encode_pb_protomessage(from, from, :SignalTypeWelcome, 0, welcome)
+    encode_pb_protoheader(0, msg) |> pack
+  end
+
   def encode_pb_protomessage(
         from,
         to,
