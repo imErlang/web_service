@@ -344,6 +344,12 @@ defmodule Mod.Protobuf do
     end
   end
 
+  def handle_info({"protobuf", "login_presence", login_presence}, %{socket: socket} = state) do
+    data = MessageProtobuf.Encode.send_probuf_msg(state, login_presence)
+    send_pkt(socket_state(socket, :socket), data)
+    {:noreply, state}
+  end
+
   def handle_info({"protobuf", "element", {:xmlstreamelement, {:xmlel, "iq", _, [{:xmlel, "bind", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-bind"}], _}]} = el}}, %{user: user, server: server, resource: resource, socket: socket} = state) do
     # update key and mac key to project
     key = Mod.Protobuf.Handler.generate_key()

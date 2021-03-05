@@ -25,10 +25,9 @@ defmodule Protobuffer.Hooks do
   end
 
   def on_presence_update(user, server, resource, presence) do
-    Logger.debug("on presence update #{inspect(user)}, #{inspect(server)}, #{inspect(resource)}, #{inspect(presence)}")
+    Logger.debug("on presence update #{inspect(self())} #{inspect(user)}, #{inspect(server)}, #{inspect(resource)}, #{inspect(presence)}")
     login_presence = Mod.Protobuf.Handler.send_login_presence(user, server)
-    user_jid = :jid.make(user, server, resource)
-    :ejabberd_router.route(user_jid, user_jid, login_presence)
+    send(self(), {"protobuf", "login_presence", login_presence})
     :ok
   end
 
