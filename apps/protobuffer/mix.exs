@@ -31,7 +31,8 @@ defmodule Protobuffer.MixProject do
       {:ejabberd, "~> 21.1"},
       {:xmpp, "~> 1.5.2"},
       {:redix, "~> 1.0"},
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.2"},
+      {:jiffy, "~> 1.0.8"}
     ]
   end
 end

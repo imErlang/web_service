@@ -88,4 +88,9 @@ defmodule Mod.Protobuf.C2s do
     :ejabberd_c2s.bind(r, state)
   end
 
+  @impl :xmpp_stream_in
+  def handle_authenticated_packet(pkt, state) do
+    Logger.debug("handle packet: #{inspect(pkt)}, state: #{inspect(state)}")
+    :ejabberd_c2s.handle_authenticated_packet(pkt, state)
+  end
 end

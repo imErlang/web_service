@@ -29,7 +29,7 @@ sql_pool_size: 5
 
 host_config:
   "startalk.tech":
-    disable_sasl_mechanisms: 
+    disable_sasl_mechanisms:
       - ANONYMOUS
       - DIGEST-MD5
       - SCRAM-SHA-512-PLUS
@@ -87,7 +87,7 @@ listen:
     module: ejabberd_http
     request_handlers:
       /admin: ejabberd_web_admin
- 
+
 
 s2s_use_starttls: optional
 
@@ -162,6 +162,7 @@ shaper_rules:
   s2s_shaper: fast
 
 modules:
+  'Elixir.Protobuffer.Hooks': {}
   mod_adhoc: {}
   mod_configure: {}
   mod_disco: {}
