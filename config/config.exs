@@ -23,6 +23,15 @@ config :logger,
   level: :debug,
   truncate: :infinity
 
+config :protobuffer,
+  redis_key: %{
+    host: "127.0.0.1",
+    port: 6379,
+    password: "123456",
+    database: 1
+  },
+  navversion: "10000"
+
 config :admin, port: 7004
 
 config :admin, :ecto_repos, [Ejabberd.Repo]

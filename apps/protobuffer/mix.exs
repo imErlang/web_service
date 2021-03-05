@@ -18,7 +18,8 @@ defmodule Protobuffer.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Protobuffer.Application, []}
     ]
   end
 
@@ -28,7 +29,9 @@ defmodule Protobuffer.MixProject do
       {:protobuf, "~> 0.7.1"},
       {:fast_xml, "~> 1.1"},
       {:ejabberd, "~> 21.1"},
-      {:xmpp, "~> 1.5.2"}
+      {:xmpp, "~> 1.5.2"},
+      {:redix, "~> 1.0"},
+      {:jason, "~> 1.2"}
     ]
   end
 end

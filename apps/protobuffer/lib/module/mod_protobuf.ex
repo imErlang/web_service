@@ -3,6 +3,7 @@ defmodule Mod.Protobuf do
   use GenServer
   require Logger
   require Record
+  import Xml
 
   Record.defrecord(:socket_state,
     sockmod: :gen_tcp,
@@ -39,31 +40,16 @@ defmodule Mod.Protobuf do
     :fast_tls.peername(socket)
   end
 
+  def change_shaper(_socket, _shaper) do
+    :ok
+  end
+
   def send_xml(_socket, {:xmlstreamstart, _, _}) do
     :ok
   end
 
-  def send_xml(_socket, {:xmlstreamelement, {:xmlel, "stream:features", [], []}}) do
-    # send auth request
-    # auth =
-    #   {:xmlstreamelement,
-    #    {:xmlel, "auth", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}, {"mechanism", "PLAIN"}],
-    #     [xmlcdata: "AGNoYW8AMQ=="]}}
-
-    # Kernel.send(self(), {:"$gen_event", auth})
-    :ok
-  end
-
-  def send_xml(
-        _socket,
-        {:xmlstreamelement,
-         {:xmlel, "stream:features", [],
-          [
-            {:xmlel, "bind", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-bind"}], []},
-            {:xmlel, "session", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-session"}],
-             [{:xmlel, "optional", [], []}]}
-          ]}}
-      ) do
+  def send_xml(_socket, {:xmlstreamelement, {:xmlel, "stream:features", _attrs, _children}}) do
+    # first and second stream features
     :ok
   end
 
@@ -73,20 +59,40 @@ defmodule Mod.Protobuf do
          {:xmlel, "success", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}], []}}
       ) do
     # send auth succ to client
-    # Kernel.send(self(), {:"$gen_event", start_element()})
+    Kernel.send(self(), {"protobuf", "success"})
     :ok
   end
 
   def send_xml(socket, el) do
-    Logger.debug("socket: #{inspect(socket)}, el: #{inspect(el)}")
-    # :fast_tls.send(socket, el)
-    data = MessageProtobuf.Encode.send_probuf_msg(%{}, el)
-    Logger.debug("data: #{inspect(data)}")
+    Logger.debug("send xml socket: #{inspect(socket)}, el: #{inspect(el)}")
+    Kernel.send(self(), {"protobuf", "element", el})
+    :ok
   end
 
-  def send(_socket, "<success xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>") do
-    Logger.debug("send login success")
-    :ok
+  def send(socket, el) do
+    Logger.debug("send socket el: #{inspect(el)}")
+    try do
+       case :fxml_stream.parse_element(el) do
+        {:xmlel, "success", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}], []} ->
+          Kernel.send(self(), {"protobuf", "success"})
+          :ok
+        {:xmlel, "failure", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-sasl"}], children} ->
+          Kernel.send(self(), {"protobuf", "faiilure", children})
+          :ok
+       end
+    catch
+      error ->
+        Logger.error("send error #{inspect(error)}")
+        send_pkt(socket, el)
+    end
+
+  end
+
+  def send_pkt(socket, data) when is_port(socket) do
+    :gen_tcp.send(socket, data)
+  end
+  def send_pkt(socket, data) do
+    :fast_tls.send(socket, data)
   end
 
   def get_transport(_) do
@@ -338,6 +344,35 @@ defmodule Mod.Protobuf do
     end
   end
 
+  def handle_info({"protobuf", "element", {:xmlstreamelement, {:xmlel, "iq", _, [{:xmlel, "bind", [{"xmlns", "urn:ietf:params:xml:ns:xmpp-bind"}], _}]} = el}}, %{user: user, server: server, resource: resource, socket: socket} = state) do
+    # update key and mac key to project
+    key = Mod.Protobuf.Handler.generate_key()
+    Mod.Protobuf.Handler.set_redis_user_key(server, user, resource, key, resource)
+    state = Map.put(state, :key, key)
+
+    Logger.debug("send protobuf data: #{inspect(el)}")
+    data = MessageProtobuf.Encode.send_probuf_msg(state, el)
+    Logger.debug("send data: #{inspect(data)}")
+    send_pkt(socket_state(socket, :socket), data)
+
+    from =  :jid.make(user, server, "") |> :jid.to_string()
+    to =  :jid.make(user, server, resource) |> :jid.to_string()
+    attrs = [{"from", from}, {"to", to}, {"category", "3"}, {"data", "{\"navversion\":\"10000\"}"}, {"type","notify"}]
+    children = xmlel(name: "notify", attrs: [{"xmlns","jabber:x:presence_notify"}])
+    presence = xmlel(name: "presence", attrs: attrs, children: [children])
+    presence_data = MessageProtobuf.Encode.send_probuf_msg(state, presence)
+    send_pkt(socket_state(socket, :socket), presence_data)
+    {:noreply, state}
+  end
+
+  def handle_info({"protobuf", "element", {:xmlstreamelement, el}}, %{socket: socket} = state) do
+    Logger.debug("send protobuf data: #{inspect(el)}")
+    data = MessageProtobuf.Encode.send_probuf_msg(state, el)
+    Logger.debug("send data: #{inspect(data)}")
+    send_pkt(socket_state(socket, :socket), data)
+    {:noreply, state}
+  end
+
   def handle_info({"protobuf", "welcome", attrs}, %{socket: socket} = state) do
     {_, user} = List.keyfind(attrs, "user", 0)
     {_, server} = List.keyfind(attrs, "to", 0)
@@ -361,8 +396,15 @@ defmodule Mod.Protobuf do
     {:noreply, newstate}
   end
 
+  def handle_info({"protobuf", "success"}, %{socket: socket, user: user, server: server} = state) do
+    auth = MessageProtobuf.Encode.send_auth_login_response_sucess(user, server, "0", "")
+    send_pkt(socket_state(socket, :socket), auth)
+    # reset xmpp stream
+    handle_info({:"$gen_event", start_element(server)}, state)
+  end
+
   def handle_info(msg, state) do
-    Logger.debug("recv msg: #{inspect(msg)}")
+    Logger.debug("pid: #{inspect(self())}, recv msg: #{inspect(msg)}")
     :xmpp_stream_in.handle_info(msg, state)
   end
 

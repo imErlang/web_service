@@ -15,7 +15,7 @@ defmodule MessageProtobuf.Encode do
   def send_probuf_msg(statedata, packet) do
     Logger.debug("from: #{inspect(statedata)}, packet: #{inspect(packet)}")
 
-    user = :jid.make(statedata.user, statedata.server, statedata.resource)
+    user = :jid.make(statedata.user, statedata.server, statedata.resource) |> :jid.to_string()
 
     to = get_xml_attrs(packet, "to", user)
     from = get_xml_attrs(packet, "from", user)

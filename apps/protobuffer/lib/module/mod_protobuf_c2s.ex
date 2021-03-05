@@ -78,4 +78,14 @@ defmodule Mod.Protobuf.C2s do
     :ejabberd_c2s.check_password_digest_fun(mech, state)
   end
 
+  @impl :xmpp_stream_in
+  def handle_auth_success(_user, _mech, authmodule, state) do
+    Map.put(state, :auth_module, authmodule)
+  end
+
+  @impl :xmpp_stream_in
+  def bind(r, state) do
+    :ejabberd_c2s.bind(r, state)
+  end
+
 end

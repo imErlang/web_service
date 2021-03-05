@@ -23,7 +23,7 @@ defmodule Util do
   end
 
   def get_sub_xmlns_name1([el | els]) do
-    case Record.is_record(el, Xml) do
+    case Record.is_record(el, :xmlel) do
       true ->
         case :fxml.get_attr("xmlns", xmlel(el, :attrs)) do
           {:value, xmlns} ->
